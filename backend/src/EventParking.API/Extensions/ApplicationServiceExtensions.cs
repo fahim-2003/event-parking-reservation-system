@@ -9,6 +9,7 @@ public static class ApplicationServiceExtensions
         this IServiceCollection services)
     {
         services.AddScoped<IEmailSender, DevelopmentEmailSender>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

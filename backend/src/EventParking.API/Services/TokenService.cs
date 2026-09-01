@@ -23,37 +23,60 @@ public sealed class TokenService : ITokenService
         _userManager = userManager;
     }
 
-    public async Task<string> CreateAccessTokenAsync(ApplicationUser user)
+    public async Task<AccessTokenResult> CreateAccessTokenAsync(
+        ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, user.Id),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Name, user.FullName),
-            new(ClaimTypes.Email, user.Email ?? string.Empty)
+            new(
+                JwtRegisteredClaimNames.Sub,
+                user.Id),
+
+            new(
+                JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid().ToString()),
+
+            new(
+                ClaimTypes.NameIdentifier,
+                user.Id),
+
+            new(
+                ClaimTypes.Name,
+                user.FullName),
+
+            new(
+                ClaimTypes.Email,
+                user.Email ?? string.Empty)
         };
 
-        claims.AddRange(
-            roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
-        var key = new SymmetricSecurityKey(
+        var securityKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwtOptions.Key));
 
-        var credentials = new SigningCredentials(
-            key,
+        var signingCredentials = new SigningCredentials(
+            securityKey,
             SecurityAlgorithms.HmacSha256);
+
+        var expiresAtUtc = DateTime.UtcNow.AddMinutes(
+            _jwtOptions.AccessTokenMinutes);
 
         var token = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(
-                _jwtOptions.AccessTokenMinutes),
-            signingCredentials: credentials);
+            expires: expiresAtUtc,
+            signingCredentials: signingCredentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new AccessTokenResult
+        {
+            Token = new JwtSecurityTokenHandler().WriteToken(token),
+            ExpiresAtUtc = expiresAtUtc
+        };
     }
 }
