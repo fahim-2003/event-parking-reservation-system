@@ -30,6 +30,9 @@ builder.Services.Configure<BookingSettings>(
 builder.Services.Configure<FrontendOptions>(
     builder.Configuration.GetSection(FrontendOptions.SectionName));
 
+builder.Services.Configure<AdminSeedOptions>(
+    builder.Configuration.GetSection(AdminSeedOptions.SectionName));
+
 // Standard API error responses
 builder.Services.AddProblemDetails();
 
@@ -60,6 +63,9 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+// Seed Customer / Administrator roles and initial Administrator account
+await IdentitySeed.SeedAsync(app.Services);
+
 // Global exception handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
@@ -75,13 +81,11 @@ app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
 
-// JWT authentication must run before authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// API health endpoint
 app.MapHealthChecks("/api/health");
 
 app.Run();
