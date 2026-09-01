@@ -27,13 +27,24 @@ export const authGuard: CanActivateFn = (
   const allowedRoles =
     route.data['roles'] as AppRole[] | undefined;
 
+  const currentRole = authService.role();
+
   if (
     allowedRoles?.length &&
-    !allowedRoles.includes(
-      authService.role() as AppRole
+    (
+      !currentRole ||
+      !allowedRoles.includes(currentRole)
     )
   ) {
-    return router.createUrlTree(['/']);
+    if (currentRole === 'Administrator') {
+      return router.createUrlTree(['/admin/customers']);
+    }
+
+    if (currentRole === 'Customer') {
+      return router.createUrlTree(['/customer/profile']);
+    }
+
+    return router.createUrlTree(['/login']);
   }
 
   return true;

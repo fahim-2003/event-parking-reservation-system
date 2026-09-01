@@ -5,6 +5,11 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
+import { AppRole } from '../../../core/models/auth.models';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -17,6 +22,8 @@ import { AuthService } from '../../../core/services/auth.service';
 export class Login {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly isSubmitting = signal(false);
   readonly showPassword = signal(false);
@@ -58,9 +65,10 @@ export class Login {
       next: response => {
         this.isSubmitting.set(false);
 
-        this.successMessage.set(
-          `Signed in successfully as ${response.fullName}.`
-        );
+        const destination =
+          this.resolveDestination(response.role);
+
+        void this.router.navigateByUrl(destination);
       },
       error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);
@@ -83,6 +91,29 @@ export class Login {
 
     return control.touched &&
       control.hasError(errorName);
+  }
+
+  private resolveDestination(role: AppRole): string {
+    const returnUrl =
+      this.route.snapshot.queryParamMap.get('returnUrl');
+
+    if (
+      role === 'Customer' &&
+      returnUrl?.startsWith('/customer/')
+    ) {
+      return returnUrl;
+    }
+
+    if (
+      role === 'Administrator' &&
+      returnUrl?.startsWith('/admin/')
+    ) {
+      return returnUrl;
+    }
+
+    return role === 'Administrator'
+      ? '/admin/customers'
+      : '/customer/profile';
   }
 
   private resolveErrorMessage(

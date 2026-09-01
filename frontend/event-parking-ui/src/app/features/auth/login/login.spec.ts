@@ -1,6 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { describe, expect, it, beforeEach, vi } from 'vitest';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi
+} from 'vitest';
 
 import { Login } from './login';
 import { AuthService } from '../../../core/services/auth.service';
@@ -13,8 +23,25 @@ describe('Login', () => {
     login: vi.fn()
   };
 
+  const routerMock = {
+    navigateByUrl: vi.fn()
+  };
+
+  const queryParameters = new Map<string, string>();
+
+  const activatedRouteMock = {
+    snapshot: {
+      queryParamMap: {
+        get: (key: string) =>
+          queryParameters.get(key) ?? null
+      }
+    }
+  };
+
   beforeEach(async () => {
     authServiceMock.login.mockReset();
+    routerMock.navigateByUrl.mockReset();
+    queryParameters.clear();
 
     await TestBed.configureTestingModule({
       imports: [Login],
@@ -22,6 +49,14 @@ describe('Login', () => {
         {
           provide: AuthService,
           useValue: authServiceMock
+        },
+        {
+          provide: Router,
+          useValue: routerMock
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: activatedRouteMock
         }
       ]
     }).compileComponents();
@@ -42,7 +77,7 @@ describe('Login', () => {
     expect(authServiceMock.login).not.toHaveBeenCalled();
   });
 
-  it('should submit valid credentials', () => {
+  it('should navigate customer to customer profile', () => {
     authServiceMock.login.mockReturnValue(
       of({
         accessToken: 'test-token',
@@ -62,16 +97,34 @@ describe('Login', () => {
 
     component.submit();
 
-    expect(authServiceMock.login).toHaveBeenCalledWith({
-      email: 'customer1@eventparking.local',
-      password: 'NewCustomer9!'
-    });
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
+      '/customer/profile'
+    );
+  });
 
-    expect(component.successMessage()).toContain(
-      'Test Customer'
+  it('should navigate administrator to admin customers', () => {
+    authServiceMock.login.mockReturnValue(
+      of({
+        accessToken: 'admin-token',
+        expiresAtUtc: '2099-01-01T00:00:00Z',
+        userId: 'admin-1',
+        fullName: 'System Administrator',
+        email: 'admin@eventparking.local',
+        role: 'Administrator',
+        accountStatus: 'Active'
+      })
     );
 
-    expect(component.isSubmitting()).toBe(false);
+    component.loginForm.setValue({
+      email: 'admin@eventparking.local',
+      password: 'AdminPassword9!'
+    });
+
+    component.submit();
+
+    expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
+      '/admin/customers'
+    );
   });
 
   it('should show invalid credential error', () => {
