@@ -1,0 +1,129 @@
+<main class="profile-page">
+  <section class="profile-shell">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Customer account</p>
+        <h1>My profile</h1>
+        <p>
+          Review your account information and keep your
+          personal details up to date.
+        </p>
+      </div>
+
+      @if (profile()) {
+        <span class="status-pill">
+          {{ profile()!.accountStatus }}
+        </span>
+      }
+    </header>
+
+    @if (isLoading()) {
+      <div class="state-card">
+        Loading your profile...
+      </div>
+    } @else {
+      @if (errorMessage()) {
+        <div class="alert error" role="alert">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      @if (successMessage()) {
+        <div class="alert success" role="status">
+          {{ successMessage() }}
+        </div>
+      }
+
+      @if (profile()) {
+        <div class="profile-grid">
+          <section class="glass-card">
+            <h2>Account information</h2>
+
+            <div class="read-only-grid">
+              <div>
+                <span>Email address</span>
+                <strong>{{ profile()!.email }}</strong>
+              </div>
+
+              <div>
+                <span>Email verification</span>
+                <strong>
+                  {{ profile()!.emailVerified ? 'Verified' : 'Pending' }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Account status</span>
+                <strong>{{ profile()!.accountStatus }}</strong>
+              </div>
+
+              <div>
+                <span>Member since</span>
+                <strong>
+                  {{ profile()!.createdAtUtc | date:'mediumDate' }}
+                </strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="glass-card">
+            <h2>Edit profile</h2>
+
+            <form
+              [formGroup]="form"
+              (ngSubmit)="save()"
+              novalidate
+            >
+              <div class="field-group">
+                <label for="fullName">Full name</label>
+
+                <input
+                  id="fullName"
+                  type="text"
+                  formControlName="fullName"
+                  autocomplete="name"
+                />
+
+                @if (hasError('fullName', 'required')) {
+                  <small>Full name is required.</small>
+                }
+
+                @if (hasError('fullName', 'minlength')) {
+                  <small>
+                    Full name must contain at least 2 characters.
+                  </small>
+                }
+              </div>
+
+              <div class="field-group">
+                <label for="phoneNumber">Phone number</label>
+
+                <input
+                  id="phoneNumber"
+                  type="tel"
+                  formControlName="phoneNumber"
+                  autocomplete="tel"
+                />
+
+                @if (hasError('phoneNumber', 'required')) {
+                  <small>Phone number is required.</small>
+                }
+              </div>
+
+              <button
+                type="submit"
+                [disabled]="isSaving()"
+              >
+                @if (isSaving()) {
+                  Saving changes...
+                } @else {
+                  Save changes
+                }
+              </button>
+            </form>
+          </section>
+        </div>
+      }
+    }
+  </section>
+</main>

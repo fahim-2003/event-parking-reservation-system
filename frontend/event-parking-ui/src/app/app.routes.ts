@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -39,6 +40,17 @@ export const routes: Routes = [
       import(
         './features/auth/reset-password/reset-password'
       ).then(module => module.ResetPassword)
+  },
+  {
+    path: 'customer/profile',
+    canActivate: [authGuard],
+    data: {
+      roles: ['Customer']
+    },
+    loadComponent: () =>
+      import(
+        './features/customer/profile/customer-profile'
+      ).then(module => module.CustomerProfile)
   },
   {
     path: '',
