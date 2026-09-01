@@ -20,6 +20,27 @@ export const routes: Routes = [
         .then(module => module.VerifyEmail)
   },
   {
+    path: 'resend-verification',
+    loadComponent: () =>
+      import(
+        './features/auth/resend-verification/resend-verification'
+      ).then(module => module.ResendVerification)
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import(
+        './features/auth/forgot-password/forgot-password'
+      ).then(module => module.ForgotPassword)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import(
+        './features/auth/reset-password/reset-password'
+      ).then(module => module.ResetPassword)
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'
