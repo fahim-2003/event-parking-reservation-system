@@ -1,5 +1,6 @@
 using EventParking.API.Configurations;
 using EventParking.API.Data;
+using EventParking.API.Extensions;
 using EventParking.API.Middleware;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// ASP.NET Core Identity
+builder.Services.AddApplicationIdentity();
 
 // Strongly typed configuration
 builder.Services.Configure<JwtOptions>(
@@ -69,6 +73,7 @@ app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
 
+// Authentication middleware will be added in the JWT wiring step.
 app.UseAuthorization();
 
 app.MapControllers();
