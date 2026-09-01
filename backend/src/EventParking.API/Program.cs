@@ -20,6 +20,9 @@ builder.Services.AddApplicationIdentity();
 // JWT authentication
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+// Application services
+builder.Services.AddApplicationServices();
+
 // Strongly typed configuration
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -63,20 +66,19 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-// Seed Customer / Administrator roles and initial Administrator account
+// Seed Customer / Administrator roles
+// and initial Administrator account
 await IdentitySeed.SeedAsync(app.Services);
 
 // Global exception handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Swagger only in Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Allow configured Angular frontend
 app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
