@@ -53,6 +53,17 @@ export const routes: Routes = [
       ).then(module => module.CustomerProfile)
   },
   {
+    path: 'admin/customers',
+    canActivate: [authGuard],
+    data: {
+      roles: ['Administrator']
+    },
+    loadComponent: () =>
+      import(
+        './features/admin/customers/admin-customers'
+      ).then(module => module.AdminCustomers)
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'

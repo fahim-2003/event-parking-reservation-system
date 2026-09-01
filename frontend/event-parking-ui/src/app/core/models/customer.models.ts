@@ -13,3 +13,13 @@ export interface UpdateCustomerProfileRequest {
   fullName: string;
   phoneNumber: string;
 }
+
+export interface AdminCustomerSummary {
+  userId: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+  emailVerified: boolean;
+  accountStatus: string;
+  createdAtUtc: string;
+}
