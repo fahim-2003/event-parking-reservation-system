@@ -14,6 +14,12 @@ export const routes: Routes = [
         .then(module => module.Register)
   },
   {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('./features/auth/verify-email/verify-email')
+        .then(module => module.VerifyEmail)
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'
