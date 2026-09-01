@@ -9,7 +9,6 @@ namespace EventParking.API.Controllers;
 
 [ApiController]
 [Route("api/customers")]
-[Authorize(Roles = AppRoles.Customer)]
 public sealed class CustomersController : ControllerBase
 {
     private readonly ICustomerService _customerService;
@@ -21,12 +20,7 @@ public sealed class CustomersController : ControllerBase
     }
 
     [HttpGet("me")]
-    [ProducesResponseType(
-        typeof(CustomerProfileResponse),
-        StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = AppRoles.Customer)]
     public async Task<IActionResult> GetOwnProfile()
     {
         var userId = User.FindFirstValue(
@@ -40,24 +34,13 @@ public sealed class CustomersController : ControllerBase
         var profile =
             await _customerService.GetOwnProfileAsync(userId);
 
-        if (profile is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(profile);
+        return profile is null
+            ? NotFound()
+            : Ok(profile);
     }
 
     [HttpPut("me")]
-    [ProducesResponseType(
-        typeof(CustomerProfileResponse),
-        StatusCodes.Status200OK)]
-    [ProducesResponseType(
-        typeof(ValidationProblemDetails),
-        StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = AppRoles.Customer)]
     public async Task<IActionResult> UpdateOwnProfile(
         [FromBody] UpdateCustomerProfileRequest request)
     {
@@ -74,11 +57,32 @@ public sealed class CustomersController : ControllerBase
                 userId,
                 request);
 
-        if (profile is null)
-        {
-            return NotFound();
-        }
+        return profile is null
+            ? NotFound()
+            : Ok(profile);
+    }
 
-        return Ok(profile);
+    [HttpGet]
+    [Authorize(Roles = AppRoles.Administrator)]
+    public async Task<IActionResult> SearchCustomers(
+        [FromQuery] string? search)
+    {
+        var customers =
+            await _customerService.SearchCustomersAsync(search);
+
+        return Ok(customers);
+    }
+
+    [HttpGet("{id}")]
+    [Authorize(Roles = AppRoles.Administrator)]
+    public async Task<IActionResult> GetCustomer(
+        string id)
+    {
+        var customer =
+            await _customerService.GetCustomerForAdminAsync(id);
+
+        return customer is null
+            ? NotFound()
+            : Ok(customer);
     }
 }

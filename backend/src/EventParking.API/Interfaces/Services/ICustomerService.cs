@@ -10,4 +10,10 @@ public interface ICustomerService
     Task<CustomerProfileResponse?> UpdateOwnProfileAsync(
         string userId,
         UpdateCustomerProfileRequest request);
+
+    Task<IReadOnlyList<AdminCustomerSummaryResponse>>
+        SearchCustomersAsync(string? search);
+
+    Task<AdminCustomerSummaryResponse?>
+        GetCustomerForAdminAsync(string customerId);
 }
