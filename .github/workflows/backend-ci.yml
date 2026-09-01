@@ -1,0 +1,38 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "fix/**"
+      - "test/**"
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  backend-build-and-test:
+    name: Build and test .NET backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore backend/EventParking.sln
+
+      - name: Build backend
+        run: dotnet build backend/EventParking.sln --configuration Release --no-restore
+
+      - name: Run backend tests
+        run: dotnet test backend/EventParking.sln --configuration Release --no-build --verbosity normal
