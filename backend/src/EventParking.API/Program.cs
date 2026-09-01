@@ -17,6 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ASP.NET Core Identity
 builder.Services.AddApplicationIdentity();
 
+// JWT authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 // Strongly typed configuration
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -49,9 +52,8 @@ builder.Services.AddCors(options =>
 // API services
 builder.Services.AddControllers();
 
-// Swagger / OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Swagger / OpenAPI with JWT bearer support
+builder.Services.AddSwaggerWithJwtAuthentication();
 
 // Health check
 builder.Services.AddHealthChecks();
@@ -73,7 +75,8 @@ app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
 
-// Authentication middleware will be added in the JWT wiring step.
+// JWT authentication must run before authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
