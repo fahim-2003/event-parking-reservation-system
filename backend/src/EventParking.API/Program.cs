@@ -1,4 +1,4 @@
-﻿using EventParking.API.Interfaces.Services;
+using EventParking.API.Interfaces.Services;
 using EventParking.API.Services;
 using EventParking.API.Configurations;
 using EventParking.API.Data;
@@ -48,6 +48,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IVenueService, VenueService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ISeatService, SeatService>();
 
 // API services
 builder.Services.AddControllers();
@@ -84,3 +85,4 @@ app.MapControllers();
 app.MapHealthChecks("/api/health");
 
 app.Run();
+
