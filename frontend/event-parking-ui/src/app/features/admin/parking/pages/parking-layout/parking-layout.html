@@ -1,0 +1,250 @@
+<section class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-semibold text-slate-900">
+      Parking Layout
+    </h1>
+
+    <p class="mt-1 text-sm text-slate-500">
+      Create and manage event parking zones and slots.
+    </p>
+  </div>
+
+  @if (errorMessage()) {
+    <div
+      class="rounded-xl border border-red-200 bg-red-50
+             px-4 py-3 text-sm text-red-700"
+    >
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <form
+    [formGroup]="layoutForm"
+    (ngSubmit)="generateLayout()"
+    class="space-y-5 rounded-2xl border border-slate-200
+           bg-white p-6 shadow-sm"
+  >
+    <div>
+      <label class="mb-1 block text-sm font-medium text-slate-700">
+        Event
+      </label>
+
+      <select
+        formControlName="eventId"
+        (change)="eventChanged()"
+        class="w-full rounded-xl border border-slate-300
+               px-3 py-2.5 outline-none transition
+               focus:border-indigo-500 focus:ring-2
+               focus:ring-indigo-100"
+      >
+        <option [ngValue]="0">Select event</option>
+
+        @for (eventItem of events(); track eventItem.id) {
+          <option [ngValue]="eventItem.id">
+            {{ eventItem.name }}
+          </option>
+        }
+      </select>
+    </div>
+
+    @if (selectedEvent) {
+      <div
+        class="rounded-xl border border-indigo-100
+               bg-indigo-50 px-4 py-3 text-sm text-indigo-800"
+      >
+        Parking fee for this event:
+        <strong>
+          {{ selectedEvent!.parkingFee | number:'1.2-2' }}
+        </strong>
+      </div>
+    }
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Zone
+        </label>
+
+        <input
+          type="text"
+          formControlName="zone"
+          placeholder="Example: A"
+          class="w-full rounded-xl border border-slate-300
+                 px-3 py-2.5"
+        />
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">
+          Number of slots
+        </label>
+
+        <input
+          type="number"
+          min="1"
+          formControlName="numberOfSlots"
+          class="w-full rounded-xl border border-slate-300
+                 px-3 py-2.5"
+        />
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="saving()"
+      class="rounded-xl bg-indigo-600 px-5 py-2.5
+             text-sm font-semibold text-white transition
+             hover:bg-indigo-700 disabled:cursor-not-allowed
+             disabled:opacity-50"
+    >
+      {{ saving() ? 'Generating...' : 'Add Parking Zone' }}
+    </button>
+  </form>
+
+  @if (loading()) {
+    <div class="text-sm text-slate-500">
+      Loading...
+    </div>
+  }
+
+  @if (parkingSlots().length > 0) {
+    <div
+      class="rounded-2xl border border-slate-200
+             bg-white p-6 shadow-sm"
+    >
+      <div class="mb-5">
+        <h2 class="font-semibold text-slate-900">
+          Parking Slots
+        </h2>
+
+        <p class="text-sm text-slate-500">
+          {{ parkingSlots().length }} configured slots
+        </p>
+      </div>
+
+      <div class="parking-grid">
+        @for (slot of parkingSlots(); track slot.id) {
+          <div
+            class="parking-slot"
+            [class.slot-available]="slot.status === 'Available'"
+            [class.slot-held]="slot.status === 'Held'"
+            [class.slot-occupied]="slot.status === 'Occupied'"
+          >
+            <div class="font-semibold">
+              {{ slot.zone }}-{{ slot.slotNumber }}
+            </div>
+
+            <div class="mt-1 text-xs">
+              {{ slot.status }}
+            </div>
+
+            @if (slot.status === 'Available') {
+              <div class="mt-3 flex justify-center gap-2">
+                <button
+                  type="button"
+                  (click)="editSlot(slot)"
+                  class="rounded-lg border border-slate-300
+                         bg-white px-2 py-1 text-xs font-medium
+                         text-slate-700"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  (click)="deleteSlot(slot)"
+                  class="rounded-lg border border-red-300
+                         bg-white px-2 py-1 text-xs font-medium
+                         text-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (editingSlotId() !== null) {
+    <form
+      [formGroup]="editForm"
+      (ngSubmit)="saveSlot()"
+      class="space-y-4 rounded-2xl border border-slate-200
+             bg-white p-6 shadow-sm"
+    >
+      <h2 class="font-semibold text-slate-900">
+        Edit Parking Slot
+      </h2>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            Zone
+          </label>
+
+          <input
+            type="text"
+            formControlName="zone"
+            class="w-full rounded-xl border border-slate-300
+                   px-3 py-2.5"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">
+            Slot number
+          </label>
+
+          <input
+            type="number"
+            min="1"
+            formControlName="slotNumber"
+            class="w-full rounded-xl border border-slate-300
+                   px-3 py-2.5"
+          />
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="rounded-xl bg-indigo-600 px-5 py-2.5
+                 text-sm font-semibold text-white"
+        >
+          Save Slot
+        </button>
+
+        <button
+          type="button"
+          (click)="cancelEdit()"
+          class="rounded-xl border border-slate-300
+                 px-5 py-2.5 text-sm font-semibold text-slate-700"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  }
+
+  <app-confirmation-dialog
+    [open]="pendingDeleteSlot() !== null"
+    title="Delete parking slot"
+    [message]="
+      pendingDeleteSlot() === null
+        ? ''
+        : 'Delete parking slot ' +
+          pendingDeleteSlot()!.zone +
+          '-' +
+          pendingDeleteSlot()!.slotNumber +
+          '?'
+    "
+    confirmLabel="Delete"
+    cancelLabel="Cancel"
+    [danger]="true"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+</section>

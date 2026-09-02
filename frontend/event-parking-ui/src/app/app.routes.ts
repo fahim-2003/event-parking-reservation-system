@@ -28,5 +28,12 @@ export const routes: Routes = [
       import(
         './features/admin/seats/pages/seat-layout/seat-layout'
       ).then(component => component.SeatLayout)
+  },
+  {
+    path: 'admin/parking',
+    loadComponent: () =>
+      import(
+        './features/admin/parking/pages/parking-layout/parking-layout'
+      ).then(component => component.ParkingLayout)
   }
 ];
