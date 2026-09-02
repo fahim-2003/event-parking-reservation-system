@@ -1,4 +1,4 @@
-using EventParking.API.Interfaces.Services;
+﻿using EventParking.API.Interfaces.Services;
 using EventParking.API.Services;
 using EventParking.API.Configurations;
 using EventParking.API.Data;
@@ -47,6 +47,7 @@ builder.Services.AddCors(options =>
 // Application services
 builder.Services.AddScoped<IVenueService, VenueService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IEventService, EventService>();
 
 // API services
 builder.Services.AddControllers();
