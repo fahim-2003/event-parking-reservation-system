@@ -14,5 +14,12 @@ export const routes: Routes = [
       import(
         './features/admin/categories/pages/category-management/category-management'
       ).then(component => component.CategoryManagement)
+  },
+  {
+    path: 'admin/events',
+    loadComponent: () =>
+      import(
+        './features/admin/events/pages/event-management/event-management'
+      ).then(component => component.EventManagement)
   }
 ];
