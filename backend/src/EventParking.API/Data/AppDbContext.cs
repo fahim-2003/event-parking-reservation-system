@@ -1,4 +1,4 @@
-using EventParking.API.Entities;
+﻿using EventParking.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventParking.API.Data;
@@ -13,6 +13,8 @@ public class AppDbContext : DbContext
     public DbSet<Venue> Venues => Set<Venue>();
 
     public DbSet<EventCategory> EventCategories => Set<EventCategory>();
+
+    public DbSet<Event> Events => Set<Event>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
