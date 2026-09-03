@@ -1,0 +1,131 @@
+<main class="login-page">
+  <section class="login-shell">
+    <div class="brand-panel">
+      <div class="brand-mark">EP</div>
+
+      <p class="eyebrow">Event Parking</p>
+
+      <h1>
+        Your event journey starts before the gates open.
+      </h1>
+
+      <p class="brand-copy">
+        Reserve event seats and parking through one secure,
+        streamlined experience.
+      </p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-dot"></span>
+          Secure customer access
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-dot"></span>
+          Event and parking reservations
+        </div>
+
+        <div class="feature-item">
+          <span class="feature-dot"></span>
+          Real-time account experience
+        </div>
+      </div>
+    </div>
+
+    <div class="form-panel">
+      <div class="form-header">
+        <p class="eyebrow">Welcome back</p>
+        <h2>Sign in to your account</h2>
+        <p>
+          Enter your verified account credentials to continue.
+        </p>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error" role="alert">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      @if (successMessage()) {
+        <div class="alert alert-success" role="status">
+          {{ successMessage() }}
+        </div>
+      }
+
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="submit()"
+        novalidate
+      >
+        <div class="field-group">
+          <label for="email">Email address</label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+          />
+
+          @if (hasError('email', 'required')) {
+            <small>Email address is required.</small>
+          }
+
+          @if (hasError('email', 'email')) {
+            <small>Enter a valid email address.</small>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="password">Password</label>
+
+          <div class="password-field">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+            >
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+
+          @if (hasError('password', 'required')) {
+            <small>Password is required.</small>
+          }
+        </div>
+
+        <div class="form-options">
+          <span>Use your verified account email.</span>
+          <a href="/forgot-password">Forgot password?</a>
+        </div>
+
+        <button
+          class="submit-button"
+          type="submit"
+          [disabled]="isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            Signing in...
+          } @else {
+            Sign in
+          }
+        </button>
+      </form>
+
+      <p class="register-copy">
+        New to Event Parking?
+        <a href="/register">Create an account</a>
+      </p>
+    </div>
+  </section>
+</main>
