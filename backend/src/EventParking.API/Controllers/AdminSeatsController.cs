@@ -108,3 +108,4 @@ public sealed class AdminSeatsController : ControllerBase
         }
     }
 }
+
