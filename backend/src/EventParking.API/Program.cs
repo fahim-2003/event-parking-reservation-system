@@ -63,6 +63,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<IParkingService, ParkingService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 // API services
 builder.Services.AddControllers();
@@ -100,3 +101,4 @@ app.MapControllers();
 app.MapHealthChecks("/api/health");
 
 app.Run();
+
