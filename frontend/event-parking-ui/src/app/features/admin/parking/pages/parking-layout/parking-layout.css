@@ -1,0 +1,31 @@
+.parking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.85rem;
+}
+
+.parking-slot {
+  min-height: 100px;
+  border: 1px solid;
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.slot-available {
+  border-color: rgb(134 239 172);
+  background: rgb(240 253 244);
+  color: rgb(21 128 61);
+}
+
+.slot-held {
+  border-color: rgb(253 224 71);
+  background: rgb(254 252 232);
+  color: rgb(161 98 7);
+}
+
+.slot-occupied {
+  border-color: rgb(252 165 165);
+  background: rgb(254 242 242);
+  color: rgb(185 28 28);
+}

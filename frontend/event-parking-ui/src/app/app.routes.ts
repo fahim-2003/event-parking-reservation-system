@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
@@ -21,5 +21,19 @@ export const routes: Routes = [
       import(
         './features/admin/events/pages/event-management/event-management'
       ).then(component => component.EventManagement)
+  },
+  {
+    path: 'admin/seats',
+    loadComponent: () =>
+      import(
+        './features/admin/seats/pages/seat-layout/seat-layout'
+      ).then(component => component.SeatLayout)
+  },
+  {
+    path: 'admin/parking',
+    loadComponent: () =>
+      import(
+        './features/admin/parking/pages/parking-layout/parking-layout'
+      ).then(component => component.ParkingLayout)
   }
 ];

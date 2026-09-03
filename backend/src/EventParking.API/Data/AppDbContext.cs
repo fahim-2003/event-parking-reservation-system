@@ -1,4 +1,4 @@
-﻿using EventParking.API.Entities;
+using EventParking.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventParking.API.Data;
@@ -16,6 +16,10 @@ public class AppDbContext : DbContext
 
     public DbSet<Event> Events => Set<Event>();
 
+    public DbSet<Seat> Seats => Set<Seat>();
+
+    public DbSet<ParkingSlot> ParkingSlots => Set<ParkingSlot>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -23,3 +27,4 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }
+
