@@ -2,6 +2,7 @@ using EventParking.API.Interfaces.Services;
 using EventParking.API.Services;
 using EventParking.API.Configurations;
 using EventParking.API.Data;
+using EventParking.API.Extensions;
 using EventParking.API.Middleware;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// ASP.NET Core Identity
+builder.Services.AddApplicationIdentity();
+
+// JWT authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// Application services
+builder.Services.AddApplicationServices();
+
 // Strongly typed configuration
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection(JwtOptions.SectionName));
@@ -24,6 +34,9 @@ builder.Services.Configure<BookingSettings>(
 
 builder.Services.Configure<FrontendOptions>(
     builder.Configuration.GetSection(FrontendOptions.SectionName));
+
+builder.Services.Configure<AdminSeedOptions>(
+    builder.Configuration.GetSection(AdminSeedOptions.SectionName));
 
 // Standard API error responses
 builder.Services.AddProblemDetails();
@@ -54,35 +67,36 @@ builder.Services.AddScoped<IParkingService, ParkingService>();
 // API services
 builder.Services.AddControllers();
 
-// Swagger / OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Swagger / OpenAPI with JWT bearer support
+builder.Services.AddSwaggerWithJwtAuthentication();
 
 // Health check
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+// Seed Customer / Administrator roles
+// and initial Administrator account
+await IdentitySeed.SeedAsync(app.Services);
+
 // Global exception handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Swagger only in Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Allow configured Angular frontend
 app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// API health endpoint
 app.MapHealthChecks("/api/health");
 
 app.Run();

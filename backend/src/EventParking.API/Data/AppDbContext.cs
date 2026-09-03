@@ -1,11 +1,15 @@
+using EventParking.API.Configurations;
 using EventParking.API.Entities;
+using EventParking.API.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventParking.API.Data;
 
-public class AppDbContext : DbContext
+public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
+    public AppDbContext(
+        DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }
@@ -20,11 +24,14 @@ public class AppDbContext : DbContext
 
     public DbSet<ParkingSlot> ParkingSlots => Set<ParkingSlot>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        builder.ApplyConfiguration(
+            new ApplicationUserConfiguration());
+
+        builder.ApplyConfigurationsFromAssembly(
+            typeof(AppDbContext).Assembly);
     }
 }
-
