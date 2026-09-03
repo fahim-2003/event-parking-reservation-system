@@ -227,6 +227,42 @@ export class SeatLayout {
       });
   }
 
+
+  deleteSeat(seat: Seat): void {
+    if (seat.status !== 'Available') {
+      return;
+    }
+
+    const eventItem = this.selectedEvent;
+
+    if (!eventItem) {
+      return;
+    }
+
+    this.saving.set(true);
+    this.errorMessage.set('');
+
+    this.seatApi.delete(
+      eventItem.id,
+      seat.id,
+      seat.rowVersion
+    )
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: () => {
+          this.seats.update(seats =>
+            seats.filter(item => item.id !== seat.id)
+          );
+        },
+        error: error => {
+          const detail =
+            error?.error?.detail ??
+            'Unable to delete seat. Refresh and try again.';
+
+          this.errorMessage.set(detail);
+        }
+      });
+  }
   cancelEdit(): void {
     this.editingSeatId.set(null);
 

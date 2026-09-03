@@ -12,6 +12,7 @@ import {
   providedIn: 'root'
 })
 export class SeatApiService {
+
   private readonly http = inject(HttpClient);
 
   getByEvent(eventId: number): Observable<Seat[]> {
@@ -38,6 +39,21 @@ export class SeatApiService {
     return this.http.put<Seat>(
       `${environment.apiBaseUrl}/admin/events/${eventId}/seats/${seatId}`,
       request
+    );
+  }
+
+  delete(
+    eventId: number,
+    seatId: number,
+    rowVersion: string
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${environment.apiBaseUrl}/admin/events/${eventId}/seats/${seatId}`,
+      {
+        params: {
+          rowVersion
+        }
+      }
     );
   }
 }
