@@ -122,8 +122,12 @@ public sealed class AuthService : IAuthService
 
         if (!passwordValid)
         {
+            await _userManager.AccessFailedAsync(user);
+
             return InvalidCredentials();
         }
+
+        await _userManager.ResetAccessFailedCountAsync(user);
 
         // Do not expose account deactivation through login responses.
         if (user.AccountStatus != AccountStatus.Active)
@@ -382,3 +386,4 @@ public sealed class AuthService : IAuthService
         return "identity";
     }
 }
+

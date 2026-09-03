@@ -495,6 +495,119 @@ public sealed class AuthServiceTests
             result.ErrorCode);
     }
 
+
+    [Fact]
+    public async Task LoginAsync_CallsAccessFailed_WhenPasswordInvalid()
+    {
+        var user = CreateUser(
+            emailConfirmed: true,
+            accountStatus: AccountStatus.Active);
+
+        var userManager = CreateUserManagerMock();
+
+        userManager
+            .Setup(manager =>
+                manager.FindByEmailAsync(user.Email!))
+            .ReturnsAsync(user);
+
+        userManager
+            .Setup(manager =>
+                manager.CheckPasswordAsync(
+                    user,
+                    "WrongPassword9!"))
+            .ReturnsAsync(false);
+
+        userManager
+            .Setup(manager =>
+                manager.AccessFailedAsync(user))
+            .ReturnsAsync(IdentityResult.Success);
+
+        var service = CreateService(userManager);
+
+        var result =
+            await service.LoginAsync(
+                new LoginRequest
+                {
+                    Email = user.Email!,
+                    Password = "WrongPassword9!"
+                });
+
+        Assert.False(result.Succeeded);
+
+        userManager.Verify(
+            manager =>
+                manager.AccessFailedAsync(user),
+            Times.Once);
+    }
+
+
+    [Fact]
+    public async Task LoginAsync_CallsResetAccessFailedCount_WhenPasswordValid()
+    {
+        var user = CreateUser(
+            emailConfirmed: true,
+            accountStatus: AccountStatus.Active);
+
+        var userManager = CreateUserManagerMock();
+
+        userManager
+            .Setup(manager =>
+                manager.FindByEmailAsync(user.Email!))
+            .ReturnsAsync(user);
+
+        userManager
+            .Setup(manager =>
+                manager.CheckPasswordAsync(
+                    user,
+                    "Customer9!"))
+            .ReturnsAsync(true);
+
+        userManager
+            .Setup(manager =>
+                manager.ResetAccessFailedCountAsync(user))
+            .ReturnsAsync(IdentityResult.Success);
+
+        userManager
+            .Setup(manager =>
+                manager.GetRolesAsync(user))
+            .ReturnsAsync(
+                new List<string>
+                {
+                    AppRoles.Customer
+                });
+
+        var tokenService = new Mock<ITokenService>();
+
+        tokenService
+            .Setup(service =>
+                service.CreateAccessTokenAsync(user))
+            .ReturnsAsync(
+                new AccessTokenResult
+                {
+                    Token = "test-token",
+                    ExpiresAtUtc = DateTime.UtcNow.AddHours(1)
+                });
+
+        var service = new AuthService(
+            userManager.Object,
+            tokenService.Object,
+            new Mock<IEmailSender>().Object);
+
+        var result =
+            await service.LoginAsync(
+                new LoginRequest
+                {
+                    Email = user.Email!,
+                    Password = "Customer9!"
+                });
+
+        Assert.True(result.Succeeded);
+
+        userManager.Verify(
+            manager =>
+                manager.ResetAccessFailedCountAsync(user),
+            Times.Once);
+    }
     private static ApplicationUser CreateUser(
         bool emailConfirmed,
         AccountStatus accountStatus)
@@ -542,3 +655,5 @@ public sealed class AuthServiceTests
             null!);
     }
 }
+
+
