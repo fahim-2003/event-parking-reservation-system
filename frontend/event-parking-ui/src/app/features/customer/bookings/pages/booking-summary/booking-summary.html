@@ -1,0 +1,52 @@
+<div class="booking-summary">
+
+  <h2>Booking Summary</h2>
+
+  <div class="summary-card">
+    <p>
+      <strong>Event ID:</strong>
+      {{ selectedBooking.eventId }}
+    </p>
+
+    <p>
+      <strong>Seat ID:</strong>
+      {{ selectedBooking.seatId ?? 'Not selected' }}
+    </p>
+
+    <p>
+      <strong>Parking Slot ID:</strong>
+      {{ selectedBooking.parkingSlotId ?? 'Not selected' }}
+    </p>
+
+    <button
+      type="button"
+      (click)="createBooking()">
+      Confirm Booking
+    </button>
+  </div>
+
+
+  @if (bookingResult) {
+    <div class="success">
+      <h3>Booking Created</h3>
+
+      <p>
+        Booking ID:
+        {{ bookingResult.id }}
+      </p>
+
+      <p>
+        Status:
+        {{ bookingResult.status }}
+      </p>
+    </div>
+  }
+
+
+  @if (errorMessage) {
+    <div class="error">
+      {{ errorMessage }}
+    </div>
+  }
+
+</div>

@@ -89,6 +89,16 @@ export const routes: Routes = [
         .then(component => component.ParkingLayout)
   },
   {
+    path: 'customer/bookings/summary',
+    canActivate: [authGuard],
+    data: {
+      roles: ['Customer']
+    },
+    loadComponent: () =>
+      import('./features/customer/bookings/pages/booking-summary/booking-summary')
+        .then(module => module.BookingSummary)
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'
@@ -98,3 +108,4 @@ export const routes: Routes = [
     redirectTo: 'login'
   }
 ];
+
