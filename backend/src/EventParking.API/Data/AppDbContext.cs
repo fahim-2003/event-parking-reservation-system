@@ -24,6 +24,8 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<ParkingSlot> ParkingSlots => Set<ParkingSlot>();
 
+    public DbSet<Booking> Bookings => Set<Booking>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
