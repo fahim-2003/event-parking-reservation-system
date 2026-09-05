@@ -26,6 +26,8 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Booking> Bookings => Set<Booking>();
 
+    public DbSet<Payment> Payments => Set<Payment>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -37,3 +39,4 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
             typeof(AppDbContext).Assembly);
     }
 }
+
