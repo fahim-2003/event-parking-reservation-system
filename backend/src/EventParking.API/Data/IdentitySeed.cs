@@ -35,31 +35,9 @@ public static class IdentitySeed
 
             if (!roleResult.Succeeded)
             {
-                var errors = string.Join(
-                    "; ",
-                    roleResult.Errors.Select(error => error.Description));
-
                 throw new InvalidOperationException(
-                    $"Unable to seed role '{roleName}': {errors}");
+                    $"Unable to seed role '{roleName}'.");
             }
-        }
-
-        if (string.IsNullOrWhiteSpace(adminOptions.Email))
-        {
-            throw new InvalidOperationException(
-                "AdminSeed:Email is not configured.");
-        }
-
-        if (string.IsNullOrWhiteSpace(adminOptions.Password))
-        {
-            throw new InvalidOperationException(
-                "AdminSeed:Password is not configured.");
-        }
-
-        if (string.IsNullOrWhiteSpace(adminOptions.FullName))
-        {
-            throw new InvalidOperationException(
-                "AdminSeed:FullName is not configured.");
         }
 
         var adminEmail = adminOptions.Email.Trim();
@@ -69,8 +47,6 @@ public static class IdentitySeed
 
         if (administrator is null)
         {
-            var now = DateTime.UtcNow;
-
             administrator = new ApplicationUser
             {
                 UserName = adminEmail,
@@ -78,24 +54,19 @@ public static class IdentitySeed
                 EmailConfirmed = true,
                 FullName = adminOptions.FullName.Trim(),
                 AccountStatus = AccountStatus.Active,
-                CreatedAtUtc = now,
-                UpdatedAtUtc = now
+                CreatedAtUtc = DateTime.UtcNow,
+                UpdatedAtUtc = DateTime.UtcNow
             };
 
-            var createResult =
+            var result =
                 await userManager.CreateAsync(
                     administrator,
                     adminOptions.Password);
 
-            if (!createResult.Succeeded)
+            if (!result.Succeeded)
             {
-                var errors = string.Join(
-                    "; ",
-                    createResult.Errors.Select(
-                        error => error.Description));
-
                 throw new InvalidOperationException(
-                    $"Unable to seed Administrator account: {errors}");
+                    "Unable to create administrator.");
             }
         }
 
@@ -103,21 +74,49 @@ public static class IdentitySeed
                 administrator,
                 AppRoles.Administrator))
         {
-            var roleResult =
-                await userManager.AddToRoleAsync(
-                    administrator,
-                    AppRoles.Administrator);
+            await userManager.AddToRoleAsync(
+                administrator,
+                AppRoles.Administrator);
+        }
 
-            if (!roleResult.Succeeded)
+
+        var customerEmail = "customer@gmail.com";
+
+        var customer =
+            await userManager.FindByEmailAsync(customerEmail);
+
+        if (customer is null)
+        {
+            customer = new ApplicationUser
             {
-                var errors = string.Join(
-                    "; ",
-                    roleResult.Errors.Select(
-                        error => error.Description));
+                UserName = customerEmail,
+                Email = customerEmail,
+                EmailConfirmed = true,
+                FullName = "Demo Customer",
+                AccountStatus = AccountStatus.Active,
+                CreatedAtUtc = DateTime.UtcNow,
+                UpdatedAtUtc = DateTime.UtcNow
+            };
 
+            var customerResult =
+                await userManager.CreateAsync(
+                    customer,
+                    "Customer@123");
+
+            if (!customerResult.Succeeded)
+            {
                 throw new InvalidOperationException(
-                    $"Unable to assign Administrator role: {errors}");
+                    "Unable to create customer.");
             }
+        }
+
+        if (!await userManager.IsInRoleAsync(
+                customer,
+                AppRoles.Customer))
+        {
+            await userManager.AddToRoleAsync(
+                customer,
+                AppRoles.Customer);
         }
     }
 }
