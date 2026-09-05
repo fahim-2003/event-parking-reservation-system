@@ -1,5 +1,7 @@
 using EventParking.API.Interfaces.Services;
+using EventParking.API.Interfaces.Services.Dashboard;
 using EventParking.API.Services;
+using EventParking.API.Services.Dashboard;
 using EventParking.API.Configurations;
 using EventParking.API.Data;
 using EventParking.API.Extensions;
@@ -66,6 +68,7 @@ builder.Services.AddScoped<IParkingService, ParkingService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // API services
 builder.Services.AddControllers();
@@ -103,6 +106,8 @@ app.MapControllers();
 app.MapHealthChecks("/api/health");
 
 app.Run();
+
+
 
 
 

@@ -1,0 +1,81 @@
+<div class="dashboard-page">
+
+  <div class="dashboard-header">
+
+    <h1>
+      Admin Dashboard
+    </h1>
+
+    <p>
+      Monitor events, bookings and parking activity
+    </p>
+
+  </div>
+
+
+  @if (dashboard) {
+
+  <div class="stats-grid">
+
+
+    <div class="glass-card">
+      <h3>Total Events</h3>
+      <strong>
+        {{ dashboard.totalEvents }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Total Bookings</h3>
+      <strong>
+        {{ dashboard.totalBookings }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Available Seats</h3>
+      <strong>
+        {{ dashboard.availableSeats }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Occupied Parking</h3>
+      <strong>
+        {{ dashboard.occupiedParkingSlots }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Total Revenue</h3>
+      <strong>
+        Rs. {{ dashboard.totalRevenue }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Total Customers</h3>
+      <strong>
+        {{ dashboard.totalCustomers }}
+      </strong>
+    </div>
+
+
+  </div>
+
+  }
+  @else {
+
+  <div class="loading-card">
+    Loading dashboard...
+  </div>
+
+  }
+
+
+</div>

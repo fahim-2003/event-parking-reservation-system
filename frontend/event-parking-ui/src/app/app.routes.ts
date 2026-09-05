@@ -2,6 +2,29 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
+
+  {
+    path: 'customer/dashboard',
+    canActivate: [authGuard],
+    data: {
+      roles: ['Customer']
+    },
+    loadComponent: () =>
+      import('./features/customer/dashboard/customer-dashboard')
+        .then(module => module.CustomerDashboardComponent)
+  },
+
+  {
+    path: 'admin/dashboard',
+    canActivate: [authGuard],
+    data: {
+      roles: ['Administrator']
+    },
+    loadComponent: () =>
+      import('./features/admin/dashboard/admin-dashboard')
+        .then(module => module.AdminDashboardComponent)
+  },
+
   {
     path: 'login',
     loadComponent: () =>
@@ -108,4 +131,7 @@ export const routes: Routes = [
     redirectTo: 'login'
   }
 ];
+
+
+
 

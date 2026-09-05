@@ -1,0 +1,71 @@
+<div class="dashboard-page">
+
+  <div class="dashboard-header">
+
+    <h1>
+      Welcome back, Customer
+    </h1>
+
+    <p>
+      Manage your bookings, parking reservations and payments.
+    </p>
+
+    <span class="status">
+      Account Active
+    </span>
+
+  </div>
+
+
+  @if (dashboard) {
+
+  <div class="stats-grid">
+
+
+    <div class="glass-card">
+      <h3>Upcoming Bookings</h3>
+      <strong>
+        {{ dashboard.upcomingBookings }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Reserved Parking</h3>
+      <strong>
+        {{ dashboard.reservedParking }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Recent Payments</h3>
+      <strong>
+        {{ dashboard.recentPayments }}
+      </strong>
+    </div>
+
+
+    <div class="glass-card">
+      <h3>Unread Notifications</h3>
+      <strong>
+        {{ dashboard.unreadNotifications }}
+      </strong>
+    </div>
+
+
+  </div>
+
+
+  }
+
+  @else {
+
+    <div class="loading-card">
+      Loading dashboard...
+    </div>
+
+  }
+
+
+</div>
