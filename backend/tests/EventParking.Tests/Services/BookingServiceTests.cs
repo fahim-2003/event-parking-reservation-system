@@ -43,7 +43,14 @@ public sealed class BookingServiceTests
             },
             "customer-1");
 
-        Assert.Equal("Confirmed", result.Status);
+        Assert.Equal("Held", result.Status);
+
+        Assert.Equal(
+            "Pending",
+            result.PaymentStatus);
+
+        Assert.NotEmpty(
+            result.BookingNumber);
 
         var savedSeat = await dbContext.Seats
             .FirstAsync();
@@ -94,6 +101,32 @@ public sealed class BookingServiceTests
                 "customer-1"));
     }
 
+
+    [Fact]
+    public async Task CreateAsync_WithoutSeat_ThrowsValidationError()
+    {
+        await using var dbContext = CreateDbContext();
+
+        var eventEntity = new Event
+        {
+            Name = "Test Event",
+            Capacity = 1
+        };
+
+        dbContext.Events.Add(eventEntity);
+
+        await dbContext.SaveChangesAsync();
+
+        var service = new BookingService(dbContext);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.CreateAsync(
+                new CreateBookingRequest
+                {
+                    EventId = eventEntity.Id
+                },
+                "customer-1"));
+    }
     private static AppDbContext CreateDbContext()
     {
         var options =
@@ -105,3 +138,6 @@ public sealed class BookingServiceTests
         return new AppDbContext(options);
     }
 }
+
+
+

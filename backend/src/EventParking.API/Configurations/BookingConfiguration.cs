@@ -25,6 +25,15 @@ public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .HasMaxLength(20)
             .IsRequired();
 
+
+        builder.Property(booking => booking.BookingNumber)
+            .HasMaxLength(30)
+            .IsRequired();
+
+        builder.Property(booking => booking.PaymentStatus)
+            .HasMaxLength(20)
+            .IsRequired();
+
         builder.Property(booking => booking.CreatedAt)
             .IsRequired();
 
@@ -59,3 +68,5 @@ public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .IsUnique();
     }
 }
+
+

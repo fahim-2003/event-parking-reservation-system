@@ -10,6 +10,8 @@ public sealed class BookingService : IBookingService
 {
     private const string AvailableStatus = "Available";
     private const string BookedStatus = "Booked";
+    private const string HeldStatus = "Held";
+    private const string PendingPaymentStatus = "Pending";
 
     private readonly AppDbContext _dbContext;
 
@@ -46,6 +48,12 @@ public sealed class BookingService : IBookingService
         {
             throw new InvalidOperationException(
                 "Customer already has a booking for this event.");
+        }
+
+        if (!request.SeatId.HasValue)
+        {
+            throw new InvalidOperationException(
+                "At least one seat is required.");
         }
 
         if (request.SeatId.HasValue)
@@ -96,11 +104,13 @@ public sealed class BookingService : IBookingService
 
         var booking = new Booking
         {
+            BookingNumber = $"BK-{DateTime.UtcNow:yyyyMMddHHmmss}",
             EventId = request.EventId,
             SeatId = request.SeatId,
             ParkingSlotId = request.ParkingSlotId,
             CustomerId = customerId,
-            Status = "Confirmed"
+            Status = HeldStatus,
+            PaymentStatus = PendingPaymentStatus
         };
 
         _dbContext.Bookings.Add(booking);
@@ -110,10 +120,22 @@ public sealed class BookingService : IBookingService
         return new BookingResponse
         {
             Id = booking.Id,
+            BookingNumber = booking.BookingNumber,
             EventId = booking.EventId,
             SeatId = booking.SeatId,
             ParkingSlotId = booking.ParkingSlotId,
-            Status = booking.Status
+            Status = booking.Status,
+            PaymentStatus = booking.PaymentStatus
         };
     }
 }
+
+
+
+
+
+
+
+
+
+
