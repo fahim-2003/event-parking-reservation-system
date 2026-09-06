@@ -18,6 +18,22 @@ export const routes: Routes = [
   },
 
 {
+ path: 'payments',
+ loadComponent: () =>
+ import('./features/customer/payments/pages/payment-history/payment-history')
+ .then(m => m.PaymentHistory)
+},
+
+
+{
+ path: 'notifications',
+ loadComponent: () =>
+ import('./features/customer/notifications/pages/notification-list/notification-list')
+ .then(m => m.NotificationList)
+},
+
+
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: {
@@ -135,23 +151,6 @@ export const routes: Routes = [
 
 
       {
-        path: 'payments',
-        loadComponent: () =>
-          import('./features/customer/payments/pages/payment-history/payment-history')
-            .then(m => m.PaymentHistory)
-      },
-
-
-      {
-        path: 'notifications',
-        loadComponent: () =>
-          import('./features/customer/notifications/pages/notification-list/notification-list')
-            .then(m => m.NotificationList)
-      },
-
-
-
-      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
@@ -174,5 +173,3 @@ export const routes: Routes = [
   }
 
 ];
-
-

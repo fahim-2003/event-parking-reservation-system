@@ -1,0 +1,110 @@
+<section class="events-page">
+
+  <div class="hero">
+
+    <p class="tag">
+      CUSTOMER EVENTS
+    </p>
+
+    <h1>
+      Discover Upcoming Events
+    </h1>
+
+    <p class="subtitle">
+      Select your favourite event and reserve your seat with parking.
+    </p>
+
+  </div>
+
+
+  <div class="search-card">
+
+    <input 
+      type="text"
+      placeholder="Search events, venues..."
+    >
+
+    <button>
+      Search
+    </button>
+
+  </div>
+
+
+
+  <div class="event-grid">
+
+
+    <div
+      class="event-card"
+      *ngFor="let event of events"
+    >
+
+
+      <div class="event-image">
+
+        <div class="date-box">
+          {{event.date}}
+        </div>
+
+      </div>
+
+
+
+      <div class="event-content">
+
+
+        <h2>
+          {{event.name}}
+        </h2>
+
+
+
+        <p>
+          Venue ID:
+          {{event.venueId}}
+        </p>
+
+
+
+        <p>
+          Category ID:
+          {{event.categoryId}}
+        </p>
+
+
+
+        <p>
+          Capacity:
+          {{event.capacity}}
+        </p>
+
+
+
+        <div class="event-footer">
+
+
+          <span>
+            Available Seats
+          </span>
+
+
+
+          <button>
+            Book Now
+          </button>
+
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+</section>

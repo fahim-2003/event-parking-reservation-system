@@ -1,0 +1,58 @@
+.admin-shell {
+
+  display:flex;
+  min-height:100vh;
+  background:#f5f7fb;
+
+}
+
+
+.sidebar {
+
+  width:260px;
+  padding:30px;
+  background:#111827;
+  color:white;
+
+}
+
+
+.sidebar h2 {
+
+  margin-bottom:30px;
+
+}
+
+
+.sidebar nav {
+
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+
+}
+
+
+.sidebar a {
+
+  color:white;
+  text-decoration:none;
+  padding:12px;
+  border-radius:8px;
+
+}
+
+
+.sidebar a:hover {
+
+  background:#374151;
+
+}
+
+
+.content {
+
+  flex:1;
+  padding:30px;
+
+}

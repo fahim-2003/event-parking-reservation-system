@@ -17,13 +17,13 @@ export const routes: Routes = [
         .then(m => m.Register)
   },
 
-{
+
+  {
     path: 'admin',
     canActivate: [authGuard],
     data: {
       roles: ['Administrator']
     },
-
     loadComponent: () =>
       import('./features/admin/layout/admin-layout/admin-layout')
         .then(m => m.AdminLayoutComponent),
@@ -111,14 +111,6 @@ export const routes: Routes = [
 
 
       {
-        path: 'events',
-        loadComponent: () =>
-          import('./features/customer/events/customer-events/customer-events')
-            .then(m => m.CustomerEventsComponent)
-      },
-
-
-      {
         path: 'profile',
         loadComponent: () =>
           import('./features/customer/profile/customer-profile')
@@ -132,23 +124,6 @@ export const routes: Routes = [
           import('./features/customer/bookings/pages/booking-summary/booking-summary')
             .then(m => m.BookingSummary)
       },
-
-
-      {
-        path: 'payments',
-        loadComponent: () =>
-          import('./features/customer/payments/pages/payment-history/payment-history')
-            .then(m => m.PaymentHistory)
-      },
-
-
-      {
-        path: 'notifications',
-        loadComponent: () =>
-          import('./features/customer/notifications/pages/notification-list/notification-list')
-            .then(m => m.NotificationList)
-      },
-
 
 
       {
@@ -174,5 +149,3 @@ export const routes: Routes = [
   }
 
 ];
-
-
