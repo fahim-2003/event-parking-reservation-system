@@ -1,0 +1,227 @@
+<section class="events-page">
+
+  <div class="hero">
+    <p class="tag">
+      CUSTOMER EVENTS
+    </p>
+
+    <h1>
+      Discover Upcoming Events
+    </h1>
+
+    <p class="subtitle">
+      Search events and reserve one or more seats with optional parking.
+    </p>
+  </div>
+
+  <form
+    class="search-card"
+    (ngSubmit)="applyFilters()">
+
+    <div class="filter-field search-field">
+      <label for="event-search">
+        Search
+      </label>
+
+      <input
+        id="event-search"
+        type="search"
+        name="search"
+        [(ngModel)]="search"
+        placeholder="Event name, venue or category">
+    </div>
+
+    <div class="filter-field">
+      <label for="date-from">
+        From
+      </label>
+
+      <input
+        id="date-from"
+        type="date"
+        name="dateFrom"
+        [(ngModel)]="dateFrom">
+    </div>
+
+    <div class="filter-field">
+      <label for="date-to">
+        To
+      </label>
+
+      <input
+        id="date-to"
+        type="date"
+        name="dateTo"
+        [(ngModel)]="dateTo">
+    </div>
+
+    <div class="filter-field">
+      <label for="venue-filter">
+        Venue
+      </label>
+
+      <select
+        id="venue-filter"
+        name="venueId"
+        [(ngModel)]="venueId">
+
+        <option [ngValue]="null">
+          All venues
+        </option>
+
+        <option
+          *ngFor="let venue of venues"
+          [ngValue]="venue.id">
+          {{ venue.name }}
+        </option>
+
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <label for="category-filter">
+        Category
+      </label>
+
+      <select
+        id="category-filter"
+        name="categoryId"
+        [(ngModel)]="categoryId">
+
+        <option [ngValue]="null">
+          All categories
+        </option>
+
+        <option
+          *ngFor="let category of categories"
+          [ngValue]="category.id">
+          {{ category.name }}
+        </option>
+
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button
+        type="submit"
+        class="primary-button"
+        [disabled]="loading">
+        Apply Filters
+      </button>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="clearFilters()"
+        [disabled]="loading">
+        Clear
+      </button>
+    </div>
+
+  </form>
+
+  <div
+    *ngIf="loading"
+    class="state-card">
+    Loading events...
+  </div>
+
+  <div
+    *ngIf="!loading && errorMessage"
+    class="state-card error">
+    {{ errorMessage }}
+  </div>
+
+  <div
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      events.length === 0
+    "
+    class="state-card">
+    No events match the selected filters.
+  </div>
+
+  <div
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      events.length > 0
+    "
+    class="results-meta">
+    {{ events.length }}
+    event{{ events.length === 1 ? '' : 's' }}
+    found
+  </div>
+
+  <div
+    *ngIf="
+      !loading &&
+      !errorMessage
+    "
+    class="event-grid">
+
+    <article
+      appHighlight
+      class="event-card"
+      *ngFor="let event of events">
+
+      <div class="event-image">
+        <div class="date-box">
+          {{
+            event.startDateTimeUtc
+              | date:'medium'
+          }}
+        </div>
+      </div>
+
+      <div class="event-content">
+
+        <h2>
+          {{ event.name }}
+        </h2>
+
+        <p>
+          <strong>Venue:</strong>
+          {{ event.venueName }}
+        </p>
+
+        <p>
+          <strong>Category:</strong>
+          {{ event.categoryName }}
+        </p>
+
+        <p>
+          <strong>Capacity:</strong>
+          {{ event.capacity }}
+        </p>
+
+        <p>
+          <strong>Ticket:</strong>
+          LKR
+          {{ event.ticketPrice | number:'1.2-2' }}
+        </p>
+
+        <div class="event-footer">
+
+          <span>
+            Parking:
+            LKR
+            {{ event.parkingFee | number:'1.2-2' }}
+          </span>
+
+          <button
+            type="button"
+            (click)="bookEvent(event.id)">
+            Book Now
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</section>

@@ -1,0 +1,47 @@
+<main class="verification-page">
+  <section class="verification-card">
+    <div
+      class="status-icon"
+      [class.success]="isVerified()"
+      [class.failure]="!isVerified() && !isVerifying()"
+    >
+      @if (isVerifying()) {
+        ...
+      } @else if (isVerified()) {
+        ?
+      } @else {
+        !
+      }
+    </div>
+
+    <p class="eyebrow">Event Parking</p>
+
+    @if (isVerifying()) {
+      <h1>Verifying your email</h1>
+    } @else if (isVerified()) {
+      <h1>Email verified</h1>
+    } @else {
+      <h1>Verification failed</h1>
+    }
+
+    <p class="message">
+      {{ message() }}
+    </p>
+
+    @if (isVerified()) {
+      <a
+        class="primary-link"
+        href="/login"
+      >
+        Continue to sign in
+      </a>
+    } @else if (!isVerifying()) {
+      <a
+        class="secondary-link"
+        href="/login"
+      >
+        Return to sign in
+      </a>
+    }
+  </section>
+</main>

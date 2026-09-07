@@ -1,0 +1,40 @@
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 0.75rem;
+}
+
+.seat {
+  min-height: 48px;
+  border-radius: 0.75rem;
+  border: 1px solid;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.seat-available {
+  border-color: rgb(134 239 172);
+  background: rgb(240 253 244);
+  color: rgb(21 128 61);
+  cursor: pointer;
+}
+
+.seat-available:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);
+}
+
+.seat-held {
+  border-color: rgb(253 224 71);
+  background: rgb(254 252 232);
+  color: rgb(161 98 7);
+}
+
+.seat-booked {
+  border-color: rgb(252 165 165);
+  background: rgb(254 242 242);
+  color: rgb(185 28 28);
+}

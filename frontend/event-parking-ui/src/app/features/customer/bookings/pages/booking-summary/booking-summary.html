@@ -1,0 +1,153 @@
+<section class="booking-summary">
+
+  <div *ngIf="booking" class="card">
+
+    <h1>Booking Details</h1>
+
+    <p>
+      <strong>Booking:</strong>
+      {{ booking.bookingNumber }}
+    </p>
+
+    <p>
+      <strong>Event ID:</strong>
+      {{ booking.eventId }}
+    </p>
+
+    <p>
+      <strong>Seats:</strong>
+      {{ booking.seatIds.join(', ') }}
+    </p>
+
+    <p>
+      <strong>Parking Slot:</strong>
+      {{ booking.parkingSlotId ?? 'Not selected' }}
+    </p>
+
+    <p>
+      <strong>Status:</strong>
+      {{ booking.status | bookingStatus }}
+    </p>
+
+    <p>
+      <strong>Payment:</strong>
+      {{ booking.paymentStatus }}
+    </p>
+
+    <p *ngIf="booking.status === 'Held'">
+      <strong>Hold expires:</strong>
+      {{ booking.holdExpiresAt | date:'medium' }}
+    </p>
+
+    <a
+      *ngIf="
+        booking.status === 'Held' &&
+        booking.paymentStatus !== 'Completed'
+      "
+      [routerLink]="['/customer/payments']"
+      [queryParams]="{ bookingId: booking.id }">
+      Continue to Payment
+    </a>
+
+    <button
+      *ngIf="canCancel(booking)"
+      type="button"
+      (click)="cancelBooking(booking)"
+      [disabled]="cancellingBookingId === booking.id">
+
+      {{
+        cancellingBookingId === booking.id
+          ? 'Cancelling...'
+          : 'Cancel Booking'
+      }}
+
+    </button>
+
+  </div>
+
+
+  <p *ngIf="actionMessage">
+    {{ actionMessage }}
+  </p>
+
+  <p *ngIf="errorMessage">
+    {{ errorMessage }}
+  </p>
+
+
+  <h1>My Bookings</h1>
+
+  <p *ngIf="loading">
+    Loading bookings...
+  </p>
+
+  <p *ngIf="!loading && bookings.length === 0">
+    No bookings yet.
+  </p>
+
+
+  <div
+    class="card"
+    *ngFor="let item of bookings">
+
+    <h3>
+      {{ item.bookingNumber }}
+    </h3>
+
+    <p>
+      <strong>Event:</strong>
+      {{ item.eventId }}
+    </p>
+
+    <p>
+      <strong>Seats:</strong>
+      {{ item.seatIds.join(', ') }}
+    </p>
+
+    <p>
+      <strong>Parking:</strong>
+      {{ item.parkingSlotId ?? 'Not selected' }}
+    </p>
+
+    <p>
+      <strong>Status:</strong>
+      {{ item.status | bookingStatus }}
+    </p>
+
+    <p>
+      <strong>Payment:</strong>
+      {{ item.paymentStatus }}
+    </p>
+
+    <p *ngIf="item.status === 'Held'">
+      <strong>Hold expires:</strong>
+      {{ item.holdExpiresAt | date:'medium' }}
+    </p>
+
+    <a
+      *ngIf="
+        item.status === 'Held' &&
+        item.paymentStatus !== 'Completed'
+      "
+      [routerLink]="['/customer/payments']"
+      [queryParams]="{ bookingId: item.id }">
+      Pay Now
+    </a>
+
+    <button
+      *ngIf="canCancel(item)"
+      type="button"
+      (click)="cancelBooking(item)"
+      [disabled]="cancellingBookingId === item.id">
+
+      {{
+        cancellingBookingId === item.id
+          ? 'Cancelling...'
+          : 'Cancel Booking'
+      }}
+
+    </button>
+
+  </div>
+
+</section>

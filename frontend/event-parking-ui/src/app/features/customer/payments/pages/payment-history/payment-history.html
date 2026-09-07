@@ -1,0 +1,78 @@
+<section>
+
+  <h1>Payments</h1>
+
+  <div *ngIf="bookingId > 0" class="card">
+
+    <h2>Complete Payment</h2>
+
+    <p>
+      Booking ID: {{ bookingId }}
+    </p>
+
+    <label>
+      Payment Method
+    </label>
+
+    <select [(ngModel)]="paymentMethod">
+      <option value="Card">Card</option>
+      <option value="Cash">Cash</option>
+      <option value="Mobile">Mobile</option>
+    </select>
+
+    <button
+      type="button"
+      (click)="pay()"
+      [disabled]="loading">
+      {{ loading ? 'Processing...' : 'Pay Now' }}
+    </button>
+
+  </div>
+
+  <p *ngIf="successMessage">
+    {{ successMessage }}
+  </p>
+
+  <p *ngIf="errorMessage">
+    {{ errorMessage }}
+  </p>
+
+
+  <h2>Payment History</h2>
+
+  <p *ngIf="payments.length === 0">
+    No payments yet.
+  </p>
+
+  <div
+    class="card"
+    *ngFor="let payment of payments">
+
+    <p>
+      <strong>Payment ID:</strong>
+      {{ payment.id }}
+    </p>
+
+    <p>
+      <strong>Booking ID:</strong>
+      {{ payment.bookingId }}
+    </p>
+
+    <p>
+      <strong>Amount:</strong>
+      {{ payment.amount | number:'1.2-2' }}
+    </p>
+
+    <p>
+      <strong>Method:</strong>
+      {{ payment.paymentMethod }}
+    </p>
+
+    <p>
+      <strong>Status:</strong>
+      {{ payment.status }}
+    </p>
+
+  </div>
+
+</section>

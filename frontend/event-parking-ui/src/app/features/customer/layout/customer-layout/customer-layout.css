@@ -1,0 +1,89 @@
+.customer-shell {
+
+display:flex;
+min-height:100vh;
+background:#f5f7ff;
+
+}
+
+
+
+.sidebar {
+
+width:260px;
+
+padding:30px;
+
+background:
+rgba(255,255,255,.75);
+
+backdrop-filter:blur(20px);
+
+box-shadow:
+0 10px 40px rgba(0,0,0,.08);
+
+}
+
+
+
+.logo {
+
+font-size:22px;
+
+font-weight:800;
+
+color:#4f46e5;
+
+margin-bottom:40px;
+
+}
+
+
+
+nav {
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+
+
+nav a {
+
+text-decoration:none;
+
+color:#334155;
+
+font-weight:600;
+
+padding:14px 18px;
+
+border-radius:14px;
+
+}
+
+
+
+nav a:hover {
+
+background:#4f46e5;
+
+color:white;
+
+}
+
+
+
+.content {
+
+flex:1;
+
+padding:30px;
+
+}
+
+

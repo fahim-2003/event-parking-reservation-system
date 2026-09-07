@@ -1,0 +1,35 @@
+<div
+  *ngIf="parkingSlots.length === 0"
+  class="state-card">
+  No parking layout is available for this event.
+</div>
+
+<div
+  *ngIf="parkingSlots.length > 0"
+  class="parking-map">
+
+  <button
+    *ngFor="let slot of parkingSlots"
+    type="button"
+    class="resource-item parking"
+    [class.selected]="isSelected(slot.id)"
+    [class.unavailable]="
+      slot.status !== 'Available'
+    "
+    [disabled]="
+      slot.status !== 'Available' ||
+      disabled
+    "
+    (click)="selectParking(slot)">
+
+    <strong>
+      {{ slot | slotCode }}
+    </strong>
+
+    <small>
+      {{ slot.status }}
+    </small>
+
+  </button>
+
+</div>
