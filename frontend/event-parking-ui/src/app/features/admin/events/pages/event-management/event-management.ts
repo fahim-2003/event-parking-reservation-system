@@ -1,4 +1,4 @@
-﻿import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { finalize, forkJoin } from 'rxjs';
 import { ConfirmationDialog } from '../../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import { ShortTextPipe } from '../../../../../shared/pipes/short-text.pipe';
 import { EventCategory } from '../../../categories/models/category.model';
 import { CategoryApiService } from '../../../categories/services/category-api.service';
 import { Venue } from '../../../venues/models/venue.model';

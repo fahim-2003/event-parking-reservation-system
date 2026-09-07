@@ -1,10 +1,11 @@
-using EventParking.API.Entities;
+﻿using EventParking.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventParking.API.Configurations;
 
-public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
+public sealed class BookingConfiguration :
+    IEntityTypeConfiguration<Booking>
 {
     public void Configure(EntityTypeBuilder<Booking> builder)
     {
@@ -17,17 +18,16 @@ public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
 
         builder.HasKey(booking => booking.Id);
 
+        builder.Property(booking => booking.BookingNumber)
+            .HasMaxLength(30)
+            .IsRequired();
+
         builder.Property(booking => booking.CustomerId)
             .HasMaxLength(450)
             .IsRequired();
 
         builder.Property(booking => booking.Status)
             .HasMaxLength(20)
-            .IsRequired();
-
-
-        builder.Property(booking => booking.BookingNumber)
-            .HasMaxLength(30)
             .IsRequired();
 
         builder.Property(booking => booking.PaymentStatus)
@@ -45,28 +45,15 @@ public sealed class BookingConfiguration : IEntityTypeConfiguration<Booking>
             .HasForeignKey(booking => booking.EventId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Seat>()
-            .WithMany()
-            .HasForeignKey(booking => booking.SeatId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne<ParkingSlot>()
-            .WithMany()
-            .HasForeignKey(booking => booking.ParkingSlotId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(booking => booking.BookingNumber)
+            .IsUnique();
 
         builder.HasIndex(booking => new
-            {
-                booking.CustomerId,
-                booking.EventId
-            });
+        {
+            booking.CustomerId,
+            booking.EventId
+        });
 
-        builder.HasIndex(booking => booking.SeatId)
-            .IsUnique();
-
-        builder.HasIndex(booking => booking.ParkingSlotId)
-            .IsUnique();
+        builder.HasIndex(booking => booking.EventId);
     }
 }
-
-

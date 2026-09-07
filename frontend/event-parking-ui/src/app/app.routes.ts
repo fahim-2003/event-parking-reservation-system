@@ -124,6 +124,12 @@ export const routes: Routes = [
           import('./features/customer/profile/customer-profile')
             .then(m => m.CustomerProfile)
       },
+      {
+        path: 'bookings/create/:eventId',
+        loadComponent: () =>
+          import('./features/customer/bookings/pages/booking-create/booking-create')
+            .then(m => m.BookingCreate)
+      },
 
 
       {
@@ -132,6 +138,7 @@ export const routes: Routes = [
           import('./features/customer/bookings/pages/booking-summary/booking-summary')
             .then(m => m.BookingSummary)
       },
+
 
 
       {
@@ -174,5 +181,3 @@ export const routes: Routes = [
   }
 
 ];
-
-

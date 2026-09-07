@@ -1,36 +1,78 @@
 <section>
 
-<h1>Payment History</h1>
+  <h1>Payments</h1>
 
-<p>
-View your completed parking payments.
-</p>
+  <div *ngIf="bookingId > 0" class="card">
+
+    <h2>Complete Payment</h2>
+
+    <p>
+      Booking ID: {{ bookingId }}
+    </p>
+
+    <label>
+      Payment Method
+    </label>
+
+    <select [(ngModel)]="paymentMethod">
+      <option value="Card">Card</option>
+      <option value="Cash">Cash</option>
+      <option value="Mobile">Mobile</option>
+    </select>
+
+    <button
+      type="button"
+      (click)="pay()"
+      [disabled]="loading">
+      {{ loading ? 'Processing...' : 'Pay Now' }}
+    </button>
+
+  </div>
+
+  <p *ngIf="successMessage">
+    {{ successMessage }}
+  </p>
+
+  <p *ngIf="errorMessage">
+    {{ errorMessage }}
+  </p>
 
 
-<div class="card">
+  <h2>Payment History</h2>
 
-<h3>Rock Concert 2026</h3>
+  <p *ngIf="payments.length === 0">
+    No payments yet.
+  </p>
 
-<p>Parking Spot: A-23</p>
+  <div
+    class="card"
+    *ngFor="let payment of payments">
 
-<p>Amount: $10.00</p>
+    <p>
+      <strong>Payment ID:</strong>
+      {{ payment.id }}
+    </p>
 
-<p>Status: Paid</p>
+    <p>
+      <strong>Booking ID:</strong>
+      {{ payment.bookingId }}
+    </p>
 
-</div>
+    <p>
+      <strong>Amount:</strong>
+      {{ payment.amount | number:'1.2-2' }}
+    </p>
 
+    <p>
+      <strong>Method:</strong>
+      {{ payment.paymentMethod }}
+    </p>
 
-<div class="card">
+    <p>
+      <strong>Status:</strong>
+      {{ payment.status }}
+    </p>
 
-<h3>Food Festival 2026</h3>
-
-<p>Parking Spot: B-15</p>
-
-<p>Amount: $12.00</p>
-
-<p>Status: Paid</p>
-
-</div>
-
+  </div>
 
 </section>

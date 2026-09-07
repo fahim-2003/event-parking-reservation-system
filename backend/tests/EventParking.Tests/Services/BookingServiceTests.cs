@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+using EventParking.API.Configurations;
 using EventParking.API.Data;
 using EventParking.API.DTOs.Bookings;
 using EventParking.API.Entities;
@@ -33,13 +35,13 @@ public sealed class BookingServiceTests
         dbContext.Seats.Add(seat);
         await dbContext.SaveChangesAsync();
 
-        var service = new BookingService(dbContext);
+        var service = new BookingService(dbContext, Options.Create(new BookingSettings()));
 
         var result = await service.CreateAsync(
             new CreateBookingRequest
             {
                 EventId = eventEntity.Id,
-                SeatId = seat.Id
+                SeatIds = [seat.Id]
             },
             "customer-1");
 
@@ -55,9 +57,7 @@ public sealed class BookingServiceTests
         var savedSeat = await dbContext.Seats
             .FirstAsync();
 
-        Assert.Equal(
-            "Booked",
-            savedSeat.Status);
+        Assert.Equal("Held", savedSeat.Status);
 
         Assert.Single(
             await dbContext.Bookings.ToListAsync());
@@ -89,14 +89,14 @@ public sealed class BookingServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var service = new BookingService(dbContext);
+        var service = new BookingService(dbContext, Options.Create(new BookingSettings()));
 
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => service.CreateAsync(
                 new CreateBookingRequest
                 {
                     EventId = eventEntity.Id,
-                    SeatId = seat.Id
+                    SeatIds = [seat.Id]
                 },
                 "customer-1"));
     }
@@ -117,9 +117,9 @@ public sealed class BookingServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var service = new BookingService(dbContext);
+        var service = new BookingService(dbContext, Options.Create(new BookingSettings()));
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
+        await Assert.ThrowsAsync<ArgumentException>(
             () => service.CreateAsync(
                 new CreateBookingRequest
                 {
@@ -138,6 +138,3 @@ public sealed class BookingServiceTests
         return new AppDbContext(options);
     }
 }
-
-
-

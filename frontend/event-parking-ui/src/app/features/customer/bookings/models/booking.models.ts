@@ -1,13 +1,17 @@
-export interface CreateBookingRequest {
+﻿export interface CreateBookingRequest {
   eventId: number;
-  seatId?: number | null;
+  seatIds: number[];
   parkingSlotId?: number | null;
 }
 
 export interface BookingResponse {
   id: number;
+  bookingNumber: string;
   eventId: number;
-  seatId?: number | null;
+  seatIds: number[];
   parkingSlotId?: number | null;
   status: string;
+  paymentStatus: string;
+  createdAt: string;
+  holdExpiresAt: string;
 }

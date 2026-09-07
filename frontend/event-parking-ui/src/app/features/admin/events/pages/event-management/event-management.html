@@ -1,4 +1,4 @@
-﻿<section class="space-y-6">
+<section class="space-y-6">
   <div>
     <h1 class="text-2xl font-semibold text-slate-900">
       Event Management
@@ -367,7 +367,7 @@
 
                   @if (eventItem.description) {
                     <p class="mt-1 max-w-xs text-xs text-slate-500">
-                      {{ eventItem.description }}
+                      {{ eventItem.description | shortText:80 }}
                     </p>
                   }
 

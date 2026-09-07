@@ -1,42 +1,145 @@
-import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { BookingResponse } from '../../models/booking.models';
 import { BookingService } from '../../services/booking.service';
-import {
-  BookingResponse,
-  CreateBookingRequest
-} from '../../models/booking.models';
+import { BookingStatusPipe } from '../../../../../shared/pipes/booking-status.pipe';
 
 @Component({
   selector: 'app-booking-summary',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    BookingStatusPipe
+  ],
   templateUrl: './booking-summary.html',
   styleUrl: './booking-summary.css'
 })
-export class BookingSummary {
+export class BookingSummary implements OnInit {
 
-  private readonly bookingService = inject(BookingService);
+  private readonly bookingService =
+    inject(BookingService);
 
-  selectedBooking: CreateBookingRequest = {
-    eventId: 1,
-    seatId: null,
-    parkingSlotId: null
-  };
+  booking: BookingResponse | null =
+    history.state?.booking ?? null;
 
-  bookingResult: BookingResponse | null = null;
+  bookings: BookingResponse[] = [];
+
+  loading = true;
+  cancellingBookingId: number | null = null;
 
   errorMessage = '';
+  actionMessage = '';
 
-  createBooking(): void {
+  ngOnInit(): void {
+    this.loadBookings();
+  }
+
+  loadBookings(): void {
+
+    this.loading = true;
+    this.errorMessage = '';
+
     this.bookingService
-      .create(this.selectedBooking)
+      .getMine()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe({
         next: response => {
-          this.bookingResult = response;
-          this.errorMessage = '';
+          this.bookings = response;
+
+          if (this.booking) {
+            const refreshed =
+              response.find(
+                item =>
+                  item.id === this.booking?.id
+              );
+
+            if (refreshed) {
+              this.booking = refreshed;
+            }
+          }
         },
+
         error: error => {
+          console.error(error);
+
+          this.errorMessage =
+            'Unable to load bookings.';
+        }
+      });
+  }
+
+  canCancel(
+    booking: BookingResponse
+  ): boolean {
+
+    return (
+      booking.status === 'Held' ||
+      booking.status === 'Confirmed'
+    );
+  }
+
+  cancelBooking(
+    booking: BookingResponse
+  ): void {
+
+    if (!this.canCancel(booking)) {
+      return;
+    }
+
+    const confirmed =
+      window.confirm(
+        `Cancel booking ${booking.bookingNumber}?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.cancellingBookingId = booking.id;
+    this.errorMessage = '';
+    this.actionMessage = '';
+
+    this.bookingService
+      .cancel(booking.id)
+      .pipe(
+        finalize(() => {
+          this.cancellingBookingId = null;
+        })
+      )
+      .subscribe({
+        next: cancelled => {
+
+          this.actionMessage =
+            `Booking ${cancelled.bookingNumber} cancelled successfully.`;
+
+          this.bookings =
+            this.bookings.map(
+              item =>
+                item.id === cancelled.id
+                  ? cancelled
+                  : item
+            );
+
+          if (
+            this.booking?.id === cancelled.id
+          ) {
+            this.booking = cancelled;
+          }
+        },
+
+        error: error => {
+          console.error(error);
+
           this.errorMessage =
             error.error?.detail ??
-            'Booking failed.';
+            'Unable to cancel booking.';
         }
       });
   }

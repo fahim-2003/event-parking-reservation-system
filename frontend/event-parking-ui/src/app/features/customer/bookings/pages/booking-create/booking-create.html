@@ -1,0 +1,166 @@
+<section class="booking-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Reserve Your Place</h1>
+      <p>
+        Event {{ eventId }} · Select one or more available seats and optional parking.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadAvailability()"
+      [disabled]="loadingResources || loading">
+      Refresh Availability
+    </button>
+  </div>
+
+  <div
+    *ngIf="loadingResources"
+    class="state-card">
+    Loading live availability...
+  </div>
+
+  <div
+    *ngIf="resourceError"
+    class="state-card error">
+    {{ resourceError }}
+  </div>
+
+  <ng-container
+    *ngIf="!loadingResources && !resourceError">
+
+    <div class="booking-section">
+
+      <div class="section-header">
+        <div>
+          <h2>Select Seats</h2>
+          <p>
+            {{ availableSeatCount }} seats available ·
+            {{ selectedSeatIds.length }} selected
+          </p>
+        </div>
+
+        <div class="legend">
+          <span>
+            <i class="legend-box available"></i>
+            Available
+          </span>
+
+          <span>
+            <i class="legend-box selected"></i>
+            Selected
+          </span>
+
+          <span>
+            <i class="legend-box unavailable"></i>
+            Unavailable
+          </span>
+        </div>
+      </div>
+
+      <app-seat-selector
+        [seats]="seats"
+        [selectedSeatIds]="selectedSeatIds"
+        [disabled]="loading"
+        (seatToggled)="toggleSeat($event)">
+      </app-seat-selector>
+
+    </div>
+
+    <div class="booking-section">
+
+      <div class="section-header">
+        <div>
+          <h2>Parking</h2>
+          <p>
+            Optional ·
+            {{ availableParkingCount }}
+            slots available
+          </p>
+        </div>
+
+        <button
+          *ngIf="selectedParkingSlotId"
+          type="button"
+          class="clear-button"
+          (click)="clearParking()"
+          [disabled]="loading">
+          No Parking
+        </button>
+      </div>
+
+      <app-parking-selector
+        [parkingSlots]="parkingSlots"
+        [selectedParkingSlotId]="selectedParkingSlotId"
+        [disabled]="loading"
+        (parkingSelected)="selectParking($event)">
+      </app-parking-selector>
+
+    </div>
+
+    <div class="selection-summary">
+
+      <div>
+        <span>Selected Seats</span>
+
+        <strong>
+          {{
+            selectedSeatIds.length > 0
+              ? selectedSeatIds.join(', ')
+              : 'Not selected'
+          }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Seat Count</span>
+        <strong>
+          {{ selectedSeatIds.length }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Parking</span>
+
+        <strong>
+          {{
+            selectedParkingSlotId
+              ? 'Slot ID ' +
+                selectedParkingSlotId
+              : 'No parking'
+          }}
+        </strong>
+      </div>
+
+    </div>
+
+    <p
+      *ngIf="message"
+      class="booking-message">
+      {{ message }}
+    </p>
+
+    <button
+      type="button"
+      class="confirm-button"
+      (click)="createBooking()"
+      [disabled]="
+        loading ||
+        loadingResources ||
+        selectedSeatIds.length === 0
+      ">
+
+      {{
+        loading
+          ? 'Processing...'
+          : 'Confirm Booking'
+      }}
+
+    </button>
+
+  </ng-container>
+
+</section>
