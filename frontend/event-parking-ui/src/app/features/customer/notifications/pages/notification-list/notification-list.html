@@ -1,32 +1,46 @@
 <section>
 
-<h1>Notifications</h1>
+  <h1>Notifications</h1>
 
-<p>
-Your latest booking updates.
-</p>
+  <p>
+    Your latest booking and payment updates.
+  </p>
 
+  <p *ngIf="loading">
+    Loading notifications...
+  </p>
 
-<div class="card">
+  <p *ngIf="errorMessage">
+    {{ errorMessage }}
+  </p>
 
-<h3>Booking Confirmed</h3>
+  <p *ngIf="!loading && notifications.length === 0">
+    No notifications yet.
+  </p>
 
-<p>
-Your parking reservation for Rock Concert 2026 is confirmed.
-</p>
+  <div
+    class="card"
+    *ngFor="let notification of notifications">
 
-</div>
+    <h3>
+      {{ notification.isRead ? 'Notification' : 'New Notification' }}
+    </h3>
 
+    <p>
+      {{ notification.message }}
+    </p>
 
-<div class="card">
+    <p>
+      {{ notification.createdAt | date:'medium' }}
+    </p>
 
-<h3>Payment Successful</h3>
+    <button
+      *ngIf="!notification.isRead"
+      type="button"
+      (click)="markRead(notification)">
+      Mark as Read
+    </button>
 
-<p>
-Payment received successfully.
-</p>
-
-</div>
-
+  </div>
 
 </section>

@@ -26,6 +26,10 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Booking> Bookings => Set<Booking>();
 
+    public DbSet<BookingSeat> BookingSeats => Set<BookingSeat>();
+
+    public DbSet<ParkingReservation> ParkingReservations => Set<ParkingReservation>();
+
     public DbSet<Payment> Payments => Set<Payment>();
 
     public DbSet<Notification> Notifications => Set<Notification>();
@@ -41,5 +45,3 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
             typeof(AppDbContext).Assembly);
     }
 }
-
-

@@ -1,0 +1,36 @@
+﻿<div
+  *ngIf="seats.length === 0"
+  class="state-card">
+  No seat layout is available for this event.
+</div>
+
+<div
+  *ngIf="seats.length > 0"
+  class="seat-map">
+
+  <button
+    *ngFor="let seat of seats"
+    type="button"
+    class="resource-item seat"
+    [appSeatStatus]="seat.status"
+    [class.selected]="isSelected(seat.id)"
+    [class.unavailable]="
+      seat.status !== 'Available'
+    "
+    [disabled]="
+      seat.status !== 'Available' ||
+      disabled
+    "
+    (click)="selectSeat(seat)">
+
+    <strong>
+      {{ seat | seatLabel }}
+    </strong>
+
+    <small>
+      {{ seat.status }}
+    </small>
+
+  </button>
+
+</div>

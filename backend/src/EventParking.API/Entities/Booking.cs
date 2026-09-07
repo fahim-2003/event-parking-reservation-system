@@ -1,4 +1,4 @@
-namespace EventParking.API.Entities;
+﻿namespace EventParking.API.Entities;
 
 public class Booking
 {
@@ -7,10 +7,6 @@ public class Booking
     public string BookingNumber { get; set; } = string.Empty;
 
     public int EventId { get; set; }
-
-    public int? SeatId { get; set; }
-
-    public int? ParkingSlotId { get; set; }
 
     public string CustomerId { get; set; } = string.Empty;
 
@@ -25,4 +21,9 @@ public class Booking
     public DateTime? CancelledAt { get; set; }
 
     public byte[] RowVersion { get; set; } = [];
+
+    public ICollection<BookingSeat> BookingSeats { get; set; } =
+        new List<BookingSeat>();
+
+    public ParkingReservation? ParkingReservation { get; set; }
 }

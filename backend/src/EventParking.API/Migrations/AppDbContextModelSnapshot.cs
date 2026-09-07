@@ -52,9 +52,6 @@ namespace EventParking.API.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ParkingSlotId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -66,9 +63,6 @@ namespace EventParking.API.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int?>("SeatId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -76,15 +70,10 @@ namespace EventParking.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookingNumber")
+                        .IsUnique();
+
                     b.HasIndex("EventId");
-
-                    b.HasIndex("ParkingSlotId")
-                        .IsUnique()
-                        .HasFilter("[ParkingSlotId] IS NOT NULL");
-
-                    b.HasIndex("SeatId")
-                        .IsUnique()
-                        .HasFilter("[SeatId] IS NOT NULL");
 
                     b.HasIndex("CustomerId", "EventId");
 
@@ -92,6 +81,21 @@ namespace EventParking.API.Migrations
                         {
                             t.HasCheckConstraint("CK_Bookings_Status_Valid", "[Status] IN ('Held', 'Confirmed', 'Cancelled', 'Expired')");
                         });
+                });
+
+            modelBuilder.Entity("EventParking.API.Entities.BookingSeat", b =>
+                {
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookingId", "SeatId");
+
+                    b.HasIndex("SeatId");
+
+                    b.ToTable("BookingSeats", (string)null);
                 });
 
             modelBuilder.Entity("EventParking.API.Entities.Event", b =>
@@ -213,6 +217,33 @@ namespace EventParking.API.Migrations
                     b.ToTable("Notifications", (string)null);
                 });
 
+            modelBuilder.Entity("EventParking.API.Entities.ParkingReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ParkingSlotId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
+
+                    b.HasIndex("ParkingSlotId");
+
+                    b.ToTable("ParkingReservations", (string)null);
+                });
+
             modelBuilder.Entity("EventParking.API.Entities.ParkingSlot", b =>
                 {
                     b.Property<int>("Id")
@@ -291,7 +322,8 @@ namespace EventParking.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingId");
+                    b.HasIndex("BookingId")
+                        .IsUnique();
 
                     b.ToTable("Payments", (string)null);
                 });
@@ -602,16 +634,25 @@ namespace EventParking.API.Migrations
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
 
-                    b.HasOne("EventParking.API.Entities.ParkingSlot", null)
-                        .WithMany()
-                        .HasForeignKey("ParkingSlotId")
-                        .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity("EventParking.API.Entities.BookingSeat", b =>
+                {
+                    b.HasOne("EventParking.API.Entities.Booking", "Booking")
+                        .WithMany("BookingSeats")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("EventParking.API.Entities.Seat", null)
+                    b.HasOne("EventParking.API.Entities.Seat", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Seat");
                 });
 
             modelBuilder.Entity("EventParking.API.Entities.Event", b =>
@@ -627,6 +668,25 @@ namespace EventParking.API.Migrations
                         .HasForeignKey("VenueId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventParking.API.Entities.ParkingReservation", b =>
+                {
+                    b.HasOne("EventParking.API.Entities.Booking", "Booking")
+                        .WithOne("ParkingReservation")
+                        .HasForeignKey("EventParking.API.Entities.ParkingReservation", "BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventParking.API.Entities.ParkingSlot", "ParkingSlot")
+                        .WithMany()
+                        .HasForeignKey("ParkingSlotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("ParkingSlot");
                 });
 
             modelBuilder.Entity("EventParking.API.Entities.ParkingSlot", b =>
@@ -705,6 +765,13 @@ namespace EventParking.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventParking.API.Entities.Booking", b =>
+                {
+                    b.Navigation("BookingSeats");
+
+                    b.Navigation("ParkingReservation");
                 });
 #pragma warning restore 612, 618
         }

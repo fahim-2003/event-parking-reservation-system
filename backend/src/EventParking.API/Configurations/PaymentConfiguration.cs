@@ -1,10 +1,11 @@
-using EventParking.API.Entities;
+﻿using EventParking.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventParking.API.Configurations;
 
-public sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
+public sealed class PaymentConfiguration :
+    IEntityTypeConfiguration<Payment>
 {
     public void Configure(EntityTypeBuilder<Payment> builder)
     {
@@ -31,6 +32,7 @@ public sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .HasForeignKey(payment => payment.BookingId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(payment => payment.BookingId);
+        builder.HasIndex(payment => payment.BookingId)
+            .IsUnique();
     }
 }
