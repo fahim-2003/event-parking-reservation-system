@@ -1,435 +1,716 @@
-<section class="space-y-6">
-  <div>
-    <h1 class="text-2xl font-semibold text-slate-900">
-      Event Management
-    </h1>
+<section class="events-admin-page">
 
-    <p class="mt-1 text-sm text-slate-500">
-      Create, update and manage events, venues, schedules and pricing.
-    </p>
-  </div>
-
-  @if (errorMessage()) {
-    <div
-      class="rounded-xl border border-red-200 bg-red-50
-             px-4 py-3 text-sm text-red-700"
-    >
-      {{ errorMessage() }}
-    </div>
-  }
-
-  <form
-    [formGroup]="eventForm"
-    (ngSubmit)="submit()"
-    class="space-y-5 rounded-2xl border border-slate-200
-           bg-white p-6 shadow-sm"
-  >
-    <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Event name
-        </label>
-
-        <input
-          type="text"
-          formControlName="name"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        />
-
-        @if (
-          eventForm.controls.name.touched &&
-          eventForm.controls.name.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Event name is required.
-          </p>
-        }
-      </div>
-
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Venue
-        </label>
-
-        <select
-          formControlName="venueId"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        >
-          <option [ngValue]="0">Select venue</option>
-
-          @for (venue of venues(); track venue.id) {
-            <option [ngValue]="venue.id">
-              {{ venue.name }} — capacity {{ venue.capacity }}
-            </option>
-          }
-        </select>
-
-        @if (
-          eventForm.controls.venueId.touched &&
-          eventForm.controls.venueId.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Venue is required.
-          </p>
-        }
-      </div>
-    </div>
+  <header class="page-header">
 
     <div>
-      <label class="mb-1 block text-sm font-medium text-slate-700">
-        Description
-      </label>
 
-      <textarea
-        rows="3"
-        formControlName="description"
-        class="w-full rounded-xl border border-slate-300
-               px-3 py-2.5 outline-none transition
-               focus:border-indigo-500 focus:ring-2
-               focus:ring-indigo-100"
-      ></textarea>
+      <span class="eyebrow">
+        EVENT OPERATIONS
+      </span>
+
+      <h1>
+        Event Management
+      </h1>
+
+      <p>
+        Create, update and manage event schedules,
+        venues, pricing and capacity.
+      </p>
+
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Event category
-        </label>
 
-        <select
-          formControlName="eventCategoryId"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        >
-          <option [ngValue]="0">Select category</option>
+    <div class="event-count">
 
-          @for (category of categories(); track category.id) {
-            <option [ngValue]="category.id">
-              {{ category.name }}
-            </option>
+      <span>
+        Total Events
+      </span>
+
+      <strong>
+        {{ events().length }}
+      </strong>
+
+    </div>
+
+  </header>
+
+
+  @if (errorMessage()) {
+
+    <div class="alert error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+
+  <section class="management-grid">
+
+    <article class="form-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="eyebrow">
+            {{
+              editingEventId() === null
+                ? 'CREATE EVENT'
+                : 'EDIT EVENT'
+            }}
+          </span>
+
+          <h2>
+            {{
+              editingEventId() === null
+                ? 'Add New Event'
+                : 'Update Event Details'
+            }}
+          </h2>
+
+        </div>
+
+
+        <div
+          class="mode-icon"
+          [class.editing]="editingEventId() !== null">
+
+          {{
+            editingEventId() === null
+              ? '+'
+              : 'E'
+          }}
+
+        </div>
+
+      </div>
+
+
+      <form
+        [formGroup]="eventForm"
+        (ngSubmit)="submit()">
+
+        <div class="form-grid">
+
+          <div class="field-group full">
+
+            <label for="eventName">
+              Event name
+            </label>
+
+            <input
+              id="eventName"
+              type="text"
+              formControlName="name"
+              placeholder="Enter event name">
+
+            @if (
+              eventForm.controls.name.touched &&
+              eventForm.controls.name.invalid
+            ) {
+              <small>
+                Event name is required.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="eventVenue">
+              Venue
+            </label>
+
+            <select
+              id="eventVenue"
+              formControlName="venueId">
+
+              <option [ngValue]="0">
+                Select venue
+              </option>
+
+              @for (venue of venues(); track venue.id) {
+
+                <option [ngValue]="venue.id">
+                  {{ venue.name }}
+                  - capacity {{ venue.capacity }}
+                </option>
+
+              }
+
+            </select>
+
+            @if (
+              eventForm.controls.venueId.touched &&
+              eventForm.controls.venueId.invalid
+            ) {
+              <small>
+                Venue is required.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="eventCategory">
+              Category
+            </label>
+
+            <select
+              id="eventCategory"
+              formControlName="eventCategoryId">
+
+              <option [ngValue]="0">
+                Select category
+              </option>
+
+              @for (
+                category of categories();
+                track category.id
+              ) {
+
+                <option [ngValue]="category.id">
+                  {{ category.name }}
+                </option>
+
+              }
+
+            </select>
+
+            @if (
+              eventForm.controls.eventCategoryId.touched &&
+              eventForm.controls.eventCategoryId.invalid
+            ) {
+              <small>
+                Event category is required.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group full">
+
+            <label for="eventDescription">
+              Description
+            </label>
+
+            <textarea
+              id="eventDescription"
+              rows="3"
+              formControlName="description"
+              placeholder="Describe the event">
+            </textarea>
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="eventStart">
+              Start date & time
+            </label>
+
+            <input
+              id="eventStart"
+              type="datetime-local"
+              formControlName="startDateTime">
+
+            @if (
+              eventForm.controls.startDateTime.touched &&
+              eventForm.controls.startDateTime.invalid
+            ) {
+              <small>
+                Start date and time are required.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="eventEnd">
+              End date & time
+            </label>
+
+            <input
+              id="eventEnd"
+              type="datetime-local"
+              formControlName="endDateTime">
+
+            @if (
+              eventForm.controls.endDateTime.touched &&
+              eventForm.controls.endDateTime.invalid
+            ) {
+              <small>
+                End date and time are required.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="ticketPrice">
+              Ticket price
+            </label>
+
+            <div class="money-input">
+
+              <span>LKR</span>
+
+              <input
+                id="ticketPrice"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="ticketPrice">
+
+            </div>
+
+            @if (
+              eventForm.controls.ticketPrice.touched &&
+              eventForm.controls.ticketPrice.invalid
+            ) {
+              <small>
+                Ticket price must be 0 or greater.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="parkingFee">
+              Parking fee
+            </label>
+
+            <div class="money-input">
+
+              <span>LKR</span>
+
+              <input
+                id="parkingFee"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="parkingFee">
+
+            </div>
+
+            @if (
+              eventForm.controls.parkingFee.touched &&
+              eventForm.controls.parkingFee.invalid
+            ) {
+              <small>
+                Parking fee must be 0 or greater.
+              </small>
+            }
+
+          </div>
+
+
+          <div class="field-group full">
+
+            <label for="eventCapacity">
+              Event capacity
+            </label>
+
+            <input
+              id="eventCapacity"
+              type="number"
+              min="1"
+              formControlName="capacity"
+              placeholder="Maximum attendance">
+
+            @if (
+              eventForm.controls.capacity.touched &&
+              eventForm.controls.capacity.invalid
+            ) {
+              <small>
+                Capacity must be greater than 0.
+              </small>
+            }
+
+          </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="saving()">
+
+            {{
+              saving()
+                ? 'Saving...'
+                : editingEventId() === null
+                  ? 'Create Event'
+                  : 'Save Changes'
+            }}
+
+          </button>
+
+
+          @if (editingEventId() !== null) {
+
+            <button
+              type="button"
+              class="secondary-button"
+              (click)="cancelEdit()">
+
+              Cancel Edit
+
+            </button>
+
           }
-        </select>
 
-        @if (
-          eventForm.controls.eventCategoryId.touched &&
-          eventForm.controls.eventCategoryId.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Event category is required.
-          </p>
-        }
-      </div>
+        </div>
 
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Event capacity
-        </label>
+      </form>
 
-        <input
-          type="number"
-          min="1"
-          formControlName="capacity"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        />
+    </article>
 
-        @if (
-          eventForm.controls.capacity.touched &&
-          eventForm.controls.capacity.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Capacity must be greater than 0.
-          </p>
-        }
-      </div>
-    </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Start date & time
-        </label>
+    <aside class="tips-card">
 
-        <input
-          type="datetime-local"
-          formControlName="startDateTime"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        />
+      <span class="eyebrow">
+        EVENT SETUP
+      </span>
 
-        @if (
-          eventForm.controls.startDateTime.touched &&
-          eventForm.controls.startDateTime.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Start date and time are required.
-          </p>
-        }
-      </div>
-
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          End date & time
-        </label>
-
-        <input
-          type="datetime-local"
-          formControlName="endDateTime"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        />
-
-        @if (
-          eventForm.controls.endDateTime.touched &&
-          eventForm.controls.endDateTime.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            End date and time are required.
-          </p>
-        }
-      </div>
-    </div>
-
-    <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Ticket price
-        </label>
-
-        <input
-          type="number"
-          min="0"
-          step="0.01"
-          formControlName="ticketPrice"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        />
-
-        @if (
-          eventForm.controls.ticketPrice.touched &&
-          eventForm.controls.ticketPrice.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Ticket price must be 0 or greater.
-          </p>
-        }
-      </div>
-
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Parking fee
-        </label>
-
-        <input
-          type="number"
-          min="0"
-          step="0.01"
-          formControlName="parkingFee"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5 outline-none transition
-                 focus:border-indigo-500 focus:ring-2
-                 focus:ring-indigo-100"
-        />
-
-        @if (
-          eventForm.controls.parkingFee.touched &&
-          eventForm.controls.parkingFee.invalid
-        ) {
-          <p class="mt-1 text-xs text-red-600">
-            Parking fee must be 0 or greater.
-          </p>
-        }
-      </div>
-    </div>
-
-    <div class="flex flex-wrap gap-3">
-      <button
-        type="submit"
-        [disabled]="saving()"
-        class="rounded-xl bg-indigo-600 px-5 py-2.5
-               text-sm font-semibold text-white transition
-               hover:bg-indigo-700 disabled:cursor-not-allowed
-               disabled:opacity-50"
-      >
-        {{
-          saving()
-            ? 'Saving...'
-            : editingEventId() === null
-              ? 'Create Event'
-              : 'Update Event'
-        }}
-      </button>
-
-      @if (editingEventId() !== null) {
-        <button
-          type="button"
-          (click)="cancelEdit()"
-          class="rounded-xl border border-slate-300 bg-white
-                 px-5 py-2.5 text-sm font-semibold text-slate-700
-                 transition hover:bg-slate-50"
-        >
-          Cancel
-        </button>
-      }
-    </div>
-  </form>
-
-  <div
-    class="overflow-hidden rounded-2xl border border-slate-200
-           bg-white shadow-sm"
-  >
-    <div class="border-b border-slate-200 px-5 py-4">
-      <h2 class="font-semibold text-slate-900">
-        Events
+      <h2>
+        Event Checklist
       </h2>
+
+      <div class="check-list">
+
+        <div>
+          <span class="check-icon">1</span>
+
+          <div>
+            <strong>Select a venue</strong>
+            <small>
+              Capacity cannot exceed venue capacity.
+            </small>
+          </div>
+        </div>
+
+
+        <div>
+          <span class="check-icon">2</span>
+
+          <div>
+            <strong>Set the schedule</strong>
+            <small>
+              End time must be after start time.
+            </small>
+          </div>
+        </div>
+
+
+        <div>
+          <span class="check-icon">3</span>
+
+          <div>
+            <strong>Configure pricing</strong>
+            <small>
+              Set ticket and optional parking fees.
+            </small>
+          </div>
+        </div>
+
+
+        <div>
+          <span class="check-icon">4</span>
+
+          <div>
+            <strong>Manage layouts next</strong>
+            <small>
+              Configure seats and parking after event creation.
+            </small>
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </section>
+
+
+  <section class="events-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="eyebrow">
+          EVENT CATALOG
+        </span>
+
+        <h2>
+          Current Events
+        </h2>
+
+      </div>
+
+      <span class="record-count">
+        {{ events().length }}
+        event{{ events().length === 1 ? '' : 's' }}
+      </span>
+
     </div>
+
 
     @if (loading()) {
-      <div class="p-6 text-sm text-slate-500">
-        Loading events...
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <strong>
+          Loading events
+        </strong>
+
+        <span>
+          Retrieving event information...
+        </span>
+
       </div>
+
     } @else if (events().length === 0) {
-      <div class="p-6 text-sm text-slate-500">
-        No events available.
+
+      <div class="state-card">
+
+        <div class="empty-icon">
+          E
+        </div>
+
+        <strong>
+          No events available
+        </strong>
+
+        <span>
+          Create your first event using the form above.
+        </span>
+
       </div>
+
     } @else {
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200">
-          <thead class="bg-slate-50">
-            <tr>
-              <th
-                class="px-4 py-3 text-left text-xs font-semibold
-                       uppercase text-slate-500"
-              >
-                Event
-              </th>
 
-              <th
-                class="px-4 py-3 text-left text-xs font-semibold
-                       uppercase text-slate-500"
-              >
-                Venue
-              </th>
+      <div class="event-list">
 
-              <th
-                class="px-4 py-3 text-left text-xs font-semibold
-                       uppercase text-slate-500"
-              >
-                Category
-              </th>
+        @for (
+          eventItem of events();
+          track eventItem.id
+        ) {
 
-              <th
-                class="px-4 py-3 text-left text-xs font-semibold
-                       uppercase text-slate-500"
-              >
-                Schedule
-              </th>
+          <article class="event-card">
 
-              <th
-                class="px-4 py-3 text-left text-xs font-semibold
-                       uppercase text-slate-500"
-              >
-                Capacity
-              </th>
+            <div class="event-visual">
 
-              <th
-                class="px-4 py-3 text-right text-xs font-semibold
-                       uppercase text-slate-500"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
+              <span class="category-pill">
+                {{ eventItem.categoryName }}
+              </span>
 
-          <tbody class="divide-y divide-slate-100">
-            @for (eventItem of events(); track eventItem.id) {
-              <tr class="align-top">
-                <td class="px-4 py-4">
-                  <p class="text-sm font-semibold text-slate-900">
+              <div class="event-letter">
+                {{ eventItem.name | slice:0:1 }}
+              </div>
+
+            </div>
+
+
+            <div class="event-details">
+
+              <div class="event-top">
+
+                <div>
+
+                  <span class="event-reference">
+                    EVENT {{ eventItem.id }}
+                  </span>
+
+                  <h3>
                     {{ eventItem.name }}
-                  </p>
+                  </h3>
 
                   @if (eventItem.description) {
-                    <p class="mt-1 max-w-xs text-xs text-slate-500">
-                      {{ eventItem.description | shortText:80 }}
+
+                    <p>
+                      {{
+                        eventItem.description
+                          | shortText:110
+                      }}
                     </p>
+
                   }
 
-                  <p class="mt-2 text-xs text-slate-500">
-                    Ticket: {{ eventItem.ticketPrice | number:'1.2-2' }}
-                    · Parking: {{ eventItem.parkingFee | number:'1.2-2' }}
-                  </p>
-                </td>
+                </div>
 
-                <td class="px-4 py-4 text-sm text-slate-600">
-                  {{ eventItem.venueName }}
-                </td>
 
-                <td class="px-4 py-4 text-sm text-slate-600">
-                  {{ eventItem.categoryName }}
-                </td>
+                <div class="event-actions">
 
-                <td class="px-4 py-4 text-sm text-slate-600">
-                  <div>
-                    {{ eventItem.startDateTimeUtc | date:'medium' }}
-                  </div>
+                  <button
+                    type="button"
+                    class="edit-button"
+                    (click)="editEvent(eventItem)">
 
-                  <div class="mt-1 text-xs text-slate-500">
-                    to {{ eventItem.endDateTimeUtc | date:'medium' }}
-                  </div>
-                </td>
+                    Edit
 
-                <td class="px-4 py-4 text-sm text-slate-600">
-                  {{ eventItem.capacity }}
-                </td>
+                  </button>
 
-                <td class="px-4 py-4">
-                  <div class="flex justify-end gap-2">
-                    <button
-                      type="button"
-                      (click)="editEvent(eventItem)"
-                      class="rounded-lg border border-slate-300
-                             px-3 py-1.5 text-sm font-medium
-                             text-slate-700 transition
-                             hover:bg-slate-50"
-                    >
-                      Edit
-                    </button>
+                  <button
+                    type="button"
+                    class="delete-button"
+                    (click)="deleteEvent(eventItem)">
 
-                    <button
-                      type="button"
-                      (click)="deleteEvent(eventItem)"
-                      class="rounded-lg border border-red-300
-                             px-3 py-1.5 text-sm font-medium
-                             text-red-700 transition hover:bg-red-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+                    Delete
+
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              <div class="metadata-grid">
+
+                <div>
+
+                  <span>
+                    Venue
+                  </span>
+
+                  <strong>
+                    {{ eventItem.venueName }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Category
+                  </span>
+
+                  <strong>
+                    {{ eventItem.categoryName }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Capacity
+                  </span>
+
+                  <strong>
+                    {{ eventItem.capacity }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Ticket
+                  </span>
+
+                  <strong>
+                    LKR
+                    {{
+                      eventItem.ticketPrice
+                        | number:'1.2-2'
+                    }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Parking
+                  </span>
+
+                  <strong>
+                    LKR
+                    {{
+                      eventItem.parkingFee
+                        | number:'1.2-2'
+                    }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <div class="schedule-row">
+
+                <div>
+
+                  <span>
+                    Starts
+                  </span>
+
+                  <strong>
+                    {{
+                      eventItem.startDateTimeUtc
+                        | date:"EEE, d MMM y 'at' h:mm a"
+                    }}
+                  </strong>
+
+                </div>
+
+
+                <span class="schedule-arrow">
+                  →
+                </span>
+
+
+                <div>
+
+                  <span>
+                    Ends
+                  </span>
+
+                  <strong>
+                    {{
+                      eventItem.endDateTimeUtc
+                        | date:"EEE, d MMM y 'at' h:mm a"
+                    }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </article>
+
+        }
+
       </div>
+
     }
-  </div>
+
+  </section>
+
 
   <app-confirmation-dialog
     [open]="pendingDeleteEvent() !== null"
@@ -447,4 +728,5 @@
     (confirmed)="confirmDeleteEvent()"
     (cancelled)="cancelDeleteEvent()"
   />
+
 </section>

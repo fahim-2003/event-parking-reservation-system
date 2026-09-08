@@ -1,4 +1,4 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpClient,
   HttpParams
@@ -13,6 +13,7 @@ export interface EventItem {
   description?: string;
   venueId: number;
   venueName: string;
+  venueAddress?: string;
   eventCategoryId: number;
   categoryName: string;
   startDateTimeUtc: string;

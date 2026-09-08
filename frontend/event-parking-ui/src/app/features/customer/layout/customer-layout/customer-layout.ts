@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import {
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet
+} from '@angular/router';
 
 @Component({
   selector: 'app-customer-layout',
   standalone: true,
   imports: [
     RouterOutlet,
-    RouterLink
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './customer-layout.html',
   styleUrl: './customer-layout.css'
 })
-export class CustomerLayoutComponent {
-
-}
+export class CustomerLayoutComponent {}

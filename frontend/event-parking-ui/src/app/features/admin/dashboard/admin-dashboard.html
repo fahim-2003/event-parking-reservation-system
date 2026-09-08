@@ -1,55 +1,405 @@
-<div class="dashboard-page">
+<section class="dashboard-page">
 
-  <div class="dashboard-header">
-    <h1>Welcome back, Administrator</h1>
-    <p>Manage events, bookings and parking operations from one place.</p>
-    <span class="status">System Active</span>
-  </div>
+  <header class="dashboard-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ADMIN OVERVIEW
+      </span>
+
+      <h1>
+        Welcome back, Administrator
+      </h1>
+
+      <p>
+        Monitor events, reservations and parking
+        operations from one place.
+      </p>
+
+    </div>
+
+    <div class="system-status">
+
+      <span class="status-dot"></span>
+
+      System Active
+
+    </div>
+
+  </header>
 
 
   @if (dashboard) {
 
-  <div class="stats-grid">
+    <section class="stats-grid">
 
-    <div class="glass-card">
-      <h3>Total Events</h3>
-      <strong>{{dashboard.totalEvents}}</strong>
+      <article class="stat-card">
+
+        <div class="stat-icon blue">
+          E
+        </div>
+
+        <div>
+
+          <span>
+            Total Events
+          </span>
+
+          <strong>
+            {{ dashboard.totalEvents }}
+          </strong>
+
+          <small>
+            Events in the system
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon violet">
+          B
+        </div>
+
+        <div>
+
+          <span>
+            Total Bookings
+          </span>
+
+          <strong>
+            {{ dashboard.totalBookings }}
+          </strong>
+
+          <small>
+            Reservation records
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon green">
+          S
+        </div>
+
+        <div>
+
+          <span>
+            Available Seats
+          </span>
+
+          <strong>
+            {{ dashboard.availableSeats }}
+          </strong>
+
+          <small>
+            Ready to reserve
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon orange">
+          P
+        </div>
+
+        <div>
+
+          <span>
+            Occupied Parking
+          </span>
+
+          <strong>
+            {{ dashboard.occupiedParkingSlots }}
+          </strong>
+
+          <small>
+            Reserved parking slots
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon revenue">
+          $
+        </div>
+
+        <div>
+
+          <span>
+            Total Revenue
+          </span>
+
+          <strong class="revenue-value">
+            LKR
+            {{
+              dashboard.totalRevenue
+                | number:'1.2-2'
+            }}
+          </strong>
+
+          <small>
+            Completed payments
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon customer">
+          C
+        </div>
+
+        <div>
+
+          <span>
+            Total Customers
+          </span>
+
+          <strong>
+            {{ dashboard.totalCustomers }}
+          </strong>
+
+          <small>
+            Registered customers
+          </small>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <section class="dashboard-lower-grid">
+
+      <article class="overview-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <span class="eyebrow">
+              SYSTEM SNAPSHOT
+            </span>
+
+            <h2>
+              Operations Overview
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="overview-grid">
+
+          <div>
+
+            <span>
+              Events
+            </span>
+
+            <strong>
+              {{ dashboard.totalEvents }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Bookings
+            </span>
+
+            <strong>
+              {{ dashboard.totalBookings }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Customers
+            </span>
+
+            <strong>
+              {{ dashboard.totalCustomers }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Parking in use
+            </span>
+
+            <strong>
+              {{ dashboard.occupiedParkingSlots }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="revenue-strip">
+
+          <div>
+
+            <span>
+              Revenue collected
+            </span>
+
+            <strong>
+              LKR
+              {{
+                dashboard.totalRevenue
+                  | number:'1.2-2'
+              }}
+            </strong>
+
+          </div>
+
+          <span class="revenue-badge">
+            Payments completed
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="quick-actions-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <span class="eyebrow">
+              SHORTCUTS
+            </span>
+
+            <h2>
+              Quick Actions
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="quick-grid">
+
+          <a
+            routerLink="/admin/events"
+            class="quick-action">
+
+            <span class="quick-icon blue">
+              E
+            </span>
+
+            <div>
+              <strong>Manage Events</strong>
+              <small>Create and update events</small>
+            </div>
+
+          </a>
+
+
+          <a
+            routerLink="/admin/venues"
+            class="quick-action">
+
+            <span class="quick-icon violet">
+              V
+            </span>
+
+            <div>
+              <strong>Manage Venues</strong>
+              <small>Venue information</small>
+            </div>
+
+          </a>
+
+
+          <a
+            routerLink="/admin/seats"
+            class="quick-action">
+
+            <span class="quick-icon green">
+              S
+            </span>
+
+            <div>
+              <strong>Seat Layout</strong>
+              <small>Manage event seating</small>
+            </div>
+
+          </a>
+
+
+          <a
+            routerLink="/admin/parking"
+            class="quick-action">
+
+            <span class="quick-icon orange">
+              P
+            </span>
+
+            <div>
+              <strong>Parking Layout</strong>
+              <small>Manage parking slots</small>
+            </div>
+
+          </a>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  } @else {
+
+    <div class="loading-card">
+
+      <div class="loader"></div>
+
+      <strong>
+        Loading dashboard
+      </strong>
+
+      <span>
+        Retrieving system statistics...
+      </span>
+
     </div>
-
-    <div class="glass-card">
-      <h3>Total Bookings</h3>
-      <strong>{{dashboard.totalBookings}}</strong>
-    </div>
-
-    <div class="glass-card">
-      <h3>Available Seats</h3>
-      <strong>{{dashboard.availableSeats}}</strong>
-    </div>
-
-    <div class="glass-card">
-      <h3>Occupied Parking</h3>
-      <strong>{{dashboard.occupiedParkingSlots}}</strong>
-    </div>
-
-    <div class="glass-card">
-      <h3>Total Revenue</h3>
-      <strong>Rs. {{dashboard.totalRevenue}}</strong>
-    </div>
-
-    <div class="glass-card">
-      <h3>Total Customers</h3>
-      <strong>{{dashboard.totalCustomers}}</strong>
-    </div>
-
-  </div>
 
   }
-  @else {
 
-  <div class="loading-card">
-    Loading dashboard...
-  </div>
-
-  }
-
-</div>
+</section>

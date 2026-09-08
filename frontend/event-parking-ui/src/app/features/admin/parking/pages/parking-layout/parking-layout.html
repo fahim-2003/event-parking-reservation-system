@@ -1,233 +1,540 @@
-<section class="space-y-6">
-  <div>
-    <h1 class="text-2xl font-semibold text-slate-900">
-      Parking Layout
-    </h1>
+<section class="parking-page">
 
-    <p class="mt-1 text-sm text-slate-500">
-      Create and manage event parking zones and slots.
-    </p>
-  </div>
+  <header class="page-header">
+
+    <div>
+      <span class="eyebrow">
+        PARKING OPERATIONS
+      </span>
+
+      <h1>
+        Parking Layout
+      </h1>
+
+      <p>
+        Create and manage parking zones with live reservation status.
+      </p>
+    </div>
+
+    <div class="total-card">
+      <span>Current Slots</span>
+      <strong>{{ parkingSlots().length }}</strong>
+    </div>
+
+  </header>
+
 
   @if (errorMessage()) {
-    <div
-      class="rounded-xl border border-red-200 bg-red-50
-             px-4 py-3 text-sm text-red-700"
-    >
+
+    <div class="alert error">
       {{ errorMessage() }}
     </div>
+
   }
 
-  <form
-    [formGroup]="layoutForm"
-    (ngSubmit)="generateLayout()"
-    class="space-y-5 rounded-2xl border border-slate-200
-           bg-white p-6 shadow-sm"
-  >
-    <div>
-      <label class="mb-1 block text-sm font-medium text-slate-700">
-        Event
-      </label>
 
-      <select
-        formControlName="eventId"
-        (change)="eventChanged()"
-        class="w-full rounded-xl border border-slate-300
-               px-3 py-2.5 outline-none transition
-               focus:border-indigo-500 focus:ring-2
-               focus:ring-indigo-100"
-      >
-        <option [ngValue]="0">Select event</option>
+  <section class="setup-card">
 
-        @for (eventItem of events(); track eventItem.id) {
-          <option [ngValue]="eventItem.id">
-            {{ eventItem.name }}
-          </option>
-        }
-      </select>
-    </div>
-
-    @if (selectedEvent) {
-      <div
-        class="rounded-xl border border-indigo-100
-               bg-indigo-50 px-4 py-3 text-sm text-indigo-800"
-      >
-        Parking fee for this event:
-        <strong>
-          {{ selectedEvent!.parkingFee | number:'1.2-2' }}
-        </strong>
-      </div>
-    }
-
-    <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Zone
-        </label>
-
-        <input
-          type="text"
-          formControlName="zone"
-          placeholder="Example: A"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5"
-        />
-      </div>
+    <div class="section-title">
 
       <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Number of slots
-        </label>
+        <span class="eyebrow">
+          LAYOUT SETUP
+        </span>
 
-        <input
-          type="number"
-          min="1"
-          formControlName="numberOfSlots"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5"
-        />
-      </div>
-    </div>
-
-    <button
-      type="submit"
-      [disabled]="saving()"
-      class="rounded-xl bg-indigo-600 px-5 py-2.5
-             text-sm font-semibold text-white transition
-             hover:bg-indigo-700 disabled:cursor-not-allowed
-             disabled:opacity-50"
-    >
-      {{ saving() ? 'Generating...' : 'Add Parking Zone' }}
-    </button>
-  </form>
-
-  @if (loading()) {
-    <div class="text-sm text-slate-500">
-      Loading...
-    </div>
-  }
-
-  @if (parkingSlots().length > 0) {
-    <div
-      class="rounded-2xl border border-slate-200
-             bg-white p-6 shadow-sm"
-    >
-      <div class="mb-5">
-        <h2 class="font-semibold text-slate-900">
-          Parking Slots
+        <h2>
+          Configure Parking Zone
         </h2>
-
-        <p class="text-sm text-slate-500">
-          {{ parkingSlots().length }} configured slots
-        </p>
       </div>
 
-      <div class="parking-grid">
-        @for (slot of parkingSlots(); track slot.id) {
-          <div
-            class="parking-slot"
-            [class.slot-available]="slot.status === 'Available'"
-            [class.slot-held]="slot.status === 'Held'"
-            [class.slot-occupied]="slot.status === 'Occupied'"
-          >
-            <div class="font-semibold">
-              {{ slot.zone }}-{{ slot.slotNumber }}
-            </div>
-
-            <div class="mt-1 text-xs">
-              {{ slot.status }}
-            </div>
-
-            @if (slot.status === 'Available') {
-              <div class="mt-3 flex justify-center gap-2">
-                <button
-                  type="button"
-                  (click)="editSlot(slot)"
-                  class="rounded-lg border border-slate-300
-                         bg-white px-2 py-1 text-xs font-medium
-                         text-slate-700"
-                >
-                  Edit
-                </button>
-
-                <button
-                  type="button"
-                  (click)="deleteSlot(slot)"
-                  class="rounded-lg border border-red-300
-                         bg-white px-2 py-1 text-xs font-medium
-                         text-red-700"
-                >
-                  Delete
-                </button>
-              </div>
-            }
-          </div>
-        }
+      <div class="setup-icon">
+        P
       </div>
+
     </div>
-  }
 
-  @if (editingSlotId() !== null) {
+
     <form
-      [formGroup]="editForm"
-      (ngSubmit)="saveSlot()"
-      class="space-y-4 rounded-2xl border border-slate-200
-             bg-white p-6 shadow-sm"
-    >
-      <h2 class="font-semibold text-slate-900">
-        Edit Parking Slot
-      </h2>
+      [formGroup]="layoutForm"
+      (ngSubmit)="generateLayout()">
 
-      <div class="grid gap-4 md:grid-cols-2">
-        <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">
+      <div class="field-group full">
+
+        <label for="parkingEvent">
+          Event
+        </label>
+
+        <select
+          id="parkingEvent"
+          formControlName="eventId"
+          (change)="eventChanged()">
+
+          <option [ngValue]="0">
+            Select event
+          </option>
+
+          @for (eventItem of events(); track eventItem.id) {
+
+            <option [ngValue]="eventItem.id">
+              {{ eventItem.name }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      @if (selectedEvent) {
+
+        <div class="event-summary">
+
+          <div>
+            <span>Selected Event</span>
+            <strong>{{ selectedEvent!.name }}</strong>
+          </div>
+
+          <div>
+            <span>Parking Fee</span>
+
+            <strong>
+              LKR
+              {{
+                selectedEvent!.parkingFee
+                  | number:'1.2-2'
+              }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Configured Slots</span>
+            <strong>{{ parkingSlots().length }}</strong>
+          </div>
+
+          <div>
+            <span>Parking Zones</span>
+            <strong>{{ zoneCount }}</strong>
+          </div>
+
+        </div>
+
+      }
+
+
+      <div class="layout-fields">
+
+        <div class="field-group">
+
+          <label for="parkingZone">
             Zone
           </label>
 
           <input
+            id="parkingZone"
             type="text"
             formControlName="zone"
-            class="w-full rounded-xl border border-slate-300
-                   px-3 py-2.5"
-          />
+            placeholder="Example: A">
+
+          @if (
+            layoutForm.controls.zone.touched &&
+            layoutForm.controls.zone.invalid
+          ) {
+            <small>
+              Zone is required.
+            </small>
+          }
+
         </div>
 
-        <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">
-            Slot number
+
+        <div class="field-group">
+
+          <label for="numberOfSlots">
+            Number of slots
           </label>
 
           <input
+            id="numberOfSlots"
             type="number"
             min="1"
-            formControlName="slotNumber"
-            class="w-full rounded-xl border border-slate-300
-                   px-3 py-2.5"
-          />
+            formControlName="numberOfSlots">
+
+          @if (
+            layoutForm.controls.numberOfSlots.touched &&
+            layoutForm.controls.numberOfSlots.invalid
+          ) {
+            <small>
+              Enter at least one parking slot.
+            </small>
+          }
+
         </div>
+
       </div>
 
-      <div class="flex gap-3">
+
+      <div class="generate-row">
+
+        <div>
+          <span>New parking zone</span>
+
+          <strong>
+            Zone
+            {{
+              layoutForm.controls.zone.value
+                ? layoutForm.controls.zone.value.toUpperCase()
+                : '-'
+            }}
+            ·
+            {{ layoutForm.controls.numberOfSlots.value }}
+            slot{{
+              layoutForm.controls.numberOfSlots.value === 1
+                ? ''
+                : 's'
+            }}
+          </strong>
+        </div>
+
+
         <button
           type="submit"
-          [disabled]="saving()"
-          class="rounded-xl bg-indigo-600 px-5 py-2.5
-                 text-sm font-semibold text-white"
-        >
-          Save Slot
+          class="primary-button"
+          [disabled]="saving()">
+
+          {{
+            saving()
+              ? 'Generating...'
+              : 'Add Parking Zone'
+          }}
+
         </button>
 
-        <button
-          type="button"
-          (click)="cancelEdit()"
-          class="rounded-xl border border-slate-300
-                 px-5 py-2.5 text-sm font-semibold text-slate-700"
-        >
-          Cancel
-        </button>
       </div>
+
     </form>
+
+  </section>
+
+
+  @if (loading()) {
+
+    <div class="state-card">
+
+      <div class="loader"></div>
+
+      <strong>
+        Loading parking layout
+      </strong>
+
+      <span>
+        Retrieving parking information...
+      </span>
+
+    </div>
+
   }
+
+
+  @if (parkingSlots().length > 0) {
+
+    <section class="stats-grid">
+
+      <article>
+
+        <div class="stat-icon total">
+          T
+        </div>
+
+        <span>Total Slots</span>
+
+        <strong>
+          {{ parkingSlots().length }}
+        </strong>
+
+      </article>
+
+
+      <article>
+
+        <div class="stat-icon available">
+          A
+        </div>
+
+        <span>Available</span>
+
+        <strong>
+          {{ availableSlotCount }}
+        </strong>
+
+      </article>
+
+
+      <article>
+
+        <div class="stat-icon held">
+          H
+        </div>
+
+        <span>Held</span>
+
+        <strong>
+          {{ heldSlotCount }}
+        </strong>
+
+      </article>
+
+
+      <article>
+
+        <div class="stat-icon occupied">
+          O
+        </div>
+
+        <span>Occupied</span>
+
+        <strong>
+          {{ occupiedSlotCount }}
+        </strong>
+
+      </article>
+
+    </section>
+
+
+    <section class="parking-map-card">
+
+      <div class="map-header">
+
+        <div>
+
+          <span class="eyebrow">
+            VISUAL LAYOUT
+          </span>
+
+          <h2>
+            {{ selectedEvent?.name }} Parking Map
+          </h2>
+
+          <p>
+            Available slots can be edited or removed.
+          </p>
+
+        </div>
+
+
+        <div class="legend">
+
+          <span>
+            <i class="legend-dot available-dot"></i>
+            Available
+          </span>
+
+          <span>
+            <i class="legend-dot held-dot"></i>
+            Held
+          </span>
+
+          <span>
+            <i class="legend-dot occupied-dot"></i>
+            Occupied
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="parking-entrance">
+        PARKING ENTRY
+      </div>
+
+
+      <div class="parking-grid">
+
+        @for (slot of parkingSlots(); track slot.id) {
+
+          <article
+            class="parking-slot"
+            [class.slot-available]="slot.status === 'Available'"
+            [class.slot-held]="slot.status === 'Held'"
+            [class.slot-occupied]="slot.status === 'Occupied'">
+
+            <div class="slot-top">
+
+              <span class="parking-symbol">
+                P
+              </span>
+
+              <span class="status-pill">
+                {{ slot.status }}
+              </span>
+
+            </div>
+
+
+            <strong class="slot-code">
+              {{ slot.zone }}-{{ slot.slotNumber }}
+            </strong>
+
+            <span class="slot-caption">
+              Parking Space
+            </span>
+
+
+            @if (slot.status === 'Available') {
+
+              <div class="slot-actions">
+
+                <button
+                  type="button"
+                  class="edit-button"
+                  (click)="editSlot(slot)">
+
+                  Edit
+
+                </button>
+
+                <button
+                  type="button"
+                  class="delete-button"
+                  (click)="deleteSlot(slot)">
+
+                  Delete
+
+                </button>
+
+              </div>
+
+            }
+
+          </article>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+
+  @if (
+    !loading() &&
+    selectedEvent &&
+    parkingSlots().length === 0
+  ) {
+
+    <div class="state-card">
+
+      <div class="empty-icon">
+        P
+      </div>
+
+      <strong>
+        No parking slots configured
+      </strong>
+
+      <span>
+        Add the first parking zone using the form above.
+      </span>
+
+    </div>
+
+  }
+
+
+  @if (editingSlotId() !== null) {
+
+    <section class="edit-card">
+
+      <div class="section-title">
+
+        <div>
+
+          <span class="eyebrow">
+            SLOT EDITOR
+          </span>
+
+          <h2>
+            Edit Parking Slot
+          </h2>
+
+        </div>
+
+        <div class="setup-icon edit">
+          E
+        </div>
+
+      </div>
+
+
+      <form
+        [formGroup]="editForm"
+        (ngSubmit)="saveSlot()">
+
+        <div class="layout-fields">
+
+          <div class="field-group">
+
+            <label for="editZone">
+              Zone
+            </label>
+
+            <input
+              id="editZone"
+              type="text"
+              formControlName="zone">
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="editSlotNumber">
+              Slot number
+            </label>
+
+            <input
+              id="editSlotNumber"
+              type="number"
+              min="1"
+              formControlName="slotNumber">
+
+          </div>
+
+        </div>
+
+
+        <div class="edit-actions">
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="saving()">
+
+            Save Slot
+
+          </button>
+
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="cancelEdit()">
+
+            Cancel
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  }
+
 
   <app-confirmation-dialog
     [open]="pendingDeleteSlot() !== null"
@@ -247,4 +554,5 @@
     (confirmed)="confirmDelete()"
     (cancelled)="cancelDelete()"
   />
+
 </section>

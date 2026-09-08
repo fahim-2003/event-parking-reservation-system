@@ -22,6 +22,13 @@ export class PaymentHistory implements OnInit {
   bookingId = 0;
   paymentMethod = 'Card';
 
+  cardholderName = '';
+  cardNumber = '';
+  expiryDate = '';
+  cvv = '';
+
+  mobileNumber = '';
+
   loading = false;
   errorMessage = '';
   successMessage = '';
@@ -37,11 +44,38 @@ export class PaymentHistory implements OnInit {
     this.loadPayments();
   }
 
+  selectMethod(method: string): void {
+    this.paymentMethod = method;
+    this.errorMessage = '';
+  }
+
   pay(): void {
 
     if (!this.bookingId) {
       this.errorMessage =
         'No booking selected for payment.';
+      return;
+    }
+
+    if (this.paymentMethod === 'Card') {
+      if (
+        !this.cardholderName.trim() ||
+        !this.cardNumber.trim() ||
+        !this.expiryDate.trim() ||
+        !this.cvv.trim()
+      ) {
+        this.errorMessage =
+          'Please complete the card details.';
+        return;
+      }
+    }
+
+    if (
+      this.paymentMethod === 'Mobile' &&
+      !this.mobileNumber.trim()
+    ) {
+      this.errorMessage =
+        'Please enter the mobile payment number.';
       return;
     }
 
@@ -57,10 +91,16 @@ export class PaymentHistory implements OnInit {
       .subscribe({
         next: payment => {
           this.successMessage =
-            `Payment completed. Amount: ${payment.amount.toFixed(2)}`;
+            `Payment completed successfully. Amount: Rs. ${payment.amount.toFixed(2)}`;
 
           this.loading = false;
           this.bookingId = 0;
+
+          this.cardholderName = '';
+          this.cardNumber = '';
+          this.expiryDate = '';
+          this.cvv = '';
+          this.mobileNumber = '';
 
           this.loadPayments();
         },
