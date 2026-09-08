@@ -1,215 +1,409 @@
-<section class="space-y-6">
-  <div>
-    <h1 class="text-2xl font-semibold text-slate-900">
-      Seat Layout
-    </h1>
+<section class="seat-page">
 
-    <p class="mt-1 text-sm text-slate-500">
-      Generate and manage event seat maps.
-    </p>
-  </div>
+  <header class="page-header">
+
+    <div>
+      <span class="eyebrow">SEATING OPERATIONS</span>
+
+      <h1>Seat Layout</h1>
+
+      <p>
+        Generate and manage event seating with live availability status.
+      </p>
+    </div>
+
+    <div class="total-card">
+      <span>Current Seats</span>
+      <strong>{{ seats().length }}</strong>
+    </div>
+
+  </header>
+
 
   @if (errorMessage()) {
-    <div
-      class="rounded-xl border border-red-200 bg-red-50
-             px-4 py-3 text-sm text-red-700"
-    >
+    <div class="alert error">
       {{ errorMessage() }}
     </div>
   }
 
-  <form
-    [formGroup]="layoutForm"
-    (ngSubmit)="generateLayout()"
-    class="space-y-5 rounded-2xl border border-slate-200
-           bg-white p-6 shadow-sm"
-  >
-    <div>
-      <label class="mb-1 block text-sm font-medium text-slate-700">
-        Event
-      </label>
 
-      <select
-        formControlName="eventId"
-        (change)="eventChanged()"
-        class="w-full rounded-xl border border-slate-300
-               px-3 py-2.5 outline-none transition
-               focus:border-indigo-500 focus:ring-2
-               focus:ring-indigo-100"
-      >
-        <option [ngValue]="0">Select event</option>
+  <section class="setup-card">
 
-        @for (eventItem of events(); track eventItem.id) {
-          <option [ngValue]="eventItem.id">
-            {{ eventItem.name }} — capacity {{ eventItem.capacity }}
+    <div class="section-title">
+      <div>
+        <span class="eyebrow">LAYOUT SETUP</span>
+        <h2>Configure Seat Map</h2>
+      </div>
+
+      <div class="setup-icon">S</div>
+    </div>
+
+
+    <form
+      [formGroup]="layoutForm"
+      (ngSubmit)="generateLayout()">
+
+      <div class="field-group full">
+
+        <label for="seatEvent">
+          Event
+        </label>
+
+        <select
+          id="seatEvent"
+          formControlName="eventId"
+          (change)="eventChanged()">
+
+          <option [ngValue]="0">
+            Select event
           </option>
-        }
-      </select>
-    </div>
 
-    @if (selectedEvent) {
-      <div
-        class="rounded-xl border border-indigo-100
-               bg-indigo-50 px-4 py-3 text-sm text-indigo-800"
-      >
-        Required seat count:
-        <strong>{{ selectedEvent!.capacity }}</strong>
-      </div>
-    }
+          @for (eventItem of events(); track eventItem.id) {
+            <option [ngValue]="eventItem.id">
+              {{ eventItem.name }} - capacity {{ eventItem.capacity }}
+            </option>
+          }
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Rows
-        </label>
+        </select>
 
-        <input
-          type="number"
-          min="1"
-          formControlName="rows"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5"
-        />
       </div>
 
-      <div>
-        <label class="mb-1 block text-sm font-medium text-slate-700">
-          Seats per row
-        </label>
 
-        <input
-          type="number"
-          min="1"
-          formControlName="seatsPerRow"
-          class="w-full rounded-xl border border-slate-300
-                 px-3 py-2.5"
-        />
+      @if (selectedEvent) {
+
+        <div class="event-summary">
+
+          <div>
+            <span>Selected Event</span>
+            <strong>{{ selectedEvent!.name }}</strong>
+          </div>
+
+          <div>
+            <span>Required Capacity</span>
+            <strong>{{ selectedEvent!.capacity }}</strong>
+          </div>
+
+          <div>
+            <span>Proposed Seats</span>
+
+            <strong
+              [class.good]="layoutMatchesCapacity"
+              [class.bad]="!layoutMatchesCapacity">
+
+              {{ requestedSeatCount }}
+
+            </strong>
+          </div>
+
+          <div>
+            <span>Layout Check</span>
+
+            <strong
+              [class.good]="layoutMatchesCapacity"
+              [class.bad]="!layoutMatchesCapacity">
+
+              {{
+                layoutMatchesCapacity
+                  ? 'Ready'
+                  : 'Adjust layout'
+              }}
+
+            </strong>
+          </div>
+
+        </div>
+
+      }
+
+
+      <div class="layout-fields">
+
+        <div class="field-group">
+
+          <label for="seatRows">
+            Rows
+          </label>
+
+          <input
+            id="seatRows"
+            type="number"
+            min="1"
+            formControlName="rows">
+
+        </div>
+
+
+        <div class="field-group">
+
+          <label for="seatsPerRow">
+            Seats per row
+          </label>
+
+          <input
+            id="seatsPerRow"
+            type="number"
+            min="1"
+            formControlName="seatsPerRow">
+
+        </div>
+
       </div>
-    </div>
 
-    <p class="text-sm text-slate-500">
-      Proposed seats:
-      <strong>{{ requestedSeatCount }}</strong>
-    </p>
 
-    <button
-      type="submit"
-      [disabled]="saving() || seats().length > 0"
-      class="rounded-xl bg-indigo-600 px-5 py-2.5
-             text-sm font-semibold text-white transition
-             hover:bg-indigo-700 disabled:cursor-not-allowed
-             disabled:opacity-50"
-    >
-      {{ saving() ? 'Generating...' : 'Generate Seat Map' }}
-    </button>
-  </form>
+      <div class="generate-row">
+
+        <div>
+          <span>Proposed layout</span>
+
+          <strong>
+            {{ layoutForm.controls.rows.value }}
+            ×
+            {{ layoutForm.controls.seatsPerRow.value }}
+            =
+            {{ requestedSeatCount }} seats
+          </strong>
+        </div>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="saving() || seats().length > 0">
+
+          {{
+            saving()
+              ? 'Generating...'
+              : seats().length > 0
+                ? 'Seat Map Generated'
+                : 'Generate Seat Map'
+          }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
 
   @if (loading()) {
-    <div class="text-sm text-slate-500">
-      Loading...
+
+    <div class="state-card">
+      <div class="loader"></div>
+      <strong>Loading seat layout</strong>
+      <span>Retrieving seating information...</span>
     </div>
+
   }
 
-  @if (seats().length > 0) {
-    <div
-      class="rounded-2xl border border-slate-200
-             bg-white p-6 shadow-sm"
-    >
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 class="font-semibold text-slate-900">
-            Seat Map
-          </h2>
 
-          <p class="text-sm text-slate-500">
-            {{ seats().length }} seats
+  @if (seats().length > 0) {
+
+    <section class="stats-grid">
+
+      <article>
+        <div class="stat-icon total">T</div>
+        <span>Total Seats</span>
+        <strong>{{ seats().length }}</strong>
+      </article>
+
+      <article>
+        <div class="stat-icon available">A</div>
+        <span>Available</span>
+        <strong>{{ availableSeatCount }}</strong>
+      </article>
+
+      <article>
+        <div class="stat-icon held">H</div>
+        <span>Held</span>
+        <strong>{{ heldSeatCount }}</strong>
+      </article>
+
+      <article>
+        <div class="stat-icon booked">B</div>
+        <span>Booked</span>
+        <strong>{{ bookedSeatCount }}</strong>
+      </article>
+
+    </section>
+
+
+    <section class="seat-map-card">
+
+      <div class="map-header">
+
+        <div>
+          <span class="eyebrow">VISUAL LAYOUT</span>
+          <h2>{{ selectedEvent?.name }} Seat Map</h2>
+
+          <p>
+            Select an available seat to rename or remove it.
           </p>
         </div>
 
-        <div class="flex gap-3 text-xs text-slate-600">
-          <span>Available</span>
-          <span>Held</span>
-          <span>Booked</span>
+
+        <div class="legend">
+
+          <span>
+            <i class="legend-dot available-dot"></i>
+            Available
+          </span>
+
+          <span>
+            <i class="legend-dot held-dot"></i>
+            Held
+          </span>
+
+          <span>
+            <i class="legend-dot booked-dot"></i>
+            Booked
+          </span>
+
         </div>
+
       </div>
+
+
+      <div class="stage">
+        EVENT STAGE
+      </div>
+
 
       <div class="seat-grid">
+
         @for (seat of seats(); track seat.id) {
+
           <button
             type="button"
+            class="seat"
             (click)="editSeat(seat)"
             [disabled]="seat.status !== 'Available'"
-            class="seat"
             [class.seat-available]="seat.status === 'Available'"
             [class.seat-held]="seat.status === 'Held'"
-            [class.seat-booked]="seat.status === 'Booked'"
-          >
-            {{ seat.displayLabel }}
+            [class.seat-booked]="seat.status === 'Booked'">
+
+            <strong>
+              {{ seat.displayLabel }}
+            </strong>
+
+            <span>
+              {{ seat.status }}
+            </span>
+
           </button>
+
         }
+
       </div>
-    </div>
+
+    </section>
+
   }
+
 
   @if (editingSeatId() !== null) {
-    <form
-      [formGroup]="editForm"
-      (ngSubmit)="saveSeat()"
-      class="space-y-4 rounded-2xl border border-slate-200
-             bg-white p-6 shadow-sm"
-    >
-      <h2 class="font-semibold text-slate-900">
-        Rename Seat
-      </h2>
 
-      <div class="grid gap-4 md:grid-cols-2">
-        <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">
-            Row label
-          </label>
+    <section class="edit-card">
 
-          <input
-            type="text"
-            formControlName="rowLabel"
-            class="w-full rounded-xl border border-slate-300
-                   px-3 py-2.5"
-          />
-        </div>
+      <div class="section-title">
 
         <div>
-          <label class="mb-1 block text-sm font-medium text-slate-700">
-            Seat number
-          </label>
-
-          <input
-            type="number"
-            min="1"
-            formControlName="seatNumber"
-            class="w-full rounded-xl border border-slate-300
-                   px-3 py-2.5"
-          />
+          <span class="eyebrow">SEAT EDITOR</span>
+          <h2>Edit Selected Seat</h2>
         </div>
+
+        <div class="setup-icon edit">
+          E
+        </div>
+
       </div>
 
-      <div class="flex gap-3">
-        <button
-          type="submit"
-          [disabled]="saving()"
-          class="rounded-xl bg-indigo-600 px-5 py-2.5
-                 text-sm font-semibold text-white"
-        >
-          Save Seat
-        </button>
 
-        <button
-          type="button"
-          (click)="cancelEdit()"
-          class="rounded-xl border border-slate-300
-                 px-5 py-2.5 text-sm font-semibold text-slate-700"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+      <form
+        [formGroup]="editForm"
+        (ngSubmit)="saveSeat()">
+
+        <div class="layout-fields">
+
+          <div class="field-group">
+
+            <label for="rowLabel">
+              Row label
+            </label>
+
+            <input
+              id="rowLabel"
+              type="text"
+              formControlName="rowLabel"
+              placeholder="A">
+
+          </div>
+
+
+          <div class="field-group">
+
+            <label for="seatNumber">
+              Seat number
+            </label>
+
+            <input
+              id="seatNumber"
+              type="number"
+              min="1"
+              formControlName="seatNumber">
+
+          </div>
+
+        </div>
+
+
+        <div class="edit-actions">
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="saving()">
+
+            Save Seat
+
+          </button>
+
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="cancelEdit()">
+
+            Cancel
+
+          </button>
+
+
+          @for (seat of seats(); track seat.id) {
+
+            @if (seat.id === editingSeatId()) {
+
+              <button
+                type="button"
+                class="danger-button"
+                [disabled]="saving()"
+                (click)="deleteSeat(seat)">
+
+                Delete Seat
+
+              </button>
+
+            }
+
+          }
+
+        </div>
+
+      </form>
+
+    </section>
+
   }
+
 </section>

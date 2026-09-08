@@ -1,177 +1,409 @@
-<main class="page">
-  <section class="shell">
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Administration</p>
-        <h1>Customer management</h1>
-        <p>
-          Search registered customers and review account details.
-        </p>
-      </div>
-    </header>
+<section class="customers-page">
 
-    <section class="glass-card search-card">
-      <form
-        [formGroup]="searchForm"
-        (ngSubmit)="loadCustomers()"
-      >
+  <header class="page-header">
+
+    <div>
+      <span class="eyebrow">
+        CUSTOMER OPERATIONS
+      </span>
+
+      <h1>
+        Customer Management
+      </h1>
+
+      <p>
+        Search registered customers and review account information.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadCustomers()">
+      Refresh
+    </button>
+
+  </header>
+
+
+  @if (errorMessage()) {
+    <div class="alert">
+      {{ errorMessage() }}
+    </div>
+  }
+
+
+  <section class="stats-grid">
+
+    <article>
+      <div class="stat-icon total">C</div>
+
+      <div>
+        <span>Customer Records</span>
+        <strong>{{ customers().length }}</strong>
+        <small>Current search results</small>
+      </div>
+    </article>
+
+
+    <article>
+      <div class="stat-icon active">A</div>
+
+      <div>
+        <span>Active Accounts</span>
+        <strong>{{ activeCustomerCount }}</strong>
+        <small>Accounts currently active</small>
+      </div>
+    </article>
+
+
+    <article>
+      <div class="stat-icon verified">V</div>
+
+      <div>
+        <span>Email Verified</span>
+        <strong>{{ verifiedCustomerCount }}</strong>
+        <small>Verified customer emails</small>
+      </div>
+    </article>
+
+
+    <article>
+      <div class="stat-icon pending">P</div>
+
+      <div>
+        <span>Pending Verification</span>
+        <strong>{{ pendingVerificationCount }}</strong>
+        <small>Verification still required</small>
+      </div>
+    </article>
+
+  </section>
+
+
+  <section class="search-card">
+
+    <form
+      [formGroup]="searchForm"
+      (ngSubmit)="loadCustomers()">
+
+      <div class="search-field">
+
+        <span class="search-icon">
+          S
+        </span>
+
         <input
           type="search"
           formControlName="search"
-          placeholder="Search by customer name or email"
-        />
+          placeholder="Search customer name or email">
 
-        <button type="submit">
-          Search
-        </button>
+      </div>
+
+
+      <button
+        type="submit"
+        class="primary-button">
+
+        Search
+
+      </button>
+
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="clearSearch()">
+
+        Clear
+
+      </button>
+
+    </form>
+
+  </section>
+
+
+  <section class="customer-section">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="eyebrow">
+          CUSTOMER DIRECTORY
+        </span>
+
+        <h2>
+          Registered Customers
+        </h2>
+      </div>
+
+      <span class="result-count">
+        {{ customers().length }}
+        result{{ customers().length === 1 ? '' : 's' }}
+      </span>
+
+    </div>
+
+
+    @if (isLoading()) {
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <strong>
+          Loading customers
+        </strong>
+
+        <span>
+          Retrieving customer accounts...
+        </span>
+
+      </div>
+
+    } @else if (customers().length === 0) {
+
+      <div class="state-card">
+
+        <div class="empty-icon">
+          C
+        </div>
+
+        <strong>
+          No customers found
+        </strong>
+
+        <span>
+          Try another name or email address.
+        </span>
+
+      </div>
+
+    } @else {
+
+      <div class="customer-list">
+
+        @for (
+          customer of customers();
+          track customer.userId
+        ) {
+
+          <article class="customer-card">
+
+            <div class="customer-avatar">
+              {{
+                customer.fullName
+                  ? customer.fullName.charAt(0).toUpperCase()
+                  : 'C'
+              }}
+            </div>
+
+
+            <div class="identity">
+
+              <span class="customer-label">
+                CUSTOMER ACCOUNT
+              </span>
+
+              <h3>
+                {{ customer.fullName }}
+              </h3>
+
+              <span class="email">
+                {{ customer.email }}
+              </span>
+
+            </div>
+
+
+            <div class="customer-meta">
+
+              <div>
+                <span>Phone</span>
+
+                <strong>
+                  {{ customer.phoneNumber || 'Not provided' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Email Verification</span>
+
+                <strong
+                  [class.verified-text]="customer.emailVerified"
+                  [class.pending-text]="!customer.emailVerified">
+
+                  {{
+                    customer.emailVerified
+                      ? 'Verified'
+                      : 'Pending'
+                  }}
+
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Account Status</span>
+
+                <strong
+                  class="account-status"
+                  [class.status-active]="
+                    customer.accountStatus.toLowerCase() === 'active'
+                  ">
+
+                  {{ customer.accountStatus }}
+
+                </strong>
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="view-button"
+              (click)="viewCustomer(customer.userId)">
+
+              View Details
+
+            </button>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
+
+  @if (selectedCustomer()) {
+
+    <section class="details-card">
+
+      <div class="details-header">
+
+        <div class="details-person">
+
+          <div class="large-avatar">
+            {{
+              selectedCustomer()!.fullName
+                ? selectedCustomer()!.fullName.charAt(0).toUpperCase()
+                : 'C'
+            }}
+          </div>
+
+
+          <div>
+
+            <span class="eyebrow">
+              CUSTOMER DETAILS
+            </span>
+
+            <h2>
+              {{ selectedCustomer()!.fullName }}
+            </h2>
+
+            <p>
+              {{ selectedCustomer()!.email }}
+            </p>
+
+          </div>
+
+        </div>
+
 
         <button
           type="button"
-          class="secondary-button"
-          (click)="clearSearch()"
-        >
-          Clear
+          class="close-button"
+          (click)="closeDetails()">
+
+          Close
+
         </button>
-      </form>
-    </section>
 
-    @if (errorMessage()) {
-      <div class="alert" role="alert">
-        {{ errorMessage() }}
       </div>
-    }
 
-    <section class="glass-card">
-      <div class="section-header">
+
+      <div class="details-grid">
+
         <div>
-          <h2>Customers</h2>
-          <p>{{ customers().length }} record(s)</p>
+          <span>Email Address</span>
+
+          <strong>
+            {{ selectedCustomer()!.email }}
+          </strong>
         </div>
+
+
+        <div>
+          <span>Phone Number</span>
+
+          <strong>
+            {{
+              selectedCustomer()!.phoneNumber ||
+              'Not provided'
+            }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span>Email Verification</span>
+
+          <strong
+            [class.verified-text]="
+              selectedCustomer()!.emailVerified
+            "
+            [class.pending-text]="
+              !selectedCustomer()!.emailVerified
+            ">
+
+            {{
+              selectedCustomer()!.emailVerified
+                ? 'Verified'
+                : 'Pending'
+            }}
+
+          </strong>
+        </div>
+
+
+        <div>
+          <span>Account Status</span>
+
+          <strong
+            class="account-status"
+            [class.status-active]="
+              selectedCustomer()!.accountStatus.toLowerCase() === 'active'
+            ">
+
+            {{ selectedCustomer()!.accountStatus }}
+
+          </strong>
+        </div>
+
+
+        <div class="registered-detail">
+          <span>Registered</span>
+
+          <strong>
+            {{
+              selectedCustomer()!.createdAtUtc
+                | date:'EEE, d MMM y, h:mm a'
+            }}
+          </strong>
+        </div>
+
       </div>
 
-      @if (isLoading()) {
-        <div class="empty-state">
-          Loading customers...
-        </div>
-      } @else if (customers().length === 0) {
-        <div class="empty-state">
-          No customers found.
-        </div>
-      } @else {
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Verification</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              @for (customer of customers(); track customer.userId) {
-                <tr>
-                  <td>
-                    <strong>{{ customer.fullName }}</strong>
-                    <span>{{ customer.email }}</span>
-                  </td>
-
-                  <td>
-                    {{ customer.phoneNumber || 'Not provided' }}
-                  </td>
-
-                  <td>
-                    {{
-                      customer.emailVerified
-                        ? 'Verified'
-                        : 'Pending'
-                    }}
-                  </td>
-
-                  <td>
-                    <span class="status-pill">
-                      {{ customer.accountStatus }}
-                    </span>
-                  </td>
-
-                  <td>
-                    <button
-                      type="button"
-                      class="view-button"
-                      (click)="viewCustomer(customer.userId)"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
     </section>
 
-    @if (selectedCustomer()) {
-      <section class="glass-card details-card">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">Customer details</p>
-            <h2>{{ selectedCustomer()!.fullName }}</h2>
-          </div>
+  }
 
-          <button
-            type="button"
-            class="secondary-button"
-            (click)="closeDetails()"
-          >
-            Close
-          </button>
-        </div>
-
-        <div class="details-grid">
-          <div>
-            <span>Email</span>
-            <strong>{{ selectedCustomer()!.email }}</strong>
-          </div>
-
-          <div>
-            <span>Phone</span>
-            <strong>
-              {{ selectedCustomer()!.phoneNumber || 'Not provided' }}
-            </strong>
-          </div>
-
-          <div>
-            <span>Email verification</span>
-            <strong>
-              {{
-                selectedCustomer()!.emailVerified
-                  ? 'Verified'
-                  : 'Pending'
-              }}
-            </strong>
-          </div>
-
-          <div>
-            <span>Account status</span>
-            <strong>
-              {{ selectedCustomer()!.accountStatus }}
-            </strong>
-          </div>
-
-          <div>
-            <span>Registered</span>
-            <strong>
-              {{
-                selectedCustomer()!.createdAtUtc
-                  | date:'medium'
-              }}
-            </strong>
-          </div>
-        </div>
-      </section>
-    }
-  </section>
-</main>
+</section>

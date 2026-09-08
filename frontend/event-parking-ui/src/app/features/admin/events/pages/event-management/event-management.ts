@@ -24,7 +24,8 @@ import { EventApiService } from '../../services/event-api.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ConfirmationDialog
+    ConfirmationDialog,
+    ShortTextPipe
   ],
   templateUrl: './event-management.html',
   styleUrl: './event-management.css'

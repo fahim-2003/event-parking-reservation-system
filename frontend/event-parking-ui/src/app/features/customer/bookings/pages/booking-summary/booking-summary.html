@@ -1,152 +1,508 @@
-<section class="booking-summary">
+<section class="reservations-page">
 
-  <div *ngIf="booking" class="card">
+  <header class="page-header">
 
-    <h1>Booking Details</h1>
+    <div>
 
-    <p>
-      <strong>Booking:</strong>
-      {{ booking.bookingNumber }}
-    </p>
+      <span class="eyebrow">
+        MY RESERVATIONS
+      </span>
 
-    <p>
-      <strong>Event ID:</strong>
-      {{ booking.eventId }}
-    </p>
+      <h1>
+        Your Event Bookings
+      </h1>
 
-    <p>
-      <strong>Seats:</strong>
-      {{ booking.seatIds.join(', ') }}
-    </p>
+      <p>
+        Everything you have reserved,
+        all in one place.
+      </p>
 
-    <p>
-      <strong>Parking Slot:</strong>
-      {{ booking.parkingSlotId ?? 'Not selected' }}
-    </p>
-
-    <p>
-      <strong>Status:</strong>
-      {{ booking.status | bookingStatus }}
-    </p>
-
-    <p>
-      <strong>Payment:</strong>
-      {{ booking.paymentStatus }}
-    </p>
-
-    <p *ngIf="booking.status === 'Held'">
-      <strong>Hold expires:</strong>
-      {{ booking.holdExpiresAt | date:'medium' }}
-    </p>
+    </div>
 
     <a
-      *ngIf="
-        booking.status === 'Held' &&
-        booking.paymentStatus !== 'Completed'
-      "
-      [routerLink]="['/customer/payments']"
-      [queryParams]="{ bookingId: booking.id }">
-      Continue to Payment
+      routerLink="/customer/events"
+      class="browse-events-button">
+
+      <svg
+        viewBox="0 0 24 24"
+        width="17"
+        height="17"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2">
+
+        <circle
+          cx="11"
+          cy="11"
+          r="7">
+        </circle>
+
+        <path
+          d="m20 20-3.5-3.5">
+        </path>
+
+      </svg>
+
+      Find Events
+
     </a>
 
-    <button
-      *ngIf="canCancel(booking)"
-      type="button"
-      (click)="cancelBooking(booking)"
-      [disabled]="cancellingBookingId === booking.id">
+  </header>
 
-      {{
-        cancellingBookingId === booking.id
-          ? 'Cancelling...'
-          : 'Cancel Booking'
-      }}
 
-    </button>
+  <section class="booking-stats">
+
+    <article class="summary-stat">
+
+      <span class="stat-icon all">
+        R
+      </span>
+
+      <div>
+        <small>Total Reservations</small>
+
+        <strong>
+          {{ bookings.length }}
+        </strong>
+      </div>
+
+    </article>
+
+
+    <article class="summary-stat">
+
+      <span class="stat-icon confirmed-icon">
+        ✓
+      </span>
+
+      <div>
+        <small>Confirmed</small>
+
+        <strong>
+          {{ confirmedCount }}
+        </strong>
+      </div>
+
+    </article>
+
+
+    <article class="summary-stat">
+
+      <span class="stat-icon held-icon">
+        H
+      </span>
+
+      <div>
+        <small>Awaiting Payment</small>
+
+        <strong>
+          {{ heldCount }}
+        </strong>
+      </div>
+
+    </article>
+
+
+    <article class="summary-stat">
+
+      <span class="stat-icon cancelled-icon">
+        ×
+      </span>
+
+      <div>
+        <small>Cancelled</small>
+
+        <strong>
+          {{ cancelledCount }}
+        </strong>
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <div
+    *ngIf="actionMessage"
+    class="notice success">
+
+    {{ actionMessage }}
+
+  </div>
+
+  <div
+    *ngIf="errorMessage"
+    class="notice error">
+
+    {{ errorMessage }}
 
   </div>
 
 
-  <p *ngIf="actionMessage">
-    {{ actionMessage }}
-  </p>
+  <section
+    *ngIf="
+      booking &&
+      booking.status === 'Held'
+    "
+    class="new-booking-banner">
 
-  <p *ngIf="errorMessage">
-    {{ errorMessage }}
-  </p>
+    <div class="new-booking-icon">
+      ✓
+    </div>
+
+    <div class="new-booking-copy">
+
+      <span>
+        Reservation created
+      </span>
+
+      <strong>
+        {{ eventName(booking.eventId) }}
+      </strong>
+
+      <small>
+        Complete your payment before the
+        reservation hold expires.
+      </small>
+
+    </div>
+
+    <a
+      [routerLink]="['/customer/payments']"
+      [queryParams]="{
+        bookingId: booking.id
+      }"
+      class="pay-now-main">
+
+      Complete Payment
+
+    </a>
+
+  </section>
 
 
-  <h1>My Bookings</h1>
+  <div class="section-title">
 
-  <p *ngIf="loading">
-    Loading bookings...
-  </p>
+    <div>
 
-  <p *ngIf="!loading && bookings.length === 0">
-    No bookings yet.
-  </p>
+      <span class="eyebrow">
+        RESERVATION HISTORY
+      </span>
+
+      <h2>
+        Your Bookings
+      </h2>
+
+    </div>
+
+    <span class="record-count">
+      {{ bookings.length }}
+      total
+    </span>
+
+  </div>
 
 
   <div
-    class="card"
-    *ngFor="let item of bookings">
+    *ngIf="loading"
+    class="empty-state">
 
-    <h3>
-      {{ item.bookingNumber }}
-    </h3>
+    <div class="loader"></div>
 
-    <p>
-      <strong>Event:</strong>
-      {{ item.eventId }}
-    </p>
+    <strong>
+      Loading reservations
+    </strong>
 
-    <p>
-      <strong>Seats:</strong>
-      {{ item.seatIds.join(', ') }}
-    </p>
+    <span>
+      Getting your latest bookings...
+    </span>
 
-    <p>
-      <strong>Parking:</strong>
-      {{ item.parkingSlotId ?? 'Not selected' }}
-    </p>
+  </div>
 
-    <p>
-      <strong>Status:</strong>
-      {{ item.status | bookingStatus }}
-    </p>
 
-    <p>
-      <strong>Payment:</strong>
-      {{ item.paymentStatus }}
-    </p>
+  <div
+    *ngIf="
+      !loading &&
+      bookings.length === 0
+    "
+    class="empty-state">
 
-    <p *ngIf="item.status === 'Held'">
-      <strong>Hold expires:</strong>
-      {{ item.holdExpiresAt | date:'medium' }}
-    </p>
+    <div class="empty-mark">
+      P
+    </div>
+
+    <strong>
+      No reservations yet
+    </strong>
+
+    <span>
+      Find an upcoming event and reserve
+      your seat and parking.
+    </span>
 
     <a
-      *ngIf="
-        item.status === 'Held' &&
-        item.paymentStatus !== 'Completed'
-      "
-      [routerLink]="['/customer/payments']"
-      [queryParams]="{ bookingId: item.id }">
-      Pay Now
+      routerLink="/customer/events"
+      class="pay-now-main">
+
+      Browse Events
+
     </a>
 
-    <button
-      *ngIf="canCancel(item)"
-      type="button"
-      (click)="cancelBooking(item)"
-      [disabled]="cancellingBookingId === item.id">
+  </div>
 
-      {{
-        cancellingBookingId === item.id
-          ? 'Cancelling...'
-          : 'Cancel Booking'
-      }}
 
-    </button>
+  <div
+    *ngIf="
+      !loading &&
+      bookings.length > 0
+    "
+    class="reservation-list">
+
+    <article
+      *ngFor="let item of bookings"
+      class="reservation-card">
+
+      <div class="event-visual">
+
+        <div class="visual-glow"></div>
+
+        <span class="category-badge">
+          {{ eventCategory(item.eventId) }}
+        </span>
+
+        <div class="visual-letter">
+          {{
+            eventName(item.eventId)
+              | slice:0:1
+          }}
+        </div>
+
+      </div>
+
+
+      <div class="reservation-content">
+
+        <div class="reservation-heading">
+
+          <div class="event-heading-copy">
+
+            <span class="booking-reference">
+              {{ item.bookingNumber }}
+            </span>
+
+            <h3>
+              {{ eventName(item.eventId) }}
+            </h3>
+
+            <div class="venue-line">
+
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
+
+                <path
+                  d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z">
+                </path>
+
+                <circle
+                  cx="12"
+                  cy="10"
+                  r="2">
+                </circle>
+
+              </svg>
+
+              {{ eventVenue(item.eventId) }}
+
+            </div>
+
+            <div
+              *ngIf="
+                eventFor(item.eventId)
+                  ?.startDateTimeUtc
+              "
+              class="event-date">
+
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
+
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="16"
+                  rx="2">
+                </rect>
+
+                <path
+                  d="M16 3v4M8 3v4M3 11h18">
+                </path>
+
+              </svg>
+
+              {{
+                eventFor(item.eventId)
+                  ?.startDateTimeUtc
+                  | date:"EEE, d MMM y 'at' h:mm a"
+              }}
+
+            </div>
+
+          </div>
+
+
+          <span
+            class="status-pill"
+            [class.confirmed]="
+              item.status === 'Confirmed'
+            "
+            [class.held]="
+              item.status === 'Held'
+            "
+            [class.cancelled]="
+              item.status === 'Cancelled'
+            ">
+
+            {{
+              item.status |
+                bookingStatus
+            }}
+
+          </span>
+
+        </div>
+
+
+        <div class="reservation-details">
+
+          <div class="detail-item">
+
+            <span>
+              Seats
+            </span>
+
+            <strong>
+              {{
+                item.seatIds.join(', ')
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Parking
+            </span>
+
+            <strong>
+              {{
+                item.parkingSlotId
+                  ?? 'Not selected'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Payment
+            </span>
+
+            <strong
+              [class.payment-complete]="
+                item.paymentStatus ===
+                  'Completed'
+              ">
+
+              {{ item.paymentStatus }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div
+          *ngIf="
+            item.status === 'Held'
+          "
+          class="hold-notice">
+
+          <span>
+            Reservation held until
+          </span>
+
+          <strong>
+            {{
+              item.holdExpiresAt
+                | date:'medium'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div class="reservation-actions">
+
+          <a
+            *ngIf="
+              item.status === 'Held' &&
+              item.paymentStatus !==
+                'Completed'
+            "
+            [routerLink]="[
+              '/customer/payments'
+            ]"
+            [queryParams]="{
+              bookingId: item.id
+            }"
+            class="pay-action">
+
+            Pay Now
+
+          </a>
+
+
+          <button
+            *ngIf="canCancel(item)"
+            type="button"
+            class="cancel-action"
+            (click)="
+              cancelBooking(item)
+            "
+            [disabled]="
+              cancellingBookingId ===
+                item.id
+            ">
+
+            {{
+              cancellingBookingId ===
+                item.id
+                ? 'Cancelling...'
+                : 'Cancel Booking'
+            }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
 
   </div>
 

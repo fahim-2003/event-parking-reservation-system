@@ -1,4 +1,4 @@
-﻿namespace EventParking.API.DTOs.Events;
+namespace EventParking.API.DTOs.Events;
 
 public sealed class EventResponse
 {
@@ -11,6 +11,8 @@ public sealed class EventResponse
     public int VenueId { get; set; }
 
     public string VenueName { get; set; } = string.Empty;
+
+    public string VenueAddress { get; set; } = string.Empty;
 
     public int EventCategoryId { get; set; }
 

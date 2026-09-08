@@ -98,7 +98,7 @@ describe('Login', () => {
     component.submit();
 
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
-      '/customer/profile'
+      '/customer/dashboard'
     );
   });
 
@@ -123,7 +123,7 @@ describe('Login', () => {
     component.submit();
 
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
-      '/admin/customers'
+      '/admin/dashboard'
     );
   });
 

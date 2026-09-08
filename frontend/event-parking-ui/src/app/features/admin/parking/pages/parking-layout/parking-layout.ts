@@ -58,6 +58,29 @@ export class ParkingLayout {
     );
   }
 
+  get availableSlotCount(): number {
+    return this.parkingSlots().filter(
+      slot => slot.status === 'Available'
+    ).length;
+  }
+
+  get heldSlotCount(): number {
+    return this.parkingSlots().filter(
+      slot => slot.status === 'Held'
+    ).length;
+  }
+
+  get occupiedSlotCount(): number {
+    return this.parkingSlots().filter(
+      slot => slot.status === 'Occupied'
+    ).length;
+  }
+
+  get zoneCount(): number {
+    return new Set(
+      this.parkingSlots().map(slot => slot.zone)
+    ).size;
+  }
   loadEvents(): void {
     this.loading.set(true);
     this.errorMessage.set('');

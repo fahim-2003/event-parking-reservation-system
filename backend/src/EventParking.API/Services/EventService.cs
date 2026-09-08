@@ -1,4 +1,4 @@
-﻿using EventParking.API.Data;
+using EventParking.API.Data;
 using EventParking.API.DTOs.Events;
 using EventParking.API.Entities;
 using EventParking.API.Interfaces.Services;
@@ -36,6 +36,7 @@ public sealed class EventService : IEventService
                 Description = eventEntity.Description,
                 VenueId = eventEntity.VenueId,
                 VenueName = venue.Name,
+                VenueAddress = venue.Address,
                 EventCategoryId = eventEntity.EventCategoryId,
                 CategoryName = category.Name,
                 StartDateTimeUtc = eventEntity.StartDateTimeUtc,
@@ -105,6 +106,7 @@ public sealed class EventService : IEventService
                 Description = eventEntity.Description,
                 VenueId = eventEntity.VenueId,
                 VenueName = venue.Name,
+                VenueAddress = venue.Address,
                 EventCategoryId = eventEntity.EventCategoryId,
                 CategoryName = category.Name,
                 StartDateTimeUtc = eventEntity.StartDateTimeUtc,

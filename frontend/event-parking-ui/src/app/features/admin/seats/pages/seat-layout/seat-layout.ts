@@ -61,6 +61,28 @@ export class SeatLayout {
       this.layoutForm.controls.seatsPerRow.value
     );
   }
+  get availableSeatCount(): number {
+    return this.seats().filter(
+      seat => seat.status === 'Available'
+    ).length;
+  }
+
+  get heldSeatCount(): number {
+    return this.seats().filter(
+      seat => seat.status === 'Held'
+    ).length;
+  }
+
+  get bookedSeatCount(): number {
+    return this.seats().filter(
+      seat => seat.status === 'Booked'
+    ).length;
+  }
+
+  get layoutMatchesCapacity(): boolean {
+    return !!this.selectedEvent &&
+      this.requestedSeatCount === this.selectedEvent.capacity;
+  }
 
   loadEvents(): void {
     this.loading.set(true);
@@ -97,7 +119,46 @@ export class SeatLayout {
     this.seatApi.getByEvent(eventId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: seats => this.seats.set(seats),
+        next: seats => {
+          this.seats.set(seats);
+
+          if (seats.length > 0) {
+            const rowLabels = [
+              ...new Set(
+                seats.map(seat => seat.rowLabel)
+              )
+            ];
+
+            const seatsPerRow =
+              rowLabels.length === 0
+                ? 1
+                : Math.max(
+                    ...rowLabels.map(
+                      rowLabel =>
+                        seats.filter(
+                          seat =>
+                            seat.rowLabel === rowLabel
+                        ).length
+                    )
+                  );
+
+            this.layoutForm.patchValue(
+              {
+                rows: Math.max(
+                  rowLabels.length,
+                  1
+                ),
+                seatsPerRow: Math.max(
+                  seatsPerRow,
+                  1
+                )
+              },
+              {
+                emitEvent: false
+              }
+            );
+          }
+        },
         error: () =>
           this.errorMessage.set(
             'Unable to load the seat layout.'
@@ -137,7 +198,46 @@ export class SeatLayout {
     })
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
-        next: seats => this.seats.set(seats),
+        next: seats => {
+          this.seats.set(seats);
+
+          if (seats.length > 0) {
+            const rowLabels = [
+              ...new Set(
+                seats.map(seat => seat.rowLabel)
+              )
+            ];
+
+            const seatsPerRow =
+              rowLabels.length === 0
+                ? 1
+                : Math.max(
+                    ...rowLabels.map(
+                      rowLabel =>
+                        seats.filter(
+                          seat =>
+                            seat.rowLabel === rowLabel
+                        ).length
+                    )
+                  );
+
+            this.layoutForm.patchValue(
+              {
+                rows: Math.max(
+                  rowLabels.length,
+                  1
+                ),
+                seatsPerRow: Math.max(
+                  seatsPerRow,
+                  1
+                )
+              },
+              {
+                emitEvent: false
+              }
+            );
+          }
+        },
         error: error => {
           const detail =
             error?.error?.detail ??

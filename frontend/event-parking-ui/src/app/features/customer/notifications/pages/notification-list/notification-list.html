@@ -1,45 +1,282 @@
-<section>
+<section class="notifications-page">
 
-  <h1>Notifications</h1>
+  <header class="page-header">
 
-  <p>
-    Your latest booking and payment updates.
-  </p>
+    <div>
 
-  <p *ngIf="loading">
-    Loading notifications...
-  </p>
+      <span class="eyebrow">
+        ACTIVITY CENTER
+      </span>
 
-  <p *ngIf="errorMessage">
-    {{ errorMessage }}
-  </p>
+      <h1>
+        Notifications
+      </h1>
 
-  <p *ngIf="!loading && notifications.length === 0">
-    No notifications yet.
-  </p>
+      <p>
+        Stay updated with your bookings,
+        payments and reservation activity.
+      </p>
 
-  <div
-    class="card"
-    *ngFor="let notification of notifications">
+    </div>
 
-    <h3>
-      {{ notification.isRead ? 'Notification' : 'New Notification' }}
-    </h3>
-
-    <p>
-      {{ notification.message }}
-    </p>
-
-    <p>
-      {{ notification.createdAt | date:'medium' }}
-    </p>
 
     <button
-      *ngIf="!notification.isRead"
       type="button"
-      (click)="markRead(notification)">
-      Mark as Read
+      class="refresh-button"
+      (click)="load()"
+      [disabled]="loading">
+
+      Refresh
+
     </button>
+
+  </header>
+
+
+  <section class="notification-stats">
+
+    <article class="stat-card">
+
+      <div class="stat-icon all-icon">
+        N
+      </div>
+
+      <div>
+
+        <span>
+          All Notifications
+        </span>
+
+        <strong>
+          {{ notifications.length }}
+        </strong>
+
+        <small>
+          Total activity updates
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+      <div class="stat-icon unread-icon">
+        U
+      </div>
+
+      <div>
+
+        <span>
+          Unread
+        </span>
+
+        <strong>
+          {{ unreadCount }}
+        </strong>
+
+        <small>
+          Needs your attention
+        </small>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <div
+    *ngIf="loading"
+    class="state-card">
+
+    <div class="loader"></div>
+
+    <strong>
+      Loading notifications
+    </strong>
+
+    <span>
+      Retrieving your latest activity...
+    </span>
+
+  </div>
+
+
+  <div
+    *ngIf="!loading && errorMessage"
+    class="state-card error">
+
+    <strong>
+      Unable to load notifications
+    </strong>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+  </div>
+
+
+  <div
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      notifications.length === 0
+    "
+    class="state-card">
+
+    <div class="empty-icon">
+      N
+    </div>
+
+    <strong>
+      No notifications yet
+    </strong>
+
+    <span>
+      Booking and payment updates
+      will appear here.
+    </span>
+
+  </div>
+
+
+  <div
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      notifications.length > 0
+    "
+    class="notification-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="eyebrow">
+          RECENT ACTIVITY
+        </span>
+
+        <h2>
+          Your Updates
+        </h2>
+
+      </div>
+
+      <span class="activity-count">
+        {{ notifications.length }}
+        update{{ notifications.length === 1 ? '' : 's' }}
+      </span>
+
+    </div>
+
+
+    <div class="notification-list">
+
+      <article
+        *ngFor="let notification of notifications"
+        class="notification-card"
+        [class.unread]="!notification.isRead"
+        [ngClass]="notificationKind(notification)">
+
+        <div class="notification-icon">
+
+          {{
+            notificationLetter(notification)
+          }}
+
+        </div>
+
+
+        <div class="notification-content">
+
+          <div class="notification-top">
+
+            <div>
+
+              <div class="title-row">
+
+                <h3>
+                  {{
+                    notificationTitle(
+                      notification
+                    )
+                  }}
+                </h3>
+
+                <span
+                  *ngIf="!notification.isRead"
+                  class="new-badge">
+
+                  NEW
+
+                </span>
+
+              </div>
+
+              <span class="notification-date">
+
+                {{
+                  notification.createdAt
+                    | date:"EEE, d MMM y 'at' h:mm a"
+                }}
+
+              </span>
+
+            </div>
+
+
+            <span
+              class="read-status"
+              [class.read]="notification.isRead">
+
+              {{
+                notification.isRead
+                  ? 'Read'
+                  : 'Unread'
+              }}
+
+            </span>
+
+          </div>
+
+
+          <p class="notification-message">
+
+            {{ notification.message }}
+
+          </p>
+
+
+          <div class="notification-actions">
+
+            <button
+              *ngIf="!notification.isRead"
+              type="button"
+              class="mark-read-button"
+              (click)="markRead(notification)">
+
+              Mark as Read
+
+            </button>
+
+            <span
+              *ngIf="notification.isRead"
+              class="read-confirmation">
+
+              Viewed
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
 
   </div>
 
