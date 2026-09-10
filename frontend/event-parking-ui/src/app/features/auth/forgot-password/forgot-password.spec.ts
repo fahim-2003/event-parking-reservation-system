@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import {
   beforeEach,
@@ -19,8 +20,13 @@ describe('ForgotPassword', () => {
     forgotPassword: vi.fn()
   };
 
+  const routerMock = {
+    navigate: vi.fn()
+  };
+
   beforeEach(async () => {
     authServiceMock.forgotPassword.mockReset();
+    routerMock.navigate.mockReset();
 
     await TestBed.configureTestingModule({
       imports: [ForgotPassword],
@@ -28,6 +34,10 @@ describe('ForgotPassword', () => {
         {
           provide: AuthService,
           useValue: authServiceMock
+        },
+        {
+          provide: Router,
+          useValue: routerMock
         }
       ]
     }).compileComponents();
@@ -41,7 +51,7 @@ describe('ForgotPassword', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should reject an empty email', () => {
+  it('should reject an empty phone number', () => {
     component.submit();
 
     expect(component.form.invalid).toBe(true);
@@ -51,16 +61,16 @@ describe('ForgotPassword', () => {
     ).not.toHaveBeenCalled();
   });
 
-  it('should submit a valid email', () => {
+  it('should submit a valid phone number and navigate to reset', () => {
     authServiceMock.forgotPassword.mockReturnValue(
       of({
         message:
-          'If the account is eligible, password reset instructions have been sent.'
+          'If an eligible account exists, a password reset OTP has been generated.'
       })
     );
 
     component.form.setValue({
-      email: 'customer1@eventparking.local'
+      phoneNumber: '0773964123'
     });
 
     component.submit();
@@ -68,12 +78,17 @@ describe('ForgotPassword', () => {
     expect(
       authServiceMock.forgotPassword
     ).toHaveBeenCalledWith({
-      email: 'customer1@eventparking.local'
+      phoneNumber: '0773964123'
     });
 
-    expect(
-      component.successMessage().length
-    ).toBeGreaterThan(0);
+    expect(routerMock.navigate).toHaveBeenCalledWith(
+      ['/reset-password'],
+      {
+        queryParams: {
+          phoneNumber: '0773964123'
+        }
+      }
+    );
 
     expect(component.isSubmitting()).toBe(false);
   });

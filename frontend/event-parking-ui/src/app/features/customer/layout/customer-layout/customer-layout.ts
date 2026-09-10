@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   RouterLink,
   RouterLinkActive,
   RouterOutlet
 } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-customer-layout',
@@ -16,4 +17,10 @@ import {
   templateUrl: './customer-layout.html',
   styleUrl: './customer-layout.css'
 })
-export class CustomerLayoutComponent {}
+export class CustomerLayoutComponent {
+  private readonly authService = inject(AuthService);
+
+  logout(): void {
+    this.authService.logout();
+  }
+}

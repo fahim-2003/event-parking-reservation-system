@@ -1,4 +1,4 @@
-:host {
+﻿:host {
   display: block;
   height: 100%;
 }
@@ -412,3 +412,97 @@
   }
 
 }
+.logout-button {
+  margin-left: auto;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid rgba(239, 68, 68, 0.16);
+  border-radius: 12px;
+  background: rgba(254, 242, 242, 0.8);
+  color: #dc2626;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    transform 160ms ease,
+    border-color 160ms ease;
+}
+
+.logout-button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+}
+
+.logout-button:hover {
+  border-color: rgba(239, 68, 68, 0.28);
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+.logout-button:focus-visible {
+  outline: 3px solid rgba(239, 68, 68, 0.16);
+  outline-offset: 2px;
+}
+
+/* FINAL LOGOUT FOOTER OVERRIDE START */
+.sidebar-footer {
+  margin-top: auto;
+  padding: 18px 16px 20px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  background: transparent;
+}
+
+.logout-button {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  border-radius: 14px;
+  background: rgba(254, 242, 242, 0.82);
+  color: #dc2626;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.logout-button svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  fill: none;
+}
+
+.logout-button:hover {
+  background: #fee2e2;
+  border-color: rgba(239, 68, 68, 0.30);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.08);
+}
+
+.logout-button:active {
+  transform: translateY(0);
+}
+
+.logout-button:focus-visible {
+  outline: 3px solid rgba(239, 68, 68, 0.16);
+  outline-offset: 2px;
+}
+/* FINAL LOGOUT FOOTER OVERRIDE END */

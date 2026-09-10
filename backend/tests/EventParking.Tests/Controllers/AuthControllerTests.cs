@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using EventParking.API.Controllers;
 using EventParking.API.DTOs.Auth;
 using EventParking.API.Interfaces.Services;
@@ -377,7 +377,7 @@ public sealed class AuthControllerTests
         var request =
             new ForgotPasswordRequest
             {
-                Email = "missing@eventparking.local"
+                PhoneNumber = "0770000000"
             };
 
         var message =
@@ -385,7 +385,7 @@ public sealed class AuthControllerTests
             {
                 Message =
                     "If an eligible account exists, " +
-                    "a password reset link has been generated."
+                    "a password reset OTP has been generated."
             };
 
         authService
@@ -417,8 +417,8 @@ public sealed class AuthControllerTests
         var request =
             new ResetPasswordRequest
             {
-                UserId = "customer-1",
-                Token = "reset-token",
+                PhoneNumber = "0771234567",
+                Otp = "123456",
                 NewPassword = "weakpass"
             };
 
@@ -498,3 +498,5 @@ public sealed class AuthControllerTests
         };
     }
 }
+
+

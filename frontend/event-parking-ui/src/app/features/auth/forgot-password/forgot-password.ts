@@ -1,10 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -17,25 +18,23 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ForgotPassword {
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal('');
-  readonly successMessage = signal('');
 
   readonly form = this.formBuilder.nonNullable.group({
-    email: [
+    phoneNumber: [
       '',
       [
         Validators.required,
-        Validators.email,
-        Validators.maxLength(256)
+        Validators.pattern(/^\+?[0-9]{9,15}$/)
       ]
     ]
   });
 
   submit(): void {
     this.errorMessage.set('');
-    this.successMessage.set('');
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -44,12 +43,23 @@ export class ForgotPassword {
 
     this.isSubmitting.set(true);
 
+    const phoneNumber =
+      this.form.controls.phoneNumber.value.trim();
+
     this.authService
-      .forgotPassword(this.form.getRawValue())
+      .forgotPassword({ phoneNumber })
       .subscribe({
-        next: response => {
+        next: () => {
           this.isSubmitting.set(false);
-          this.successMessage.set(response.message);
+
+          void this.router.navigate(
+            ['/reset-password'],
+            {
+              queryParams: {
+                phoneNumber
+              }
+            }
+          );
         },
         error: (error: HttpErrorResponse) => {
           this.isSubmitting.set(false);
@@ -57,14 +67,14 @@ export class ForgotPassword {
           this.errorMessage.set(
             typeof error.error?.detail === 'string'
               ? error.error.detail
-              : 'Unable to process the password reset request.'
+              : 'Unable to send the password reset OTP.'
           );
         }
       });
   }
 
   hasError(errorName: string): boolean {
-    const control = this.form.controls.email;
+    const control = this.form.controls.phoneNumber;
 
     return control.touched &&
       control.hasError(errorName);

@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   inject,
@@ -47,18 +47,21 @@ export class ResetPassword {
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
 
-  readonly userId =
-    this.route.snapshot.queryParamMap.get('userId') ?? '';
+  readonly phoneNumber =
+    this.route.snapshot.queryParamMap.get('phoneNumber') ?? '';
 
-  readonly token =
-    this.route.snapshot.queryParamMap.get('token') ?? '';
-
-  readonly hasValidLink =
-    this.userId.length > 0 &&
-    this.token.length > 0;
+  readonly hasValidRequest =
+    this.phoneNumber.trim().length > 0;
 
   readonly form = this.formBuilder.nonNullable.group(
     {
+      otp: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{6}$/)
+        ]
+      ],
       newPassword: [
         '',
         [
@@ -84,9 +87,9 @@ export class ResetPassword {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    if (!this.hasValidLink) {
+    if (!this.hasValidRequest) {
       this.errorMessage.set(
-        'This password reset link is incomplete or invalid.'
+        'The password reset request is incomplete.'
       );
       return;
     }
@@ -101,8 +104,8 @@ export class ResetPassword {
     const values = this.form.getRawValue();
 
     this.authService.resetPassword({
-      userId: this.userId,
-      token: this.token,
+      phoneNumber: this.phoneNumber,
+      otp: values.otp,
       newPassword: values.newPassword
     }).subscribe({
       next: response => {
@@ -110,6 +113,7 @@ export class ResetPassword {
         this.successMessage.set(response.message);
 
         this.form.reset({
+          otp: '',
           newPassword: '',
           confirmPassword: ''
         });
@@ -120,7 +124,7 @@ export class ResetPassword {
         this.errorMessage.set(
           typeof error.error?.detail === 'string'
             ? error.error.detail
-            : 'Unable to reset the password. The link may be invalid or expired.'
+            : 'Unable to reset the password. The OTP may be invalid or expired.'
         );
       }
     });
@@ -135,7 +139,7 @@ export class ResetPassword {
   }
 
   hasError(
-    controlName: 'newPassword' | 'confirmPassword',
+    controlName: 'otp' | 'newPassword' | 'confirmPassword',
     errorName: string
   ): boolean {
     const control = this.form.controls[controlName];
