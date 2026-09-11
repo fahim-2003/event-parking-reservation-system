@@ -523,3 +523,160 @@ input:focus {
   }
 
 }
+
+/* Match Login page outer card dimensions */
+.register-card,
+.auth-card {
+  width: min(1180px, calc(100vw - 56px));
+  max-width: 1180px;
+}
+
+/* Keep the registration form usable but visually aligned */
+.register-page .register-card,
+.register-page .auth-card {
+  min-height: 700px;
+  max-height: 800px;
+}
+
+/* Register logo same size as Login */
+.register-page .brand-logo,
+.register-page .logo-image,
+.register-page .auth-logo {
+  width: 190px;
+  height: 130px;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+
+/* FINAL: Match Login card dimensions exactly */
+.register-page {
+  min-height: 100vh;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-card {
+  width: min(1180px, calc(100vw - 56px));
+  height: min(760px, calc(100vh - 56px));
+  min-height: 700px;
+  max-height: 760px;
+  grid-template-columns: 49% 51%;
+  overflow: hidden;
+}
+
+.register-card .visual-panel,
+.register-card .form-panel {
+  height: 100%;
+  min-height: 0;
+}
+
+/* If register form content is taller, scroll only inside right panel */
+.register-card .form-panel {
+  overflow-y: auto;
+}
+
+/* =========================================================
+   FINAL AUTH DIMENSION LOCK - MATCH LOGIN
+   ========================================================= */
+@media (min-width: 901px) {
+  .register-page {
+    min-height: 100vh !important;
+    height: 100vh !important;
+    padding: 24px !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .register-card {
+    width: min(1180px, calc(100vw - 48px)) !important;
+    height: min(760px, calc(100vh - 48px)) !important;
+    min-height: 700px !important;
+    max-height: 760px !important;
+    grid-template-columns: 49% 51% !important;
+    margin: 0 !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+  }
+
+  .register-card .photo-panel,
+  .register-card .visual-panel,
+  .register-card .form-panel {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .register-card .form-panel {
+    overflow-y: auto !important;
+  }
+
+  .register-page .brand-logo {
+    width: 210px !important;
+    height: 150px !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+  }
+}
+
+/* =========================================================
+   FINAL REGISTER SHELL LOCK - MATCH LOGIN EXACTLY
+   ========================================================= */
+@media (min-width: 901px) {
+  .register-page {
+    min-height: 100vh !important;
+    height: 100vh !important;
+    padding: 24px !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .register-shell {
+    width: min(1180px, calc(100vw - 48px)) !important;
+    height: min(760px, calc(100vh - 48px)) !important;
+    min-height: 700px !important;
+    max-height: 760px !important;
+
+    display: grid !important;
+    grid-template-columns: 49% 51% !important;
+
+    margin: 0 !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+  }
+
+  .register-shell .visual-panel {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  .register-shell .form-panel {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    overflow-y: auto !important;
+  }
+
+  .register-shell .form-content {
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+  }
+
+  .register-shell .register-brand img {
+    width: 210px !important;
+    height: 150px !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+  }
+}

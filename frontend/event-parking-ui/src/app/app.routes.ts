@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -183,17 +183,15 @@ export const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
+    loadComponent: () =>
+      import('./features/landing/landing')
+        .then(m => m.Landing)
   },
 
 
   {
     path: '**',
-    redirectTo: 'login'
+    redirectTo: ''
   }
 
 ];
-
-
-

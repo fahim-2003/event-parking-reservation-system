@@ -1,0 +1,760 @@
+﻿:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.cinematic-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 680px;
+  overflow: hidden;
+  background: #02050a;
+  color: #ffffff;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   STADIUM REVEAL
+   ========================================================= */
+
+.stadium-background {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    url('/images/login-event-parking.jpeg');
+
+  background-size: cover;
+  background-position: center;
+
+  transform: scale(1.12);
+
+  opacity: 0;
+
+  animation:
+    stadiumReveal 1.8s ease-out 4.5s forwards,
+    stadiumZoom 8s ease-out 4.5s forwards;
+}
+
+.night-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(1, 5, 12, 0.84) 0%,
+      rgba(2, 8, 18, 0.62) 46%,
+      rgba(0, 0, 0, 0.34) 100%
+    );
+
+  opacity: 0;
+
+  animation:
+    overlayReveal 1.4s ease-out 4.8s forwards;
+}
+
+
+/* =========================================================
+   INITIAL ENTRANCE SCENE
+   ========================================================= */
+
+.entrance-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      #18283a 0%,
+      #080d15 42%,
+      #020408 100%
+    );
+
+  animation:
+    entranceFade 1.2s ease-in 4.5s forwards;
+}
+
+
+/* ROAD */
+
+.road {
+  position: absolute;
+  left: 50%;
+  bottom: -5%;
+
+  width: 85%;
+  height: 76%;
+
+  transform:
+    translateX(-50%)
+    perspective(500px)
+    rotateX(58deg);
+
+  transform-origin: bottom center;
+
+  background:
+    linear-gradient(
+      90deg,
+      #11151b 0%,
+      #232831 50%,
+      #11151b 100%
+    );
+
+  clip-path:
+    polygon(
+      32% 0,
+      68% 0,
+      100% 100%,
+      0 100%
+    );
+
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.9);
+}
+
+.lane-line {
+  position: absolute;
+
+  left: 50%;
+
+  width: 5px;
+  height: 18%;
+
+  background:
+    rgba(255, 255, 255, 0.48);
+}
+
+.lane-line-1 {
+  top: 8%;
+}
+
+.lane-line-2 {
+  top: 38%;
+}
+
+.lane-line-3 {
+  top: 72%;
+}
+
+
+/* =========================================================
+   PARKING GATE
+   ========================================================= */
+
+.gate-post {
+  position: absolute;
+  bottom: 30%;
+
+  width: 34px;
+  height: 165px;
+
+  border-radius: 5px 5px 0 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #8d99a6,
+      #eef3f7,
+      #65717d
+    );
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.gate-post-left {
+  left: 19%;
+}
+
+.gate-post-right {
+  right: 19%;
+}
+
+.gate-arm {
+  position: absolute;
+
+  left: calc(19% + 16px);
+  bottom: calc(30% + 120px);
+
+  width: 62%;
+  height: 24px;
+
+  transform-origin: left center;
+
+  border-radius: 4px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #f7f7f7 0,
+      #f7f7f7 70px,
+      #e63946 70px,
+      #e63946 130px
+    );
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.55);
+
+  animation:
+    gateOpen 1.2s
+    cubic-bezier(.22, .8, .3, 1)
+    2.4s forwards;
+}
+
+
+/* =========================================================
+   CAR
+   ========================================================= */
+
+.car {
+  position: absolute;
+
+  left: 50%;
+  bottom: 2%;
+
+  width: 250px;
+  height: 105px;
+
+  transform:
+    translateX(-50%)
+    scale(0.62);
+
+  border-radius:
+    52px 52px 24px 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #3a4554 0%,
+      #111820 48%,
+      #05080d 100%
+    );
+
+  box-shadow:
+    0 20px 35px
+    rgba(0, 0, 0, 0.85);
+
+  animation:
+    carDrive 4.3s
+    cubic-bezier(.36, .01, .3, 1)
+    forwards;
+}
+
+.car-roof {
+  position: absolute;
+
+  left: 47px;
+  top: -43px;
+
+  width: 156px;
+  height: 74px;
+
+  border-radius:
+    70px 70px 12px 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #566473,
+      #1d2833
+    );
+}
+
+.windshield {
+  position: absolute;
+
+  left: 70px;
+  top: -31px;
+
+  width: 112px;
+  height: 48px;
+
+  border-radius:
+    45px 45px 8px 8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #9bc7df 0%,
+      #203844 65%,
+      #0b171e 100%
+    );
+
+  opacity: 0.72;
+}
+
+.headlight {
+  position: absolute;
+  bottom: 24px;
+
+  width: 35px;
+  height: 17px;
+
+  border-radius: 50%;
+
+  background: #efffff;
+
+  box-shadow:
+    0 0 15px #ffffff,
+    0 0 35px rgba(183, 233, 255, 0.9);
+}
+
+.headlight-left {
+  left: 25px;
+}
+
+.headlight-right {
+  right: 25px;
+}
+
+.wheel {
+  position: absolute;
+
+  bottom: -18px;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      #49515b 0 30%,
+      #080a0d 32% 100%
+    );
+}
+
+.wheel-left {
+  left: 37px;
+}
+
+.wheel-right {
+  right: 37px;
+}
+
+
+/* HEADLIGHT BEAMS */
+
+.light-beam {
+  position: absolute;
+
+  bottom: 0;
+
+  width: 310px;
+  height: 500px;
+
+  opacity: 0.12;
+
+  filter: blur(8px);
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(225, 249, 255, 0.7),
+      transparent
+    );
+
+  clip-path:
+    polygon(
+      45% 100%,
+      55% 100%,
+      100% 0,
+      0 0
+    );
+
+  animation:
+    beamFade 4.3s forwards;
+}
+
+.beam-left {
+  left: 31%;
+}
+
+.beam-right {
+  right: 31%;
+}
+
+
+/* =========================================================
+   FINAL HERO
+   ========================================================= */
+
+.hero-content {
+  position: relative;
+  z-index: 5;
+
+  width: min(760px, calc(100% - 48px));
+
+  min-height: 100vh;
+
+  margin-left:
+    max(
+      7vw,
+      48px
+    );
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  opacity: 0;
+
+  transform:
+    translateY(35px);
+
+  animation:
+    heroReveal 1.2s
+    cubic-bezier(.2, .8, .2, 1)
+    5.25s forwards;
+}
+
+.brand-mark {
+  margin-bottom: 32px;
+
+  font-size: 17px;
+  font-weight: 800;
+
+  letter-spacing: 5px;
+
+  color: #ffffff;
+}
+
+.hero-kicker {
+  margin: 0 0 15px;
+
+  color: #75a7ff;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  letter-spacing: 3px;
+}
+
+.hero-content h1 {
+  max-width: 760px;
+
+  margin: 0;
+
+  font-size:
+    clamp(
+      52px,
+      6vw,
+      90px
+    );
+
+  line-height: 0.98;
+
+  letter-spacing: -4px;
+
+  font-weight: 850;
+}
+
+.hero-content h1 span {
+  display: block;
+
+  color: #ffffff;
+}
+
+.hero-description {
+  max-width: 590px;
+
+  margin:
+    30px 0 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
+
+  font-size:
+    clamp(
+      17px,
+      1.5vw,
+      21px
+    );
+
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+
+  margin-top: 38px;
+}
+
+.hero-actions a {
+  min-width: 165px;
+  height: 54px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 28px;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 750;
+
+  text-decoration: none;
+
+  transition:
+    transform .2s ease,
+    background-color .2s ease,
+    box-shadow .2s ease;
+}
+
+.hero-actions a:hover {
+  transform:
+    translateY(-2px);
+}
+
+.primary-action {
+  background: #2563eb;
+  color: #ffffff;
+
+  box-shadow:
+    0 14px 35px
+    rgba(37, 99, 235, 0.35);
+}
+
+.primary-action:hover {
+  background: #1d4ed8;
+}
+
+.secondary-action {
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.45);
+
+  background:
+    rgba(5, 10, 18, 0.38);
+
+  color: #ffffff;
+
+  backdrop-filter:
+    blur(10px);
+}
+
+.secondary-action:hover {
+  background:
+    rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes carDrive {
+
+  0% {
+    bottom: -8%;
+    transform:
+      translateX(-50%)
+      scale(.45);
+  }
+
+  52% {
+    bottom: 18%;
+    transform:
+      translateX(-50%)
+      scale(.70);
+  }
+
+  62% {
+    bottom: 18%;
+    transform:
+      translateX(-50%)
+      scale(.70);
+  }
+
+  100% {
+    bottom: 53%;
+    transform:
+      translateX(-50%)
+      scale(.18);
+
+    opacity: 0;
+  }
+}
+
+@keyframes gateOpen {
+
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(-82deg);
+  }
+}
+
+@keyframes beamFade {
+
+  0%,
+  60% {
+    opacity: .15;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes entranceFade {
+
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes stadiumReveal {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes stadiumZoom {
+
+  from {
+    transform:
+      scale(1.12);
+  }
+
+  to {
+    transform:
+      scale(1);
+  }
+}
+
+@keyframes overlayReveal {
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes heroReveal {
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .hero-content {
+    width:
+      calc(100% - 40px);
+
+    margin:
+      0 20px;
+  }
+
+  .hero-content h1 {
+    font-size:
+      clamp(
+        44px,
+        13vw,
+        66px
+      );
+
+    letter-spacing:
+      -2px;
+  }
+
+  .hero-actions {
+    width: 100%;
+
+    flex-direction: column;
+  }
+
+  .hero-actions a {
+    width: 100%;
+  }
+
+  .gate-post-left {
+    left: 9%;
+  }
+
+  .gate-post-right {
+    right: 9%;
+  }
+
+  .gate-arm {
+    left:
+      calc(9% + 16px);
+
+    width: 82%;
+  }
+
+  .car {
+    width: 220px;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .entrance-scene {
+    display: none;
+  }
+
+  .stadium-background,
+  .night-overlay,
+  .hero-content {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* FINAL HERO TITLE VISIBILITY FIX */
+.hero-content h1 {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.55),
+    0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.hero-content h1 span {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}

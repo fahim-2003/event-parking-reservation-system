@@ -564,3 +564,81 @@ input,
   background: #ffffff !important;
 }
 /* END FINAL OUTER BACKGROUND */
+
+/* Create account secondary button */
+a[href="/register"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 24px;
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #2563eb;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+  box-sizing: border-box;
+}
+
+a[href="/register"]:hover {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
+}
+
+a[href="/register"]:active {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   FINAL AUTH DIMENSION LOCK
+   ========================================================= */
+@media (min-width: 901px) {
+  .login-page {
+    min-height: 100vh !important;
+    height: 100vh !important;
+    padding: 24px !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .login-card {
+    width: min(1180px, calc(100vw - 48px)) !important;
+    height: min(760px, calc(100vh - 48px)) !important;
+    min-height: 700px !important;
+    max-height: 760px !important;
+    grid-template-columns: 49% 51% !important;
+    margin: 0 !important;
+    border-radius: 28px !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Forgot password below password field */
+.forgot-link-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.forgot-link-row a {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.forgot-link-row a:hover {
+  text-decoration: underline;
+}
