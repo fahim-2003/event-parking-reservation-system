@@ -34,6 +34,7 @@ public sealed class EventService : IEventService
                 Id = eventEntity.Id,
                 Name = eventEntity.Name,
                 Description = eventEntity.Description,
+                ImageUrl = eventEntity.ImageUrl,
                 VenueId = eventEntity.VenueId,
                 VenueName = venue.Name,
                 VenueAddress = venue.Address,
@@ -104,6 +105,7 @@ public sealed class EventService : IEventService
                 Id = eventEntity.Id,
                 Name = eventEntity.Name,
                 Description = eventEntity.Description,
+                ImageUrl = eventEntity.ImageUrl,
                 VenueId = eventEntity.VenueId,
                 VenueName = venue.Name,
                 VenueAddress = venue.Address,
@@ -139,6 +141,7 @@ public sealed class EventService : IEventService
         {
             Name = request.Name.Trim(),
             Description = NormalizeDescription(request.Description),
+            ImageUrl = NormalizeImageUrl(request.ImageUrl),
             VenueId = request.VenueId,
             EventCategoryId = request.EventCategoryId,
             StartDateTimeUtc = request.StartDateTimeUtc,
@@ -182,6 +185,7 @@ public sealed class EventService : IEventService
 
         eventEntity.Name = request.Name.Trim();
         eventEntity.Description = NormalizeDescription(request.Description);
+        eventEntity.ImageUrl = NormalizeImageUrl(request.ImageUrl);
         eventEntity.VenueId = request.VenueId;
         eventEntity.EventCategoryId = request.EventCategoryId;
         eventEntity.StartDateTimeUtc = request.StartDateTimeUtc;
@@ -210,8 +214,40 @@ public sealed class EventService : IEventService
             return false;
         }
 
+        var hasBookingHistory = await _dbContext.Bookings
+            .AsNoTracking()
+            .AnyAsync(
+                booking => booking.EventId == id,
+                cancellationToken);
+
+        if (hasBookingHistory)
+        {
+            throw new InvalidOperationException(
+                "This event has booking history and cannot be deleted.");
+        }
+
+        var seats = await _dbContext.Seats
+            .Where(seat => seat.EventId == id)
+            .ToListAsync(cancellationToken);
+
+        var parkingSlots = await _dbContext.ParkingSlots
+            .Where(slot => slot.EventId == id)
+            .ToListAsync(cancellationToken);
+
+        if (seats.Count > 0)
+        {
+            _dbContext.Seats.RemoveRange(seats);
+        }
+
+        if (parkingSlots.Count > 0)
+        {
+            _dbContext.ParkingSlots.RemoveRange(parkingSlots);
+        }
+
         _dbContext.Events.Remove(eventEntity);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        await _dbContext.SaveChangesAsync(
+            cancellationToken);
 
         return true;
     }
@@ -284,5 +320,12 @@ public sealed class EventService : IEventService
         return string.IsNullOrWhiteSpace(description)
             ? null
             : description.Trim();
+    }
+
+    private static string? NormalizeImageUrl(string? imageUrl)
+    {
+        return string.IsNullOrWhiteSpace(imageUrl)
+            ? null
+            : imageUrl.Trim();
     }
 }

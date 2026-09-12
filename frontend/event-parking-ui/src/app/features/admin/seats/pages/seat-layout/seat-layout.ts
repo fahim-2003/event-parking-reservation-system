@@ -84,6 +84,236 @@ export class SeatLayout {
       this.requestedSeatCount === this.selectedEvent.capacity;
   }
 
+  get seatLayoutVisualClass(): string {
+    const category =
+      this.selectedEvent?.categoryName
+        ?.trim()
+        .toLowerCase() ?? '';
+
+    switch (category) {
+      case 'sports':
+        return 'layout-sports';
+
+      case 'concert':
+        return 'layout-concert';
+
+      case 'cinema':
+        return 'layout-cinema';
+
+      case 'conference':
+        return 'layout-conference';
+
+      case 'festival':
+        return 'layout-festival';
+
+      default:
+        return 'layout-generic';
+    }
+  }
+
+
+  getSportsSeatRingClass(
+    seatIndex: number
+  ): string {
+
+    return (
+      `sports-ring-${(seatIndex % 3) + 1}`
+    );
+  }
+
+
+  getSportsSeatProgress(
+    seatIndex: number
+  ): string {
+
+    const ring =
+      seatIndex % 3;
+
+    const positionInRing =
+      Math.floor(
+        seatIndex / 3
+      );
+
+    const ringCount =
+      this.seats().filter(
+        (_, index) =>
+          index % 3 === ring
+      ).length;
+
+    if (ringCount <= 1) {
+      return '0%';
+    }
+
+    return `${
+      (
+        positionInRing /
+        ringCount
+      ) * 100
+    }%`;
+  }
+
+
+  get conferenceDeskRows(): {
+    rowLabel: string;
+    desks: {
+      deskNumber: number;
+      seats: Seat[];
+    }[];
+  }[] {
+
+    return this.groupedSeatRows.map(row => {
+
+      const desks: {
+        deskNumber: number;
+        seats: Seat[];
+      }[] = [];
+
+      for (
+        let index = 0;
+        index < row.seats.length;
+        index += 2
+      ) {
+
+        desks.push({
+          deskNumber:
+            Math.floor(index / 2) + 1,
+
+          seats:
+            row.seats.slice(
+              index,
+              index + 2
+            )
+        });
+      }
+
+      return {
+        rowLabel: row.rowLabel,
+        desks
+      };
+    });
+  }
+
+
+  get festivalFanZones(): {
+    name: string;
+    rows: Seat[][];
+  }[] {
+
+    const rows =
+      this.groupedSeatRows
+        .map(row => row.seats);
+
+    if (rows.length === 0) {
+      return [];
+    }
+
+    const midpoint =
+      Math.ceil(
+        rows.length / 2
+      );
+
+    const frontRows =
+      rows.slice(
+        0,
+        midpoint
+      );
+
+    const rearRows =
+      rows.slice(
+        midpoint
+      );
+
+    const splitSide = (
+      sourceRows: Seat[][],
+      side: 'left' | 'right'
+    ): Seat[][] => {
+
+      return sourceRows.map(row => {
+
+        const seatMidpoint =
+          Math.ceil(
+            row.length / 2
+          );
+
+        return side === 'left'
+          ? row.slice(
+              0,
+              seatMidpoint
+            )
+          : row.slice(
+              seatMidpoint
+            );
+      });
+    };
+
+    return [
+      {
+        name: 'FRONT LEFT',
+        rows:
+          splitSide(
+            frontRows,
+            'left'
+          )
+      },
+      {
+        name: 'FRONT RIGHT',
+        rows:
+          splitSide(
+            frontRows,
+            'right'
+          )
+      },
+      {
+        name: 'REAR LEFT',
+        rows:
+          splitSide(
+            rearRows,
+            'left'
+          )
+      },
+      {
+        name: 'REAR RIGHT',
+        rows:
+          splitSide(
+            rearRows,
+            'right'
+          )
+      }
+    ];
+  }
+
+
+  get groupedSeatRows(): {
+    rowLabel: string;
+    seats: Seat[];
+  }[] {
+
+    const rows =
+      new Map<string, Seat[]>();
+
+    for (const seat of this.seats()) {
+
+      const existing =
+        rows.get(seat.rowLabel) ?? [];
+
+      existing.push(seat);
+
+      rows.set(
+        seat.rowLabel,
+        existing
+      );
+    }
+
+    return Array.from(
+      rows.entries()
+    ).map(
+      ([rowLabel, seats]) => ({
+        rowLabel,
+        seats
+      })
+    );
+  }
+
   loadEvents(): void {
     this.loading.set(true);
     this.errorMessage.set('');

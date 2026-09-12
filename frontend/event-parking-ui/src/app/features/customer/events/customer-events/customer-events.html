@@ -298,6 +298,36 @@
 
       <div class="event-visual">
 
+        <div
+          class="category-animation"
+          [ngClass]="getCategoryVisualClass(event.categoryName)">
+
+          <div class="sports-ball"></div>
+
+          <div class="concert-equalizer">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="cinema-strip"></div>
+
+          <div class="conference-screen">
+            <span></span>
+          </div>
+
+          <div class="festival-confetti">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </div>
         <div class="visual-shine"></div>
 
 
@@ -321,16 +351,6 @@
                 | date:'dd'
             }}
           </strong>
-
-        </div>
-
-
-        <div class="event-letter">
-
-          {{
-            event.name
-              | slice:0:1
-          }}
 
         </div>
 

@@ -1,4 +1,4 @@
-.events-admin-page {
+﻿.events-admin-page {
   width: 100%;
   max-width: 1240px;
 
@@ -859,6 +859,634 @@
 
   .schedule-arrow {
     display: none;
+  }
+
+}
+/* =========================================================
+   EVENT IMAGE INPUT / PREVIEW
+   ========================================================= */
+
+.event-image-field .field-hint {
+  display: block;
+  margin-top: 7px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.event-image-preview {
+  position: relative;
+  margin-top: 14px;
+  height: 190px;
+  overflow: hidden;
+  border: 1px solid #dbe3ee;
+  border-radius: 14px;
+  background: #eef2f7;
+}
+
+.event-image-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.event-image-preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(2, 6, 23, 0.82),
+      rgba(2, 6, 23, 0.05) 65%
+    );
+  pointer-events: none;
+}
+
+.event-image-preview > div {
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  right: 18px;
+  bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #ffffff;
+}
+
+.event-image-preview > div span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  opacity: 0.82;
+}
+
+.event-image-preview > div strong {
+  font-size: 16px;
+  font-weight: 750;
+}
+
+/* =========================================================
+   ADMIN EVENT CATEGORY ANIMATIONS
+   ========================================================= */
+
+.event-category-animation {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.event-category-animation > .admin-sports-ball,
+.event-category-animation > .admin-concert-equalizer,
+.event-category-animation > .admin-cinema-strip,
+.event-category-animation > .admin-conference-screen,
+.event-category-animation > .admin-festival-confetti,
+.event-category-animation > .admin-generic-mark {
+  display: none;
+}
+
+.category-pill {
+  z-index: 5;
+}
+
+
+/* SPORTS */
+
+.event-category-animation.visual-sports {
+  background:
+    linear-gradient(
+      180deg,
+      #19aa69 0 55%,
+      #08673c 55%
+    );
+}
+
+.event-category-animation.visual-sports::before {
+  content: '';
+  position: absolute;
+
+  left: 50%;
+  bottom: -47px;
+
+  width: 190px;
+  height: 110px;
+
+  border: 3px solid rgba(255,255,255,.42);
+  border-radius: 50%;
+
+  transform: translateX(-50%);
+}
+
+.event-category-animation.visual-sports::after {
+  content: '';
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+
+  width: 2px;
+  height: 100%;
+
+  background: rgba(255,255,255,.25);
+}
+
+.event-category-animation.visual-sports
+> .admin-sports-ball {
+  display: block;
+
+  position: absolute;
+  z-index: 2;
+
+  left: 15%;
+  top: 40%;
+
+  width: 31px;
+  height: 31px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #fff 0 19%,
+      #dde5eb 20% 55%,
+      #27313b 56% 65%,
+      #fff 66%
+    );
+
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.27);
+
+  animation:
+    admin-event-ball 3s
+    ease-in-out infinite;
+}
+
+@keyframes admin-event-ball {
+  0%, 100% {
+    transform:
+      translate(0,18px)
+      rotate(0deg);
+  }
+
+  50% {
+    transform:
+      translate(72px,-27px)
+      rotate(330deg);
+  }
+}
+
+
+/* CONCERT */
+
+.event-category-animation.visual-concert {
+  background:
+    radial-gradient(
+      circle at 50% 82%,
+      rgba(255,63,187,.75),
+      transparent 36%
+    ),
+    linear-gradient(
+      145deg,
+      #181039,
+      #522394 55%,
+      #141d55
+    );
+}
+
+.event-category-animation.visual-concert::before,
+.event-category-animation.visual-concert::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 58px;
+  height: 58px;
+
+  border:
+    1px solid rgba(255,255,255,.22);
+
+  border-radius: 50%;
+
+  animation:
+    admin-event-concert-pulse 2.4s
+    ease-out infinite;
+}
+
+.event-category-animation.visual-concert::after {
+  animation-delay: 1.2s;
+}
+
+.event-category-animation.visual-concert
+> .admin-concert-equalizer {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 4px;
+
+  height: 48px;
+
+  transform:
+    translate(-50%,-35%);
+}
+
+.admin-concert-equalizer span {
+  width: 6px;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      #7cecff,
+      #ff71cd
+    );
+
+  animation:
+    admin-event-equalizer .85s
+    ease-in-out infinite alternate;
+}
+
+.admin-concert-equalizer span:nth-child(1) {
+  height: 18px;
+}
+
+.admin-concert-equalizer span:nth-child(2) {
+  height: 35px;
+  animation-delay: .12s;
+}
+
+.admin-concert-equalizer span:nth-child(3) {
+  height: 47px;
+  animation-delay: .25s;
+}
+
+.admin-concert-equalizer span:nth-child(4) {
+  height: 31px;
+  animation-delay: .38s;
+}
+
+.admin-concert-equalizer span:nth-child(5) {
+  height: 21px;
+  animation-delay: .5s;
+}
+
+@keyframes admin-event-equalizer {
+  to {
+    transform: scaleY(.34);
+  }
+}
+
+@keyframes admin-event-concert-pulse {
+  from {
+    opacity: .7;
+
+    transform:
+      translate(-50%,-50%)
+      scale(.6);
+  }
+
+  to {
+    opacity: 0;
+
+    transform:
+      translate(-50%,-50%)
+      scale(2.6);
+  }
+}
+
+
+/* CINEMA */
+
+.event-category-animation.visual-cinema {
+  background:
+    radial-gradient(
+      circle at 72% 20%,
+      rgba(250,215,128,.4),
+      transparent 25%
+    ),
+    linear-gradient(
+      145deg,
+      #0c111c,
+      #27344c,
+      #111827
+    );
+}
+
+.event-category-animation.visual-cinema
+> .admin-cinema-strip {
+  display: block;
+
+  position: absolute;
+
+  left: -55px;
+  top: 58px;
+
+  width: 330px;
+  height: 44px;
+
+  border-top:
+    6px dotted rgba(255,255,255,.9);
+
+  border-bottom:
+    6px dotted rgba(255,255,255,.9);
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.08) 0 39px,
+      rgba(255,255,255,.22) 39px 42px
+    );
+
+  transform: rotate(-8deg);
+
+  animation:
+    admin-event-cinema 7s
+    linear infinite;
+}
+
+.event-category-animation.visual-cinema::after {
+  content: '';
+
+  position: absolute;
+
+  right: -10px;
+  top: 25px;
+
+  width: 105px;
+  height: 115px;
+
+  background:
+    linear-gradient(
+      115deg,
+      rgba(255,235,165,.5),
+      transparent 70%
+    );
+
+  clip-path:
+    polygon(0 50%,100% 0,100% 100%);
+
+  animation:
+    admin-event-projector 2s
+    ease-in-out infinite alternate;
+}
+
+@keyframes admin-event-cinema {
+  to {
+    transform:
+      translateX(-90px)
+      rotate(-8deg);
+  }
+}
+
+@keyframes admin-event-projector {
+  to {
+    opacity: .35;
+  }
+}
+
+
+/* CONFERENCE */
+
+.event-category-animation.visual-conference {
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgba(83,210,255,.35),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #0e2b48,
+      #17677b,
+      #263b8d
+    );
+}
+
+.event-category-animation.visual-conference
+> .admin-conference-screen {
+  display: block;
+
+  position: absolute;
+
+  left: 50%;
+  top: 48%;
+
+  width: 92px;
+  height: 60px;
+
+  border:
+    2px solid rgba(255,255,255,.8);
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,.11);
+
+  transform:
+    translate(-50%,-50%);
+}
+
+.admin-conference-screen::before,
+.admin-conference-screen::after,
+.admin-conference-screen span {
+  content: '';
+
+  position: absolute;
+
+  left: 13px;
+  right: 13px;
+
+  height: 4px;
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,.75);
+
+  animation:
+    admin-event-presentation 1.8s
+    ease-in-out infinite;
+}
+
+.admin-conference-screen::before {
+  top: 15px;
+}
+
+.admin-conference-screen span {
+  top: 28px;
+  right: 30px;
+
+  animation-delay: .3s;
+}
+
+.admin-conference-screen::after {
+  top: 41px;
+  right: 45px;
+
+  animation-delay: .6s;
+}
+
+@keyframes admin-event-presentation {
+  50% {
+    opacity: .3;
+    transform: scaleX(.65);
+    transform-origin: left;
+  }
+}
+
+
+/* FESTIVAL */
+
+.event-category-animation.visual-festival {
+  background:
+    radial-gradient(
+      circle at 20% 25%,
+      rgba(255,222,80,.7),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(255,87,190,.62),
+      transparent 26%
+    ),
+    linear-gradient(
+      145deg,
+      #693498,
+      #cf3e8c,
+      #ff8b3d
+    );
+}
+
+.event-category-animation.visual-festival
+> .admin-festival-confetti {
+  display: block;
+}
+
+.admin-festival-confetti span {
+  position: absolute;
+
+  top: -20px;
+
+  width: 7px;
+  height: 15px;
+
+  border-radius: 3px;
+
+  background: #fff;
+
+  animation:
+    admin-event-confetti 3s
+    linear infinite;
+}
+
+.admin-festival-confetti span:nth-child(1) {
+  left: 10%;
+}
+
+.admin-festival-confetti span:nth-child(2) {
+  left: 27%;
+  background: #ffea63;
+  animation-delay: .5s;
+}
+
+.admin-festival-confetti span:nth-child(3) {
+  left: 45%;
+  background: #68edff;
+  animation-delay: 1s;
+}
+
+.admin-festival-confetti span:nth-child(4) {
+  left: 62%;
+  background: #ff7bc8;
+  animation-delay: .25s;
+}
+
+.admin-festival-confetti span:nth-child(5) {
+  left: 79%;
+  background: #aaff7a;
+  animation-delay: 1.4s;
+}
+
+.admin-festival-confetti span:nth-child(6) {
+  left: 92%;
+  animation-delay: 1.8s;
+}
+
+@keyframes admin-event-confetti {
+  to {
+    transform:
+      translateY(210px)
+      rotate(480deg);
+  }
+}
+
+
+/* GENERIC */
+
+.event-category-animation.visual-generic {
+  background:
+    radial-gradient(
+      circle at 70% 25%,
+      rgba(139,187,255,.45),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #264969,
+      #416da6,
+      #615ec8
+    );
+}
+
+.event-category-animation.visual-generic
+> .admin-generic-mark {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 47px;
+  height: 47px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid rgba(255,255,255,.28);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255,255,255,.14);
+
+  color: white;
+
+  font-weight: 900;
+
+  transform:
+    translate(-50%,-50%);
+
+  backdrop-filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .event-category-animation *,
+  .event-category-animation::before,
+  .event-category-animation::after {
+    animation: none !important;
   }
 
 }

@@ -802,3 +802,429 @@
   }
 
 }
+
+/* =========================================================
+   MY BOOKINGS EXACT CATEGORY ANIMATIONS
+   Reused from Browse Events
+   ========================================================= */
+
+.category-animation {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.event-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4, 10, 24, .03),
+      rgba(4, 10, 24, .34)
+    );
+  pointer-events: none;
+}
+
+.event-visual .visual-shine {
+  z-index: 2;
+}
+
+.event-visual .category-chip,
+.event-visual .date-card {
+  z-index: 4;
+}
+
+
+/* SPORTS */
+
+.visual-sports {
+  background:
+    linear-gradient(
+      180deg,
+      #18a968 0 56%,
+      #08733f 56% 100%
+    );
+}
+
+.visual-sports::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -55px;
+  width: 260px;
+  height: 130px;
+  border: 3px solid rgba(255,255,255,.46);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.visual-sports::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(255,255,255,.25);
+}
+
+.sports-ball {
+  position: absolute;
+  z-index: 2;
+  left: 18%;
+  bottom: 25px;
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 30%, #ffffff 0 18%, #dfe6ee 19% 55%, #202936 56% 64%, #fff 65%);
+  box-shadow: 0 12px 25px rgba(0,0,0,.28);
+  animation: sports-ball-move 3.2s ease-in-out infinite;
+}
+
+@keyframes sports-ball-move {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(75px, -52px) rotate(150deg);
+  }
+
+  50% {
+    transform: translate(155px, 0) rotate(310deg);
+  }
+
+  75% {
+    transform: translate(80px, -34px) rotate(470deg);
+  }
+}
+
+
+
+/* CONCERT */
+
+.visual-concert {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 90%, rgba(255,64,180,.7), transparent 36%),
+    linear-gradient(145deg, #1a103b, #4b218d 55%, #101d52);
+}
+
+.visual-concert::before,
+.visual-concert::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: concert-pulse 2.6s ease-out infinite;
+}
+
+.visual-concert::before {
+  width: 75px;
+  height: 75px;
+}
+
+.visual-concert::after {
+  width: 75px;
+  height: 75px;
+  animation-delay: 1.3s;
+}
+
+.concert-equalizer {
+  position: absolute;
+  z-index: 2;
+  bottom: 22px;
+  left: 50%;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 65px;
+  transform: translateX(-50%);
+}
+
+.concert-equalizer span {
+  width: 8px;
+  border-radius: 8px;
+  background: linear-gradient(#8ee8ff, #ff72d0);
+  animation: equalizer 1s ease-in-out infinite alternate;
+}
+
+.concert-equalizer span:nth-child(1) { height: 25px; }
+.concert-equalizer span:nth-child(2) { height: 48px; animation-delay: .18s; }
+.concert-equalizer span:nth-child(3) { height: 64px; animation-delay: .34s; }
+.concert-equalizer span:nth-child(4) { height: 42px; animation-delay: .5s; }
+.concert-equalizer span:nth-child(5) { height: 28px; animation-delay: .68s; }
+
+@keyframes equalizer {
+  to {
+    transform: scaleY(.35);
+    opacity: .68;
+  }
+}
+
+@keyframes concert-pulse {
+  from {
+    opacity: .65;
+    transform: translate(-50%, -50%) scale(.7);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.8);
+  }
+}
+
+
+
+/* CINEMA */
+
+.visual-cinema {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(251,211,114,.45), transparent 24%),
+    linear-gradient(145deg, #111827, #25324b 55%, #090e1a);
+}
+
+.cinema-strip {
+  position: absolute;
+  left: -60px;
+  top: 46px;
+  width: 520px;
+  height: 48px;
+  border-top: 7px dotted rgba(255,255,255,.9);
+  border-bottom: 7px dotted rgba(255,255,255,.9);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.08) 0 48px,
+      rgba(255,255,255,.22) 48px 51px
+    );
+  transform: rotate(-7deg);
+  animation: cinema-scroll 8s linear infinite;
+}
+
+.visual-cinema::after {
+  content: '';
+  position: absolute;
+  right: 12%;
+  top: 5%;
+  width: 160px;
+  height: 150px;
+  background:
+    linear-gradient(
+      115deg,
+      rgba(255,235,170,.5),
+      transparent 70%
+    );
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  animation: projector-glow 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes cinema-scroll {
+  to {
+    transform: translateX(-105px) rotate(-7deg);
+  }
+}
+
+@keyframes projector-glow {
+  to {
+    opacity: .45;
+  }
+}
+
+
+
+/* CONFERENCE */
+
+.visual-conference {
+  background:
+    radial-gradient(circle at 25% 35%, rgba(89,200,255,.35), transparent 24%),
+    linear-gradient(145deg, #102e4c, #185f79 55%, #243a85);
+}
+
+.conference-screen {
+  position: absolute;
+  left: 50%;
+  top: 53%;
+  width: 125px;
+  height: 70px;
+  border: 2px solid rgba(255,255,255,.82);
+  border-radius: 9px;
+  background: rgba(255,255,255,.12);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 15px 35px rgba(0,0,0,.18);
+}
+
+.conference-screen::before,
+.conference-screen::after,
+.conference-screen span {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  height: 5px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.75);
+  animation: presentation-line 2s ease-in-out infinite;
+}
+
+.conference-screen::before {
+  top: 17px;
+}
+
+.conference-screen span {
+  top: 31px;
+  right: 42px;
+  animation-delay: .3s;
+}
+
+.conference-screen::after {
+  top: 45px;
+  right: 60px;
+  animation-delay: .6s;
+}
+
+@keyframes presentation-line {
+  50% {
+    opacity: .35;
+    transform: scaleX(.65);
+    transform-origin: left;
+  }
+}
+
+
+
+
+
+/* My Bookings integration */
+
+.reservation-card .event-visual {
+  position: relative;
+  overflow: hidden;
+}
+
+.reservation-card .category-animation {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reservation-card .category-badge {
+  position: absolute;
+  z-index: 20;
+  left: 12px;
+  top: 12px;
+}
+
+/* =========================================================
+   MY BOOKINGS FESTIVAL ANIMATION FINAL
+   ========================================================= */
+
+/* FESTIVAL */
+
+.visual-festival {
+  background:
+    radial-gradient(circle at 15% 30%, rgba(255,216,83,.75), transparent 25%),
+    radial-gradient(circle at 85% 20%, rgba(255,82,180,.65), transparent 25%),
+    linear-gradient(145deg, #663399, #d2418e 55%, #ff8f3d);
+}
+
+.festival-confetti span {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 18px;
+  border-radius: 3px;
+  background: #fff;
+  animation: confetti-fall 3.5s linear infinite;
+}
+
+.festival-confetti span:nth-child(1) {
+  left: 12%;
+  animation-delay: 0s;
+}
+
+.festival-confetti span:nth-child(2) {
+  left: 28%;
+  background: #ffeb5b;
+  animation-delay: .65s;
+}
+
+.festival-confetti span:nth-child(3) {
+  left: 45%;
+  background: #72f2ff;
+  animation-delay: 1.1s;
+}
+
+.festival-confetti span:nth-child(4) {
+  left: 62%;
+  background: #ff7bc9;
+  animation-delay: .35s;
+}
+
+.festival-confetti span:nth-child(5) {
+  left: 78%;
+  background: #aaff7a;
+  animation-delay: 1.55s;
+}
+
+.festival-confetti span:nth-child(6) {
+  left: 91%;
+  background: #ffffff;
+  animation-delay: 2s;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(180px) rotate(480deg);
+  }
+}
+
+
+
+
+/* =========================================================
+   FINAL CATEGORY ANIMATION ISOLATION
+   ========================================================= */
+
+.category-animation > .sports-ball,
+.category-animation > .concert-equalizer,
+.category-animation > .cinema-strip,
+.category-animation > .conference-screen,
+.category-animation > .festival-confetti {
+  display: none !important;
+}
+
+.category-animation.visual-sports > .sports-ball {
+  display: block !important;
+}
+
+.category-animation.visual-concert > .concert-equalizer {
+  display: flex !important;
+}
+
+.category-animation.visual-cinema > .cinema-strip {
+  display: block !important;
+}
+
+.category-animation.visual-conference > .conference-screen {
+  display: block !important;
+}
+
+.category-animation.visual-festival > .festival-confetti {
+  display: block !important;
+}

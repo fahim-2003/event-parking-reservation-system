@@ -157,7 +157,7 @@
 
           <strong>
             {{ layoutForm.controls.rows.value }}
-            ×
+            &times;
             {{ layoutForm.controls.seatsPerRow.value }}
             =
             {{ requestedSeatCount }} seats
@@ -229,19 +229,21 @@
     </section>
 
 
-    <section class="seat-map-card">
+    <section
+      class="seat-map-card"
+      [ngClass]="seatLayoutVisualClass">
 
       <div class="map-header">
 
         <div>
           <span class="eyebrow">VISUAL LAYOUT</span>
+
           <h2>{{ selectedEvent?.name }} Seat Map</h2>
 
           <p>
-            Select an available seat to rename or remove it.
+            Select an available seat to rename or manage it.
           </p>
         </div>
-
 
         <div class="legend">
 
@@ -265,33 +267,356 @@
       </div>
 
 
-      <div class="stage">
-        EVENT STAGE
-      </div>
+      <div class="venue-layout-scene">
+
+        @switch (seatLayoutVisualClass) {
+
+          @case ('layout-sports') {
+
+            <div class="sports-arena">
+
+              <div class="stadium-lights left"></div>
+              <div class="stadium-lights right"></div>
+
+              <div class="sports-pitch">
+
+                <div class="pitch-half-line"></div>
+                <div class="pitch-circle"></div>
+
+                <div class="pitch-box left"></div>
+                <div class="pitch-box right"></div>
+
+                <span>STADIUM FIELD</span>
+
+              </div>
+
+            </div>
+
+          }
 
 
-      <div class="seat-grid">
+          @case ('layout-concert') {
 
-        @for (seat of seats(); track seat.id) {
+            <div class="concert-stage">
 
-          <button
-            type="button"
-            class="seat"
-            (click)="editSeat(seat)"
-            [disabled]="seat.status !== 'Available'"
-            [class.seat-available]="seat.status === 'Available'"
-            [class.seat-held]="seat.status === 'Held'"
-            [class.seat-booked]="seat.status === 'Booked'">
+              <div class="stage-light left"></div>
+              <div class="stage-light center"></div>
+              <div class="stage-light right"></div>
 
-            <strong>
-              {{ seat.displayLabel }}
-            </strong>
+              <strong>EVENT STAGE</strong>
+              <span>LIVE PERFORMANCE</span>
 
-            <span>
-              {{ seat.status }}
-            </span>
+            </div>
 
-          </button>
+          }
+
+
+          @case ('layout-cinema') {
+
+            <div class="cinema-screen">
+
+              <div class="screen-glow"></div>
+
+              <strong>CINEMA SCREEN</strong>
+
+            </div>
+
+          }
+
+
+          @case ('layout-conference') {
+
+            <div class="conference-stage">
+
+              <div class="presentation-screen">
+                <strong>PRESENTATION</strong>
+                <span>CONFERENCE STAGE</span>
+              </div>
+
+            </div>
+
+          }
+
+
+          @case ('layout-festival') {
+
+            <div class="festival-stage">
+
+              <div class="festival-light left"></div>
+              <div class="festival-light right"></div>
+
+              <strong>FESTIVAL STAGE</strong>
+              <span>OPEN ARENA</span>
+
+            </div>
+
+          }
+
+
+          @default {
+
+            <div class="generic-event-stage">
+              <strong>EVENT STAGE</strong>
+            </div>
+
+          }
+
+        }
+
+
+        @if (seatLayoutVisualClass === 'layout-sports') {
+
+          <div class="sports-seat-rings">
+
+            @for (
+              seat of seats();
+              track seat.id;
+              let seatIndex = $index
+            ) {
+
+              <button
+                type="button"
+                class="seat stadium-seat"
+                [ngClass]="getSportsSeatRingClass(seatIndex)"
+                [style.--seat-progress]="getSportsSeatProgress(seatIndex)"
+                [attr.data-seat]="seat.displayLabel"
+                (click)="editSeat(seat)"
+                [disabled]="seat.status !== 'Available'"
+                [class.seat-available]="seat.status === 'Available'"
+                [class.seat-held]="seat.status === 'Held'"
+                [class.seat-booked]="seat.status === 'Booked'">
+
+                <span class="stadium-seat-back"></span>
+
+                <strong>
+                  {{ seat.displayLabel }}
+                </strong>
+
+              </button>
+
+            }
+
+          </div>
+
+        } @else if (seatLayoutVisualClass === 'layout-conference') {
+
+          <div class="conference-classroom">
+
+            @for (
+              row of conferenceDeskRows;
+              track row.rowLabel;
+              let rowIndex = $index
+            ) {
+
+              <div
+                class="classroom-row"
+                [style.--classroom-row]="rowIndex">
+
+                <span class="classroom-row-label">
+                  {{ row.rowLabel }}
+                </span>
+
+                <div class="classroom-desks">
+
+                  @for (
+                    desk of row.desks;
+                    track desk.deskNumber
+                  ) {
+
+                    <article class="classroom-desk">
+
+                      <div class="desk-surface">
+
+                        <span>
+                          DESK {{ desk.deskNumber }}
+                        </span>
+
+                      </div>
+
+                      <div class="desk-chairs">
+
+                        @for (
+                          seat of desk.seats;
+                          track seat.id
+                        ) {
+
+                          <button
+                            type="button"
+                            class="seat classroom-seat"
+                            (click)="editSeat(seat)"
+                            [disabled]="seat.status !== 'Available'"
+                            [class.seat-available]="seat.status === 'Available'"
+                            [class.seat-held]="seat.status === 'Held'"
+                            [class.seat-booked]="seat.status === 'Booked'">
+
+                            <span class="seat-back"></span>
+
+                            <strong>
+                              {{ seat.displayLabel }}
+                            </strong>
+
+                          </button>
+
+                        }
+
+                      </div>
+
+                    </article>
+
+                  }
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        } @else if (seatLayoutVisualClass === 'layout-festival') {
+
+          <div class="festival-fan-layout">
+
+            <div class="festival-runway-label">
+              MAIN RUNWAY
+            </div>
+
+            @for (
+              zone of festivalFanZones;
+              track zone.name
+            ) {
+
+              <section
+                class="festival-fan-zone"
+                [attr.data-zone]="zone.name">
+
+                <span class="festival-fan-title">
+                  {{ zone.name }}
+                </span>
+
+                <div class="festival-fan-rows">
+
+                  @for (
+                    row of zone.rows;
+                    track $index;
+                    let rowIndex = $index
+                  ) {
+
+                    <div
+                      class="festival-fan-row"
+                      [style.width.%]="
+                        zone.rows.length <= 1
+                          ? 100
+                          : 52 +
+                            (
+                              rowIndex *
+                              48 /
+                              (zone.rows.length - 1)
+                            )
+                      ">
+
+                      @for (
+                        seat of row;
+                        track seat.id
+                      ) {
+
+                        <button
+                          type="button"
+                          class="seat festival-fan-seat"
+                          [attr.title]="
+                            seat.displayLabel +
+                            ' - ' +
+                            seat.status
+                          "
+                          (click)="editSeat(seat)"
+                          [disabled]="
+                            seat.status !== 'Available'
+                          "
+                          [class.seat-available]="
+                            seat.status === 'Available'
+                          "
+                          [class.seat-held]="
+                            seat.status === 'Held'
+                          "
+                          [class.seat-booked]="
+                            seat.status === 'Booked'
+                          ">
+
+                          <span class="seat-back"></span>
+
+                          <strong>
+                            {{ seat.displayLabel }}
+                          </strong>
+
+                        </button>
+
+                      }
+
+                    </div>
+
+                  }
+
+                </div>
+
+              </section>
+
+            }
+
+          </div>
+
+        } @else {
+
+          <div class="seat-layout-surface">
+
+            @for (
+              row of groupedSeatRows;
+              track row.rowLabel;
+              let rowIndex = $index
+            ) {
+
+              <div
+                class="seat-row"
+                [attr.data-row]="row.rowLabel"
+                [style.--row-index]="rowIndex">
+
+                <span class="row-label">
+                  {{ row.rowLabel }}
+                </span>
+
+                <div class="seat-row-items">
+
+                  @for (seat of row.seats; track seat.id) {
+
+                    <button
+                      type="button"
+                      class="seat"
+                      (click)="editSeat(seat)"
+                      [disabled]="seat.status !== 'Available'"
+                      [class.seat-available]="seat.status === 'Available'"
+                      [class.seat-held]="seat.status === 'Held'"
+                      [class.seat-booked]="seat.status === 'Booked'">
+
+                      <span class="seat-back"></span>
+
+                      <strong>
+                        {{ seat.displayLabel }}
+                      </strong>
+
+                      <span class="seat-status">
+                        {{ seat.status }}
+                      </span>
+
+                    </button>
+
+                  }
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
 
         }
 
@@ -299,8 +624,8 @@
 
     </section>
 
-  }
 
+  }
 
   @if (editingSeatId() !== null) {
 

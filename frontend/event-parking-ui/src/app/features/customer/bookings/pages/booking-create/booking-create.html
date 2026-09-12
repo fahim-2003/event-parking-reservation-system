@@ -41,7 +41,9 @@
   <article
     class="event-overview">
 
-    <div class="event-poster">
+    <div
+      class="event-poster"
+      [ngClass]="eventVisualClass">
 
       <span class="poster-category">
         {{
@@ -50,17 +52,44 @@
         }}
       </span>
 
-      <div class="poster-letter">
+      <div class="booking-event-animation">
 
-        {{
-          (event?.name ?? 'E')
-            | slice:0:1
-        }}
+        <div class="overview-sports">
+          <div class="overview-pitch">
+            <span class="overview-ball"></span>
+          </div>
+        </div>
+
+        <div class="overview-concert">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="overview-cinema">
+          <div class="overview-film"></div>
+        </div>
+
+        <div class="overview-conference">
+          <div class="conference-screen">
+            <span></span>
+          </div>
+        </div>
+
+        <div class="overview-festival">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
 
       </div>
 
     </div>
-
 
     <div class="event-information">
 
@@ -318,6 +347,7 @@
 
         <app-seat-selector
           [seats]="seats"
+          [categoryName]="event?.categoryName ?? ''"
           [selectedSeatIds]="
             selectedSeatIds
           "

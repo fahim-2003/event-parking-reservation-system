@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventParking.API.DTOs.Events;
 
@@ -9,6 +9,9 @@ public sealed class UpdateEventRequest
     public string Name { get; set; } = string.Empty;
 
     public string? Description { get; set; }
+
+    [StringLength(500)]
+    public string? ImageUrl { get; set; }
 
     [Range(1, int.MaxValue, ErrorMessage = "VenueId must be greater than 0.")]
     public int VenueId { get; set; }
