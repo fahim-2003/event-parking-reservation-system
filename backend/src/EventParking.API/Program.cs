@@ -86,6 +86,9 @@ var app = builder.Build();
 // and initial Administrator account
 await IdentitySeed.SeedAsync(app.Services);
 
+// Seed canonical event categories used by the customer visual system
+await EventCategorySeed.SeedAsync(app.Services);
+
 // Global exception handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

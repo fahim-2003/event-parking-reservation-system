@@ -262,15 +262,11 @@
           <article class="category-card">
 
             <div class="category-symbol">
-              {{ category.name | slice:0:1 }}
+              {{ getCategoryIcon(category.name) }}
             </div>
 
 
             <div class="category-info">
-
-              <span class="category-reference">
-                CATEGORY {{ category.id }}
-              </span>
 
               <h3>
                 {{ category.name }}

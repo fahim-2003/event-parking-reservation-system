@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import {
@@ -56,10 +56,10 @@ describe('ResetPassword', () => {
     fixture.detectChanges();
   }
 
-  it('should reject an incomplete reset link', async () => {
+  it('should reject an incomplete reset request', async () => {
     await createComponent();
 
-    expect(component.hasValidLink).toBe(false);
+    expect(component.hasValidRequest).toBe(false);
 
     component.submit();
 
@@ -68,17 +68,20 @@ describe('ResetPassword', () => {
     ).not.toHaveBeenCalled();
 
     expect(component.errorMessage()).toContain(
-      'invalid'
+      'incomplete'
     );
   });
 
   it('should reject mismatched passwords', async () => {
-    queryParameters.set('userId', 'customer-1');
-    queryParameters.set('token', 'reset-token');
+    queryParameters.set(
+      'phoneNumber',
+      '0773964123'
+    );
 
     await createComponent();
 
     component.form.setValue({
+      otp: '123456',
       newPassword: 'NewPassword9!',
       confirmPassword: 'DifferentPassword9!'
     });
@@ -95,8 +98,10 @@ describe('ResetPassword', () => {
   });
 
   it('should submit a valid password reset', async () => {
-    queryParameters.set('userId', 'customer-1');
-    queryParameters.set('token', 'reset-token');
+    queryParameters.set(
+      'phoneNumber',
+      '0773964123'
+    );
 
     authServiceMock.resetPassword.mockReturnValue(
       of({
@@ -107,6 +112,7 @@ describe('ResetPassword', () => {
     await createComponent();
 
     component.form.setValue({
+      otp: '123456',
       newPassword: 'NewPassword9!',
       confirmPassword: 'NewPassword9!'
     });
@@ -116,8 +122,8 @@ describe('ResetPassword', () => {
     expect(
       authServiceMock.resetPassword
     ).toHaveBeenCalledWith({
-      userId: 'customer-1',
-      token: 'reset-token',
+      phoneNumber: '0773964123',
+      otp: '123456',
       newPassword: 'NewPassword9!'
     });
 

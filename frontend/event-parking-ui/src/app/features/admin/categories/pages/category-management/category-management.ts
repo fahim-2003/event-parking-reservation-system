@@ -1,4 +1,4 @@
-﻿import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -141,6 +141,28 @@ export class CategoryManagement {
         );
       }
     });
+  }
+
+  getCategoryIcon(categoryName: string): string {
+    switch (categoryName.trim().toLowerCase()) {
+      case 'cinema':
+        return '\u{1F3AC}';
+
+      case 'concert':
+        return '\u{1F3A4}';
+
+      case 'conference':
+        return '\u{1F5A5}\uFE0F';
+
+      case 'festival':
+        return '\u{1F389}';
+
+      case 'sports':
+        return '\u26BD';
+
+      default:
+        return '\u{1F3F7}\uFE0F';
+    }
   }
 
   private resetForm(): void {

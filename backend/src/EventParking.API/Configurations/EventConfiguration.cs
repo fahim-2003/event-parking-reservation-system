@@ -1,4 +1,4 @@
-﻿using EventParking.API.Entities;
+using EventParking.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -33,6 +33,10 @@ public sealed class EventConfiguration : IEntityTypeConfiguration<Event>
             .IsRequired();
 
         builder.Property(eventEntity => eventEntity.Description)
+            .IsRequired(false);
+
+        builder.Property(eventEntity => eventEntity.ImageUrl)
+            .HasMaxLength(500)
             .IsRequired(false);
 
         builder.Property(eventEntity => eventEntity.StartDateTimeUtc)

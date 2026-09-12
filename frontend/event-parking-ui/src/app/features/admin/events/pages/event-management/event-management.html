@@ -518,16 +518,46 @@
 
             <div class="event-visual">
 
+              <div
+                class="event-category-animation"
+                [ngClass]="getEventVisualClass(eventItem.categoryName)">
+
+                <div class="admin-sports-ball"></div>
+
+                <div class="admin-concert-equalizer">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+
+                <div class="admin-cinema-strip"></div>
+
+                <div class="admin-conference-screen">
+                  <span></span>
+                </div>
+
+                <div class="admin-festival-confetti">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+
+                <div class="admin-generic-mark">
+                  E
+                </div>
+
+              </div>
+
               <span class="category-pill">
                 {{ eventItem.categoryName }}
               </span>
 
-              <div class="event-letter">
-                {{ eventItem.name | slice:0:1 }}
-              </div>
-
             </div>
-
 
             <div class="event-details">
 

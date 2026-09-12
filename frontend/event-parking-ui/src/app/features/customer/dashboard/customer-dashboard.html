@@ -17,53 +17,209 @@
     </div>
     <div class="header-actions">
 
-      <a
-        routerLink="/customer/events"
-        class="round-action"
-        title="Browse Events">
+      <div class="dashboard-search-menu">
 
-        <svg
-          viewBox="0 0 24 24"
-          width="19"
-          height="19"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round">
+        <button
+          type="button"
+          class="round-action search-trigger"
+          title="Search Events"
+          aria-label="Search events"
+          [attr.aria-expanded]="searchPanelOpen"
+          (click)="toggleSearch()">
 
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-3.5-3.5"></path>
+          <svg
+            viewBox="0 0 24 24"
+            width="19"
+            height="19"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
 
-        </svg>
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.5-3.5"></path>
 
-      </a>
+          </svg>
 
-      <a
-        routerLink="/customer/notifications"
-        class="round-action notification-action"
-        title="Notifications">
+        </button>
 
-        <svg
-          viewBox="0 0 24 24"
-          width="19"
-          height="19"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round">
+        @if (searchPanelOpen) {
 
-          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-          <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+          <form
+            class="dashboard-search-popover"
+            (submit)="searchEvents(searchInput.value); $event.preventDefault()">
 
-        </svg>
+            <div class="dashboard-search-head">
+              <div>
+                <span>DISCOVER</span>
+                <strong>Search events</strong>
+              </div>
 
-        @if ((dashboard?.unreadNotifications ?? 0) > 0) {
-          <span class="notification-dot"></span>
+              <button
+                type="button"
+                class="dashboard-search-close"
+                aria-label="Close search"
+                (click)="closeSearch()">
+                &times;
+              </button>
+            </div>
+
+            <div class="dashboard-search-field">
+
+              <svg
+                viewBox="0 0 24 24"
+                width="17"
+                height="17"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3.5-3.5"></path>
+
+              </svg>
+
+              <input
+                #searchInput
+                type="search"
+                placeholder="Search event name, venue or category"
+                aria-label="Search events"
+                autocomplete="off">
+
+              <button type="submit">
+                Search
+              </button>
+
+            </div>
+
+            <small>
+              Example: Football, Concert, Cinema or venue name
+            </small>
+
+          </form>
+
         }
 
-      </a>
+      </div>
+
+      <div class="notification-menu">
+
+        <button
+          type="button"
+          class="round-action notification-action notification-trigger"
+          title="Notifications"
+          aria-label="Show unread notifications"
+          [attr.aria-expanded]="notificationPanelOpen"
+          (click)="toggleNotifications()">
+
+          <svg
+            viewBox="0 0 24 24"
+            width="19"
+            height="19"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+
+          </svg>
+
+          @if ((dashboard?.unreadNotifications ?? 0) > 0) {
+            <span class="notification-count-badge">
+              {{ dashboard?.unreadNotifications }}
+            </span>
+          }
+
+        </button>
+
+        @if (notificationPanelOpen) {
+
+          <div class="notification-popover">
+
+            <div class="notification-popover-head">
+              <div>
+                <span class="notification-popover-kicker">ACTIVITY</span>
+                <strong>Unread notifications</strong>
+              </div>
+
+              <button
+                type="button"
+                class="notification-close"
+                aria-label="Close notifications"
+                (click)="closeNotifications()">
+                &times;
+              </button>
+            </div>
+
+            @if (notificationsLoading) {
+
+              <div class="notification-popover-state">
+                Loading updates...
+              </div>
+
+            } @else if (notifications.length === 0) {
+
+              <div class="notification-popover-state empty">
+                <span>âœ“</span>
+                <strong>You are all caught up</strong>
+                <small>No unread notifications.</small>
+              </div>
+
+            } @else {
+
+              <div class="notification-preview-list">
+
+                @for (notification of notifications; track notification.id) {
+
+                  <article class="notification-preview">
+
+                    <span class="notification-preview-dot"></span>
+
+                    <div class="notification-preview-content">
+
+                      <p>{{ notification.message }}</p>
+
+                      <div class="notification-preview-meta">
+                        <span>
+                          {{ formatNotificationTime(notification.createdAt) }}
+                        </span>
+
+                        <button
+                          type="button"
+                          (click)="markNotificationRead(notification)">
+                          Mark as read
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </article>
+
+                }
+
+              </div>
+
+            }
+
+            <a
+              routerLink="/customer/notifications"
+              class="notification-view-all"
+              (click)="closeNotifications()">
+              View all notifications
+              <span>&rarr;</span>
+            </a>
+
+          </div>
+
+        }
+
+      </div>
 
     </div>
   </header>
@@ -184,48 +340,180 @@
       </div>
 
 
-      <div class="featured-event">
+      @if (featuredEvent; as event) {
 
-        <div class="event-image">
+        <div
+          class="featured-event featured-event-live"
+          (mouseenter)="pauseFeaturedRotation()"
+          (mouseleave)="resumeFeaturedRotation()">
 
-          <div class="event-image-overlay">
+          <div
+            [class]="'dashboard-event-visual ' + getCategoryVisualClass(event.categoryName)">
 
-            <span class="event-date">
-              SEP
-              <strong>20</strong>
+            <div class="sports-ball"></div>
+
+            <div class="concert-equalizer">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <div class="cinema-strip"></div>
+
+            <div class="conference-screen">
+              <span></span>
+            </div>
+
+            <div class="festival-confetti">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <div class="event-image-overlay">
+
+              <span class="event-date">
+                {{ formatFeaturedMonth(event.startDateTimeUtc) }}
+                <strong>
+                  {{ formatFeaturedDay(event.startDateTimeUtc) }}
+                </strong>
+              </span>
+
+            </div>
+
+            @if (upcomingEvents.length > 1) {
+
+              <div class="featured-image-controls">
+
+                <button
+                  type="button"
+                  aria-label="Previous event"
+                  (click)="previousFeaturedEvent()">
+                  ‹
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Next event"
+                  (click)="nextFeaturedEvent()">
+                  ›
+                </button>
+
+              </div>
+
+            }
+
+          </div>
+
+
+          <div class="event-copy">
+
+            <span class="event-tag">
+              {{ event.categoryName }}
             </span>
+
+            <h3>
+              {{ event.name }}
+            </h3>
+
+            <div class="featured-event-details">
+
+              <span class="featured-detail">
+                <strong>Venue</strong>
+                {{ event.venueName }}
+              </span>
+
+              <span class="featured-detail">
+                <strong>Date & Time</strong>
+                {{ formatFeaturedDateTime(event.startDateTimeUtc) }}
+              </span>
+
+            </div>
+
+            @if (event.description) {
+              <p class="featured-description">
+                {{ event.description }}
+              </p>
+            } @else {
+              <p class="featured-description">
+                Reserve your seat and parking for this upcoming event.
+              </p>
+            }
+
+            <div class="featured-event-actions">
+
+              <button
+                type="button"
+                class="glass-button featured-book-button"
+                (click)="bookFeaturedEvent(event.id)">
+                Book Event
+              </button>
+
+              @if (upcomingEvents.length > 1) {
+
+                <div
+                  class="featured-dots"
+                  aria-label="Upcoming event selection">
+
+                  @for (
+                    item of upcomingEvents;
+                    track item.id;
+                    let index = $index
+                  ) {
+
+                    <button
+                      type="button"
+                      class="featured-dot"
+                      [class.active]="index === activeEventIndex"
+                      [attr.aria-label]="'Show ' + item.name"
+                      (click)="selectFeaturedEvent(index)">
+                    </button>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
 
           </div>
 
         </div>
 
+      } @else {
 
-        <div class="event-copy">
+        <div class="featured-event featured-event-empty">
 
-          <span class="event-tag">
-            Featured Event
-          </span>
+          <div class="event-image">
+            <div class="event-image-overlay"></div>
+          </div>
 
-          <h3>
-            Find your next event
-          </h3>
+          <div class="event-copy">
 
-          <p>
-            Browse upcoming events and reserve your seat and parking in one simple flow.
-          </p>
+            <span class="event-tag">
+              Discover
+            </span>
 
-          <a
-            routerLink="/customer/events"
-            class="glass-button">
+            <h3>
+              Find your next event
+            </h3>
 
-            Browse Events
+            <p>
+              No upcoming events are available right now.
+              Check Browse Events for the latest listings.
+            </p>
 
-          </a>
+          </div>
 
         </div>
 
-      </div>
-
+      }
     </article>
 
 

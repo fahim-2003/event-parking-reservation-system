@@ -5,7 +5,10 @@
     <div class="brand">
 
       <div class="brand-mark">
-        P
+        <img
+          src="/images/event-parking-logo-sidebar.jpeg"
+          alt="Event Parking logo"
+          class="sidebar-brand-logo">
       </div>
 
       <div class="brand-copy">
@@ -31,7 +34,7 @@
 
     <nav class="sidebar-nav">
 
-      <a
+<a
         routerLink="/admin/dashboard"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }">
@@ -50,23 +53,7 @@
       </a>
 
 
-      <a
-        routerLink="/admin/events"
-        routerLinkActive="active">
-
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="5" width="18" height="16" rx="2"></rect>
-            <path d="M16 3v4M8 3v4M3 11h18"></path>
-          </svg>
-        </span>
-
-        <span>Events</span>
-
-      </a>
-
-
-      <a
+<a
         routerLink="/admin/venues"
         routerLinkActive="active">
 
@@ -82,7 +69,7 @@
       </a>
 
 
-      <a
+<a
         routerLink="/admin/categories"
         routerLinkActive="active">
 
@@ -100,7 +87,23 @@
       </a>
 
 
-      <a
+<a
+        routerLink="/admin/events"
+        routerLinkActive="active">
+
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+            <path d="M16 3v4M8 3v4M3 11h18"></path>
+          </svg>
+        </span>
+
+        <span>Events</span>
+
+      </a>
+
+
+<a
         routerLink="/admin/seats"
         routerLinkActive="active">
 
@@ -118,7 +121,7 @@
       </a>
 
 
-      <a
+<a
         routerLink="/admin/parking"
         routerLinkActive="active">
 
@@ -134,7 +137,7 @@
       </a>
 
 
-      <a
+<a
         routerLink="/admin/customers"
         routerLinkActive="active">
 
@@ -155,26 +158,25 @@
 
 
     <div class="sidebar-footer">
-
-      <div class="avatar">
-        A
-      </div>
-
-      <div class="account-copy">
-
-        <strong>
-          Administrator
-        </strong>
-
-        <span>
-          System management
-        </span>
-
-      </div>
-
-      <span class="online-dot"></span>
-
-    </div>
+  <button
+    type="button"
+    class="logout-button"
+    (click)="logout()"
+    title="Sign out">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M10 17l5-5-5-5"></path>
+      <path d="M15 12H3"></path>
+      <path d="M14 3h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4"></path>
+    </svg>
+    <span>Logout</span>
+  </button>
+</div>
 
   </aside>
 

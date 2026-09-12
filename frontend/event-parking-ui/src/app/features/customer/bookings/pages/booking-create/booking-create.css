@@ -770,3 +770,755 @@
   }
 
 }
+/* =========================================================
+   BOOKING EVENT CATEGORY VISUALS
+   ========================================================= */
+
+.event-poster {
+  isolation: isolate;
+}
+
+.booking-event-animation {
+  position: absolute;
+
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  z-index: 1;
+}
+
+.poster-category {
+  z-index: 20;
+}
+
+.booking-event-animation > * {
+  display: none;
+}
+
+
+/* SPORTS */
+
+.event-poster.visual-sports {
+  background:
+    linear-gradient(
+      180deg,
+      #21ae70 0 55%,
+      #087344 55% 100%
+    );
+}
+
+.visual-sports
+.booking-event-animation
+.overview-sports {
+  display: block;
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+
+.overview-pitch {
+  position: absolute;
+
+  left: 50%;
+  top: 54%;
+
+  width: 72%;
+  height: 68%;
+
+  transform:
+    translate(-50%,-50%);
+
+  border:
+    2px solid rgba(235,255,242,.75);
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.035) 0 15px,
+      rgba(0,0,0,.035) 15px 30px
+    );
+}
+
+.overview-pitch::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+  bottom: 0;
+
+  width: 1px;
+
+  background:
+    rgba(240,255,245,.75);
+}
+
+.overview-pitch::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 28px;
+  height: 28px;
+
+  transform:
+    translate(-50%,-50%);
+
+  border:
+    1px solid rgba(240,255,245,.78);
+
+  border-radius: 50%;
+}
+
+.overview-ball {
+  position: absolute;
+
+  left: 20%;
+  top: 30%;
+
+  width: 17px;
+  height: 17px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      white 0 40%,
+      #d5dee3 42% 68%,
+      #607080 70%
+    );
+
+  box-shadow:
+    0 5px 10px rgba(0,0,0,.25);
+
+  animation:
+    booking-ball-move
+    3.2s ease-in-out infinite alternate;
+}
+
+@keyframes booking-ball-move {
+  to {
+    transform:
+      translate(65px, 32px)
+      rotate(180deg);
+  }
+}
+
+
+/* CONCERT */
+
+.event-poster.visual-concert {
+  background:
+    radial-gradient(
+      circle at 50% 80%,
+      #ec48bc,
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      #24114e,
+      #5922a7
+    );
+}
+
+.visual-concert
+.booking-event-animation
+.overview-concert {
+  display: flex;
+
+  align-items: end;
+
+  gap: 5px;
+
+  height: 48px;
+}
+
+.overview-concert span {
+  width: 7px;
+
+  border-radius: 5px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #8de8ff,
+      #ed5ac5
+    );
+
+  box-shadow:
+    0 0 10px rgba(231,91,215,.55);
+
+  animation:
+    booking-eq
+    .85s ease-in-out infinite alternate;
+}
+
+.overview-concert span:nth-child(1) {
+  height: 22px;
+}
+
+.overview-concert span:nth-child(2) {
+  height: 42px;
+  animation-delay: .12s;
+}
+
+.overview-concert span:nth-child(3) {
+  height: 31px;
+  animation-delay: .24s;
+}
+
+.overview-concert span:nth-child(4) {
+  height: 48px;
+  animation-delay: .36s;
+}
+
+.overview-concert span:nth-child(5) {
+  height: 26px;
+  animation-delay: .48s;
+}
+
+@keyframes booking-eq {
+  to {
+    transform: scaleY(.48);
+  }
+}
+
+
+/* CINEMA */
+
+.event-poster.visual-cinema {
+  background:
+    radial-gradient(
+      circle at 75% 18%,
+      rgba(255,220,145,.42),
+      transparent 23%
+    ),
+    linear-gradient(
+      145deg,
+      #101927,
+      #27364e
+    );
+}
+
+.visual-cinema
+.booking-event-animation
+.overview-cinema {
+  display: block;
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+
+.overview-film {
+  position: absolute;
+
+  left: -12%;
+  top: 47%;
+
+  width: 125%;
+  height: 38px;
+
+  transform: rotate(-8deg);
+
+  border-top:
+    5px dotted rgba(255,255,255,.86);
+
+  border-bottom:
+    5px dotted rgba(255,255,255,.86);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.07),
+      rgba(255,255,255,.16),
+      rgba(255,255,255,.07)
+    );
+
+  animation:
+    booking-film
+    5s linear infinite;
+}
+
+@keyframes booking-film {
+  to {
+    transform:
+      translateX(35px)
+      rotate(-8deg);
+  }
+}
+
+
+/* CONFERENCE */
+
+.event-poster.visual-conference {
+  background:
+    linear-gradient(
+      145deg,
+      #0c3154,
+      #176eb0
+    );
+}
+
+.visual-conference
+.booking-event-animation
+.overview-conference {
+  display: grid;
+  place-items: center;
+
+  width: 100%;
+  height: 100%;
+}
+
+.overview-screen {
+  width: 72%;
+  height: 50%;
+
+  position: relative;
+
+  border:
+    2px solid rgba(169,228,255,.65);
+
+  border-radius: 6px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #34a7df,
+      #315fc2
+    );
+
+  box-shadow:
+    0 0 18px rgba(70,190,255,.28);
+}
+
+.overview-screen::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: -15px;
+
+  width: 22px;
+  height: 15px;
+
+  transform:
+    translateX(-50%);
+
+  background: #9eb8c8;
+
+  clip-path:
+    polygon(
+      30% 0,
+      70% 0,
+      100% 100%,
+      0 100%
+    );
+}
+
+
+/* FESTIVAL */
+
+.event-poster.visual-festival {
+  background:
+    radial-gradient(
+      circle at 20% 22%,
+      rgba(255,99,200,.65),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 82% 22%,
+      rgba(255,167,71,.55),
+      transparent 24%
+    ),
+    linear-gradient(
+      145deg,
+      #351052,
+      #7629a2
+    );
+}
+
+.visual-festival
+.booking-event-animation
+.overview-festival {
+  display: block;
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+
+.overview-festival i {
+  position: absolute;
+
+  width: 7px;
+  height: 12px;
+
+  border-radius: 2px;
+
+  background: #ffd25e;
+
+  animation:
+    booking-confetti
+    2.8s linear infinite;
+}
+
+.overview-festival i:nth-child(1) {
+  left: 20%;
+  top: 18%;
+
+  background: #ff69c7;
+}
+
+.overview-festival i:nth-child(2) {
+  left: 37%;
+  top: 10%;
+
+  animation-delay: .4s;
+}
+
+.overview-festival i:nth-child(3) {
+  left: 53%;
+  top: 27%;
+
+  background: #6be0ff;
+
+  animation-delay: .8s;
+}
+
+.overview-festival i:nth-child(4) {
+  left: 68%;
+  top: 13%;
+
+  background: #ff8562;
+
+  animation-delay: 1.2s;
+}
+
+.overview-festival i:nth-child(5) {
+  left: 80%;
+  top: 30%;
+
+  background: #a983ff;
+
+  animation-delay: 1.6s;
+}
+
+.overview-festival i:nth-child(6) {
+  left: 29%;
+  top: 42%;
+
+  background: #65edaf;
+
+  animation-delay: 2s;
+}
+
+@keyframes booking-confetti {
+  to {
+    transform:
+      translateY(75px)
+      rotate(240deg);
+
+    opacity: .15;
+  }
+}
+
+
+/* GENERIC */
+
+.event-poster.visual-generic {
+  background:
+    linear-gradient(
+      145deg,
+      #152c58,
+      #4c68df,
+      #7b57dc
+    );
+}
+
+
+/* =========================================================
+   CONFERENCE OVERVIEW ANIMATION FINAL
+   Customer booking top event card only
+   ========================================================= */
+
+.visual-conference
+.booking-event-animation
+.overview-conference {
+  position: relative;
+  overflow: hidden;
+}
+
+
+/* presentation monitor */
+
+.visual-conference
+.overview-screen {
+  position: relative;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 0 0 1px rgba(141,224,255,.18),
+    0 0 16px rgba(61,180,242,.26),
+    inset 0 0 18px rgba(255,255,255,.05);
+
+  animation:
+    booking-conference-screen-pulse
+    2.8s ease-in-out infinite;
+}
+
+
+/* moving presentation glow */
+
+.visual-conference
+.overview-screen::before {
+  content: '';
+
+  position: absolute;
+
+  left: -45%;
+  top: -20%;
+
+  width: 34%;
+  height: 140%;
+
+  transform:
+    skewX(-20deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.30),
+      transparent
+    );
+
+  filter:
+    blur(2px);
+
+  animation:
+    booking-conference-scan
+    3.2s ease-in-out infinite;
+}
+
+
+/* screen information bars */
+
+.visual-conference
+.overview-screen::after {
+  content: '';
+
+  position: absolute;
+
+  left: 14%;
+  right: 14%;
+  top: 24%;
+
+  height: 6px;
+
+  border-radius: 99px;
+
+  background:
+    rgba(220,244,255,.72);
+
+  box-shadow:
+    0 13px 0 rgba(204,235,255,.44),
+    0 26px 0 rgba(204,235,255,.22);
+
+  transform-origin: left center;
+
+  animation:
+    booking-conference-bars
+    2.4s ease-in-out infinite;
+}
+
+
+/* presentation stand / pointer */
+
+.visual-conference
+.overview-screen span {
+  position: absolute;
+
+  left: 50%;
+  bottom: -18px;
+
+  width: 28px;
+  height: 18px;
+
+  transform:
+    translateX(-50%);
+
+  clip-path:
+    polygon(
+      38% 0,
+      62% 0,
+      100% 100%,
+      0 100%
+    );
+
+  background:
+    linear-gradient(
+      180deg,
+      #a5d9ed,
+      #6ea6c4
+    );
+
+  animation:
+    booking-conference-stand
+    2.8s ease-in-out infinite;
+}
+
+
+@keyframes booking-conference-screen-pulse {
+
+  0%,
+  100% {
+    filter: brightness(1);
+
+    box-shadow:
+      0 0 0 1px rgba(141,224,255,.18),
+      0 0 12px rgba(61,180,242,.22),
+      inset 0 0 18px rgba(255,255,255,.05);
+  }
+
+  50% {
+    filter: brightness(1.10);
+
+    box-shadow:
+      0 0 0 2px rgba(141,224,255,.28),
+      0 0 26px rgba(61,180,242,.42),
+      inset 0 0 25px rgba(255,255,255,.08);
+  }
+}
+
+
+@keyframes booking-conference-scan {
+
+  0% {
+    left: -45%;
+    opacity: 0;
+  }
+
+  18% {
+    opacity: .8;
+  }
+
+  70% {
+    opacity: .8;
+  }
+
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
+}
+
+
+@keyframes booking-conference-bars {
+
+  0%,
+  100% {
+    transform:
+      scaleX(.62);
+
+    opacity: .55;
+  }
+
+  50% {
+    transform:
+      scaleX(1);
+
+    opacity: 1;
+  }
+}
+
+
+@keyframes booking-conference-stand {
+
+  0%,
+  100% {
+    filter:
+      brightness(.9);
+  }
+
+  50% {
+    filter:
+      brightness(1.25);
+  }
+}
+
+/* =========================================================
+   BOOKING CONFERENCE EXACT CUSTOMER EVENTS COPY
+   ========================================================= */
+/* CONFERENCE */
+
+.visual-conference {
+  background:
+    radial-gradient(circle at 25% 35%, rgba(89,200,255,.35), transparent 24%),
+    linear-gradient(145deg, #102e4c, #185f79 55%, #243a85);
+}
+
+.conference-screen {
+  position: absolute;
+  left: 50%;
+  top: 53%;
+  width: 125px;
+  height: 70px;
+  border: 2px solid rgba(255,255,255,.82);
+  border-radius: 9px;
+  background: rgba(255,255,255,.12);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 15px 35px rgba(0,0,0,.18);
+}
+
+.conference-screen::before,
+.conference-screen::after,
+.conference-screen span {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  height: 5px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.75);
+  animation: presentation-line 2s ease-in-out infinite;
+}
+
+.conference-screen::before {
+  top: 17px;
+}
+
+.conference-screen span {
+  top: 31px;
+  right: 42px;
+  animation-delay: .3s;
+}
+
+.conference-screen::after {
+  top: 45px;
+  right: 60px;
+  animation-delay: .6s;
+}
+
+@keyframes presentation-line {
+  50% {
+    opacity: .35;
+    transform: scaleX(.65);
+    transform-origin: left;
+  }
+}

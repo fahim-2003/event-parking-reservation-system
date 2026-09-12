@@ -3,6 +3,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  BookingService
+} from '../../../bookings/services/booking.service';
+import {
   PaymentApiService,
   PaymentResponse
 } from '../../services/payment-api.service';
@@ -18,8 +21,10 @@ export class PaymentHistory implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly paymentApi = inject(PaymentApiService);
+  private readonly bookingService = inject(BookingService);
 
   bookingId = 0;
+  bookingNumber = '';
   paymentMethod = 'Card';
 
   cardholderName = '';
@@ -40,6 +45,10 @@ export class PaymentHistory implements OnInit {
       Number(
         this.route.snapshot.queryParamMap.get('bookingId')
       ) || 0;
+
+    if (this.bookingId > 0) {
+      this.loadBookingReference();
+    }
 
     this.loadPayments();
   }
@@ -102,7 +111,11 @@ export class PaymentHistory implements OnInit {
           this.cvv = '';
           this.mobileNumber = '';
 
-          this.loadPayments();
+          if (this.bookingId > 0) {
+      this.loadBookingReference();
+    }
+
+    this.loadPayments();
         },
 
         error: error => {
@@ -117,6 +130,37 @@ export class PaymentHistory implements OnInit {
       });
   }
 
+  private loadBookingReference(): void {
+
+    this.bookingService
+      .getMine()
+      .subscribe({
+
+        next: bookings => {
+
+          const booking =
+            (bookings ?? []).find(
+              item =>
+                item.id === this.bookingId
+            );
+
+          this.bookingNumber =
+            booking?.bookingNumber ?? '';
+
+        },
+
+        error: error => {
+          console.error(
+            'Booking reference failed',
+            error
+          );
+
+          this.bookingNumber = '';
+        }
+
+      });
+
+  }
   loadPayments(): void {
     this.paymentApi
       .getMine()

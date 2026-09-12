@@ -411,6 +411,33 @@ export class BookingCreate implements OnInit {
       });
   }
 
+  get eventVisualClass(): string {
+    const category =
+      this.event?.categoryName
+        ?.trim()
+        .toLowerCase() ?? '';
+
+    switch (category) {
+      case 'sports':
+        return 'visual-sports';
+
+      case 'concert':
+        return 'visual-concert';
+
+      case 'cinema':
+        return 'visual-cinema';
+
+      case 'conference':
+        return 'visual-conference';
+
+      case 'festival':
+        return 'visual-festival';
+
+      default:
+        return 'visual-generic';
+    }
+  }
+
   get selectedSeats():
     SeatResponse[] {
 

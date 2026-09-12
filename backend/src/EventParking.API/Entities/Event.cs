@@ -1,4 +1,4 @@
-﻿namespace EventParking.API.Entities;
+namespace EventParking.API.Entities;
 
 public class Event
 {
@@ -7,6 +7,8 @@ public class Event
     public string Name { get; set; } = string.Empty;
 
     public string? Description { get; set; }
+
+    public string? ImageUrl { get; set; }
 
     public int VenueId { get; set; }
 

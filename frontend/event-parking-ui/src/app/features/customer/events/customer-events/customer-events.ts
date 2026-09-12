@@ -97,6 +97,38 @@ export class CustomerEventsComponent implements OnInit {
     ]);
   }
 
+  getCategoryVisualClass(
+    categoryName: string
+  ): string {
+
+    switch (
+      categoryName
+        .trim()
+        .toLowerCase()
+    ) {
+
+      case 'sports':
+        return 'visual-sports';
+
+      case 'concert':
+        return 'visual-concert';
+
+      case 'cinema':
+        return 'visual-cinema';
+
+      case 'conference':
+        return 'visual-conference';
+
+      case 'festival':
+        return 'visual-festival';
+
+      default:
+        return 'visual-generic';
+
+    }
+
+  }
+
   private readFiltersFromUrl(): void {
     const params =
       this.route.snapshot.queryParamMap;

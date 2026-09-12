@@ -1,4 +1,4 @@
-﻿using EventParking.API.DTOs.Events;
+using EventParking.API.DTOs.Events;
 using EventParking.API.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -116,6 +116,13 @@ public sealed class AdminEventsController : ControllerBase
             }
 
             return NoContent();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Event cannot be deleted.",
+                detail: exception.Message);
         }
         catch (DbUpdateException)
         {

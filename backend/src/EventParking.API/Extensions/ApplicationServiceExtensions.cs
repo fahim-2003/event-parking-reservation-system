@@ -1,4 +1,4 @@
-using EventParking.API.Interfaces.Services;
+﻿using EventParking.API.Interfaces.Services;
 using EventParking.API.Services;
 
 namespace EventParking.API.Extensions;
@@ -9,6 +9,7 @@ public static class ApplicationServiceExtensions
         this IServiceCollection services)
     {
         services.AddScoped<IEmailSender, DevelopmentEmailSender>();
+        services.AddScoped<ISmsSender, DevelopmentSmsSender>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICustomerService, CustomerService>();
 

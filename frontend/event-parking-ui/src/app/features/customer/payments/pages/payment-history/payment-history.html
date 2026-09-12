@@ -28,7 +28,7 @@
         </div>
 
         <span class="booking-chip">
-          Booking #{{ bookingId }}
+          {{ bookingNumber || 'Reservation' }}
         </span>
       </div>
 
@@ -198,7 +198,7 @@
 
       <div class="summary-line">
         <span>Booking</span>
-        <strong>#{{ bookingId }}</strong>
+        <strong>{{ bookingNumber || 'Reservation' }}</strong>
       </div>
 
       <div class="summary-line">
@@ -283,47 +283,65 @@
     class="history-grid">
 
     <article
-      class="history-card"
+      class="history-card payment-receipt"
       *ngFor="let payment of payments">
 
-      <div class="history-top">
+      <div class="receipt-head">
 
-        <div>
-          <span class="transaction-label">
-            Transaction
-          </span>
+        <div class="receipt-brand">
+          <span class="receipt-icon">✓</span>
 
-          <strong>
-            #{{ payment.id }}
-          </strong>
+          <div>
+            <span class="receipt-kicker">
+              Payment receipt
+            </span>
+
+            <strong class="receipt-title">
+              Reservation payment
+            </strong>
+          </div>
         </div>
 
         <span
           class="status-chip"
           [class.completed]="payment.status === 'Completed'">
-
           {{ payment.status }}
-
         </span>
 
       </div>
 
-      <div class="history-amount">
-        Rs. {{ payment.amount | number:'1.2-2' }}
+      <div class="receipt-amount-block">
+        <span>Paid amount</span>
+
+        <strong>
+          Rs. {{ payment.amount | number:'1.2-2' }}
+        </strong>
       </div>
 
-      <div class="history-meta">
+      <div class="receipt-divider"></div>
 
-        <div>
-          <span>Booking</span>
-          <strong>#{{ payment.bookingId }}</strong>
+      <div class="receipt-details">
+
+
+        <div class="receipt-detail">
+          <span>Payment method</span>
+          <strong class="method-pill">
+            {{ payment.paymentMethod }}
+          </strong>
         </div>
 
-        <div>
-          <span>Method</span>
-          <strong>{{ payment.paymentMethod }}</strong>
+        <div class="receipt-detail receipt-date">
+          <span>Paid on</span>
+          <strong>
+            {{ payment.createdAt | date:'dd MMM yyyy, h:mm a' }}
+          </strong>
         </div>
 
+      </div>
+
+      <div class="receipt-footer">
+        <span class="secure-dot"></span>
+        Payment recorded securely
       </div>
 
     </article>
