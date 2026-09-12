@@ -2,6 +2,7 @@
   id: number;
   name: string;
   description: string | null;
+  imageUrl: string | null;
   venueId: number;
   venueName: string;
   eventCategoryId: number;
@@ -18,6 +19,7 @@
 export interface CreateEventRequest {
   name: string;
   description: string | null;
+  imageUrl: string | null;
   venueId: number;
   eventCategoryId: number;
   startDateTimeUtc: string;
@@ -30,6 +32,7 @@ export interface CreateEventRequest {
 export interface UpdateEventRequest {
   name: string;
   description: string | null;
+  imageUrl: string | null;
   venueId: number;
   eventCategoryId: number;
   startDateTimeUtc: string;

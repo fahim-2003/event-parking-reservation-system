@@ -1,62 +1,1177 @@
-﻿.parking-map {
-  display: grid;
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(90px, 1fr)
-    );
-  gap: 10px;
-}
+/* =========================================================
+   REALISTIC CUSTOMER PARKING MAP
+   ========================================================= */
 
-.resource-item {
-  min-height: 68px;
-  padding: 10px;
-
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    border-color 0.15s ease,
-    background 0.15s ease;
-}
-
-.resource-item:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.resource-item.selected {
-  border-color: #4f46e5;
-  background: #eef2ff;
-  color: #312e81;
-
-  box-shadow:
-    0 0 0 2px rgba(79, 70, 229, 0.15);
-}
-
-.resource-item.unavailable {
-  cursor: not-allowed;
-  opacity: 0.68;
-}
-
-.resource-item strong,
-.resource-item small {
+:host {
   display: block;
 }
 
-.resource-item small {
-  margin-top: 5px;
-  font-size: 11px;
+.parking-experience {
+  width: 100%;
 }
+
+.parking-map-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 14px;
+}
+
+.parking-map-title {
+  min-width: 0;
+}
+
+.parking-eyebrow {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #5d70dc;
+
+  font-size: .56rem;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.parking-map-title strong {
+  display: block;
+
+  color: #28364e;
+
+  font-size: .92rem;
+  font-weight: 850;
+}
+
+.parking-map-title small {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #8895a9;
+
+  font-size: .62rem;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+
+.parking-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 11px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: #7c899d;
+
+  font-size: .56rem;
+  font-weight: 750;
+}
+
+.legend-item i {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 3px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(30,40,60,.08);
+}
+
+.legend-item.available i {
+  background: #dff8eb;
+}
+
+.legend-item.selected i {
+  background: #5c7cf3;
+}
+
+.legend-item.held i {
+  background: #f8ca61;
+}
+
+.legend-item.occupied i {
+  background: #566174;
+}
+
+
+/* =========================================================
+   PARKING SITE / ASPHALT
+   ========================================================= */
+
+.parking-site {
+  position: relative;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(112,126,157,.18);
+
+  border-radius: 22px;
+
+  background:
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(255,255,255,.025),
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 80% 60%,
+      rgba(255,255,255,.025),
+      transparent 25%
+    ),
+    #2e343d;
+
+  box-shadow:
+    0 20px 45px rgba(41,52,77,.13),
+    inset 0 0 0 1px rgba(255,255,255,.03);
+}
+
+
+/* =========================================================
+   EVENT VENUE
+   ========================================================= */
+
+.venue-front {
+  position: relative;
+
+  min-height: 92px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding: 14px 20px 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #e8edf5,
+      #cdd5e1
+    );
+
+  border-bottom:
+    5px solid #aab4c2;
+}
+
+.venue-front::before {
+  content: "";
+
+  position: absolute;
+
+  left: 7%;
+  right: 7%;
+  top: 15px;
+
+  height: 33px;
+
+  border-radius: 12px 12px 3px 3px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #46566c 0 28px,
+      #6f8095 28px 31px
+    );
+
+  box-shadow:
+    0 7px 15px rgba(42,55,74,.15);
+}
+
+.venue-sign {
+  position: relative;
+  z-index: 2;
+
+  margin-bottom: 7px;
+
+  color: #6c788b;
+
+  font-size: .52rem;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.venue-entrance {
+  position: relative;
+  z-index: 2;
+
+  min-width: 220px;
+  min-height: 36px;
+
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+
+  border-radius: 8px 8px 0 0;
+
+  background: #f7f9fc;
+
+  box-shadow:
+    0 -2px 0 rgba(255,255,255,.9),
+    0 0 0 1px rgba(66,81,104,.1);
+}
+
+.venue-entrance strong {
+  color: #4c5c72;
+
+  font-size: .58rem;
+  font-weight: 900;
+
+  text-align: center;
+  letter-spacing: .08em;
+}
+
+.entrance-door {
+  height: 27px;
+
+  margin: 7px 5px 0;
+
+  border-radius: 4px 4px 0 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6b8199,
+      #35475b
+    );
+
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.08);
+}
+
+
+/* =========================================================
+   PEDESTRIAN WALKWAY
+   ========================================================= */
+
+.pedestrian-zone {
+  position: relative;
+
+  min-height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #aeb7c2,
+      #8f99a6
+    );
+
+  border-bottom:
+    4px solid #f4d35e;
+}
+
+.walkway-label {
+  position: absolute;
+
+  top: 5px;
+
+  color: rgba(34,43,55,.62);
+
+  font-size: .48rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.crossing-lines {
+  display: flex;
+
+  gap: 7px;
+
+  margin-top: 13px;
+}
+
+.crossing-lines span {
+  width: 25px;
+  height: 25px;
+
+  background: rgba(255,255,255,.88);
+
+  box-shadow:
+    0 2px 4px rgba(42,48,58,.1);
+}
+
+
+/* =========================================================
+   MAIN DRIVE ROAD
+   ========================================================= */
+
+.parking-road,
+.parking-bottom-road {
+  min-height: 66px;
+
+  display: grid;
+  align-items: center;
+
+  color: rgba(255,255,255,.73);
+
+  background:
+    linear-gradient(
+      180deg,
+      #303740,
+      #272d34
+    );
+}
+
+.parking-road {
+  grid-template-columns:
+    minmax(80px,auto)
+    1fr
+    minmax(80px,auto);
+
+  padding: 0 18px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.06);
+}
+
+.road-entry,
+.road-exit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: .56rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.road-entry {
+  color: #8ce0b4;
+}
+
+.road-exit {
+  justify-content: flex-end;
+
+  color: #ffca74;
+}
+
+.road-entry strong,
+.road-exit strong {
+  font-size: 1rem;
+}
+
+.road-center {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 0 18px;
+}
+
+.road-center strong {
+  flex: 0 0 auto;
+
+  color: rgba(255,255,255,.43);
+
+  font-size: .48rem;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.road-line {
+  flex: 1;
+
+  height: 2px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.52) 0 22px,
+      transparent 22px 39px
+    );
+}
+
+
+/* =========================================================
+   PARKING ZONES
+   ========================================================= */
+
+.parking-zones {
+  padding: 17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.015),
+      transparent 40%
+    );
+}
+
+.parking-zone {
+  overflow: hidden;
+
+  margin-bottom: 17px;
+
+  border:
+    1px solid rgba(255,255,255,.08);
+
+  border-radius: 17px;
+
+  background:
+    rgba(22,27,33,.30);
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.08);
+}
+
+.parking-zone:last-child {
+  margin-bottom: 0;
+}
+
+.parking-zone-header {
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 9px 14px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.06);
+
+  background:
+    rgba(255,255,255,.035);
+}
+
+.parking-zone-header div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.parking-zone-header span {
+  color: #8995a5;
+
+  font-size: .46rem;
+  font-weight: 850;
+  letter-spacing: .12em;
+}
+
+.parking-zone-header strong {
+  min-width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6578e8,
+      #795de7
+    );
+
+  color: #fff;
+
+  font-size: .76rem;
+  font-weight: 900;
+}
+
+.parking-zone-header small {
+  color: #7f8b9a;
+
+  font-size: .53rem;
+}
+
+
+/* =========================================================
+   PARKING ROWS
+   ========================================================= */
+
+.parking-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(76px, 1fr)
+    );
+
+  gap: 7px;
+
+  padding: 10px 12px 0;
+}
+
+.lower-row {
+  padding:
+    0 12px 11px;
+}
+
+
+/* =========================================================
+   ACTUAL PARKING BAY
+   ========================================================= */
+
+.parking-bay {
+  position: relative;
+
+  min-width: 0;
+  min-height: 96px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 6px 7px;
+
+  overflow: hidden;
+
+  border: 0;
+  border-left:
+    2px solid rgba(255,255,255,.48);
+  border-right:
+    2px solid rgba(255,255,255,.48);
+  border-bottom:
+    2px solid rgba(255,255,255,.48);
+
+  border-radius: 2px 2px 7px 7px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  color: #dce3ec;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 -12px 22px rgba(0,0,0,.08);
+
+  transition:
+    transform .16s ease,
+    background .16s ease,
+    box-shadow .16s ease,
+    border-color .16s ease;
+}
+
+.upper-row .parking-bay {
+  border-top:
+    2px solid rgba(255,255,255,.48);
+
+  border-bottom:
+    0;
+
+  border-radius: 7px 7px 2px 2px;
+}
+
+.parking-bay::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.025),
+      transparent
+    );
+}
+
+.bay-number {
+  position: relative;
+  z-index: 3;
+
+  min-width: 35px;
+
+  padding: 3px 7px;
+
+  border-radius: 7px;
+
+  background:
+    rgba(13,18,23,.38);
+
+  color: rgba(255,255,255,.87);
+
+  font-size: .58rem;
+  font-weight: 900;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   AVAILABLE BAY
+   ========================================================= */
+
+.parking-bay.available {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(75,196,135,.10),
+      rgba(75,196,135,.035)
+    );
+
+  border-color:
+    rgba(157,230,193,.60);
+}
+
+.parking-bay.available:hover:not(:disabled) {
+  z-index: 3;
+
+  transform:
+    translateY(-3px);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(71,200,136,.24),
+      rgba(55,155,106,.08)
+    );
+
+  border-color: #8ce0b5;
+
+  box-shadow:
+    0 10px 20px rgba(0,0,0,.18),
+    inset 0 0 0 1px rgba(116,220,166,.16);
+}
+
+.available-marker,
+.held-marker,
+.selected-marker {
+  position: relative;
+  z-index: 3;
+
+  padding: 3px 6px;
+
+  border-radius: 999px;
+
+  font-size: .42rem;
+  font-weight: 900;
+  letter-spacing: .07em;
+}
+
+.available-marker {
+  background:
+    rgba(76,203,139,.15);
+
+  color: #88dcb1;
+}
+
+
+/* =========================================================
+   SELECTED BAY
+   ========================================================= */
+
+.parking-bay.selected {
+  border-color: #9ab7ff !important;
+
+  background:
+    linear-gradient(
+      160deg,
+      rgba(72,142,255,.95),
+      rgba(102,79,230,.93)
+    ) !important;
+
+  color: #fff;
+
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 0 0 3px rgba(95,125,242,.20),
+    0 13px 25px rgba(26,32,74,.35);
+}
+
+.parking-bay.selected::after {
+  content: "✓";
+
+  position: absolute;
+
+  right: 6px;
+  top: 6px;
+
+  width: 18px;
+  height: 18px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #5269df;
+
+  font-size: .58rem;
+  font-weight: 950;
+}
+
+.parking-bay.selected .bay-number {
+  background:
+    rgba(255,255,255,.16);
+
+  color: #fff;
+}
+
+.selected-marker {
+  background:
+    rgba(255,255,255,.17);
+
+  color: #fff;
+}
+
+
+/* =========================================================
+   HELD BAY
+   ========================================================= */
+
+.parking-bay.held {
+  border-color:
+    rgba(245,198,92,.62);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(245,190,68,.18),
+      rgba(147,103,27,.08)
+    );
+
+  cursor: not-allowed;
+}
+
+.held-marker {
+  background:
+    rgba(245,190,68,.16);
+
+  color: #f4cb75;
+}
+
+
+/* =========================================================
+   OCCUPIED BAY + CAR
+   ========================================================= */
+
+.parking-bay.occupied {
+  border-color:
+    rgba(161,173,190,.30);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(93,105,121,.18),
+      rgba(34,41,49,.24)
+    );
+
+  cursor: not-allowed;
+}
+
+.parking-bay.occupied .bay-number {
+  color: #aeb7c4;
+}
+
+.parked-car {
+  position: relative;
+  z-index: 3;
+
+  width: 43px;
+  height: 56px;
+
+  display: block;
+
+  border-radius:
+    15px 15px 10px 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #5a6573,
+      #8a96a5 48%,
+      #5b6572
+    );
+
+  border:
+    1px solid rgba(255,255,255,.16);
+
+  box-shadow:
+    0 8px 13px rgba(0,0,0,.30),
+    inset 0 0 0 2px rgba(255,255,255,.04);
+}
+
+.car-cabin {
+  position: absolute;
+
+  left: 7px;
+  right: 7px;
+  top: 10px;
+
+  height: 23px;
+
+  border-radius: 8px 8px 4px 4px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #263544,
+      #43566a
+    );
+
+  border:
+    1px solid rgba(190,218,239,.13);
+}
+
+.car-cabin::before,
+.car-cabin::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: -17px;
+
+  width: 6px;
+  height: 5px;
+
+  border-radius: 2px;
+
+  background: #d95151;
+}
+
+.car-cabin::before {
+  left: -3px;
+}
+
+.car-cabin::after {
+  right: -3px;
+}
+
+.car-wheel {
+  position: absolute;
+
+  width: 5px;
+  height: 13px;
+
+  top: 31px;
+
+  border-radius: 3px;
+
+  background: #111820;
+}
+
+.car-wheel.left {
+  left: -3px;
+}
+
+.car-wheel.right {
+  right: -3px;
+}
+
+
+/* =========================================================
+   INTERNAL DRIVE LANE
+   ========================================================= */
+
+.zone-drive-lane {
+  min-height: 48px;
+
+  display: grid;
+
+  grid-template-columns:
+    auto 1fr auto 1fr auto;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 0 15px;
+
+  background:
+    rgba(10,14,18,.22);
+}
+
+.zone-drive-lane strong {
+  color:
+    rgba(255,255,255,.28);
+
+  font-size: .42rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.lane-arrow {
+  color: #f1d163;
+
+  font-size: .95rem;
+}
+
+.lane-dashes {
+  height: 2px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.36) 0 16px,
+      transparent 16px 29px
+    );
+}
+
+
+/* =========================================================
+   RETURN / EXIT ROAD
+   ========================================================= */
+
+.parking-bottom-road {
+  grid-template-columns:
+    auto 1fr auto;
+
+  gap: 15px;
+
+  padding: 0 18px;
+
+  border-top:
+    1px solid rgba(255,255,255,.06);
+}
+
+.parking-bottom-road span {
+  color:
+    rgba(255,255,255,.54);
+
+  font-size: .49rem;
+  font-weight: 900;
+  letter-spacing: .09em;
+}
+
+.bottom-road-dashes {
+  height: 2px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.35) 0 22px,
+      transparent 22px 41px
+    );
+}
+
+
+/* =========================================================
+   SELECTED PARKING SUMMARY
+   ========================================================= */
+
+.selected-parking-summary {
+  margin-top: 13px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 11px 13px;
+
+  border:
+    1px solid rgba(93,116,225,.17);
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239,244,255,.97),
+      rgba(247,244,255,.97)
+    );
+
+  box-shadow:
+    0 8px 20px rgba(65,82,147,.07);
+}
+
+.selected-summary-icon {
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #4e9cf4,
+      #705ae9
+    );
+
+  color: #fff;
+
+  font-size: .72rem;
+  font-weight: 950;
+}
+
+.selected-parking-summary > div:last-child {
+  min-width: 0;
+}
+
+.selected-parking-summary span {
+  display: block;
+
+  color: #7482d0;
+
+  font-size: .48rem;
+  font-weight: 900;
+  letter-spacing: .10em;
+}
+
+.selected-parking-summary strong {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #34425b;
+
+  font-size: .83rem;
+}
+
+.selected-parking-summary small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #8b97a8;
+
+  font-size: .56rem;
+}
+
+
+/* =========================================================
+   DISABLED
+   ========================================================= */
+
+.parking-bay:disabled {
+  opacity: .82;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
 .state-card {
   padding: 20px;
 
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  border:
+    1px solid rgba(143,158,187,.12);
 
-  background: #f8fafc;
-  color: #64748b;
+  border-radius: 15px;
+
+  background:
+    rgba(247,249,253,.88);
+
+  color: #8793a5;
+
+  font-size: .68rem;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 820px) {
+
+  .parking-map-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .parking-legend {
+    justify-content: flex-start;
+  }
+
+  .parking-row {
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(68px, 1fr)
+      );
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .parking-site {
+    border-radius: 17px;
+  }
+
+  .venue-front {
+    min-height: 82px;
+  }
+
+  .venue-entrance {
+    min-width: 190px;
+  }
+
+  .crossing-lines span {
+    width: 19px;
+    height: 22px;
+  }
+
+  .parking-road {
+    grid-template-columns:
+      auto 1fr auto;
+
+    padding: 0 10px;
+  }
+
+  .road-center {
+    padding: 0 8px;
+  }
+
+  .road-center strong {
+    display: none;
+  }
+
+  .parking-zones {
+    padding: 10px;
+  }
+
+  .parking-row {
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(58px, 1fr)
+      );
+
+    gap: 5px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .parking-bay {
+    min-height: 88px;
+  }
+
+  .parked-car {
+    width: 36px;
+    height: 49px;
+  }
+
+  .parking-bottom-road {
+    padding: 0 10px;
+  }
+
 }

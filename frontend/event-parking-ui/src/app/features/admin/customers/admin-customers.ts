@@ -38,6 +38,24 @@ export class AdminCustomers implements OnInit {
     search: ['']
   });
 
+  get activeCustomerCount(): number {
+    return this.customers().filter(
+      customer =>
+        customer.accountStatus.toLowerCase() === 'active'
+    ).length;
+  }
+
+  get verifiedCustomerCount(): number {
+    return this.customers().filter(
+      customer => customer.emailVerified
+    ).length;
+  }
+
+  get pendingVerificationCount(): number {
+    return this.customers().filter(
+      customer => !customer.emailVerified
+    ).length;
+  }
   ngOnInit(): void {
     this.loadCustomers();
   }

@@ -1,4 +1,4 @@
-using EventParking.API.DTOs.Auth;
+﻿using EventParking.API.DTOs.Auth;
 using EventParking.API.Enums;
 using EventParking.API.Identity;
 using EventParking.API.Interfaces.Services;
@@ -65,7 +65,8 @@ public sealed class AuthServiceTests
         var service = new AuthService(
             userManager.Object,
             tokenService.Object,
-            emailSender.Object);
+            emailSender.Object,
+            new Mock<ISmsSender>().Object);
 
         var result = await service.LoginAsync(
             new LoginRequest
@@ -273,25 +274,25 @@ public sealed class AuthServiceTests
         var userManager = CreateUserManagerMock();
         var tokenService = new Mock<ITokenService>();
         var emailSender = new Mock<IEmailSender>();
+        var smsSender = new Mock<ISmsSender>();
 
         userManager
-            .Setup(manager =>
-                manager.FindByEmailAsync(
-                    "missing@eventparking.local"))
-            .ReturnsAsync(
-                (ApplicationUser?)null);
+            .Setup(manager => manager.Users)
+            .Returns(
+                Array.Empty<ApplicationUser>()
+                    .AsQueryable());
 
         var service = new AuthService(
             userManager.Object,
             tokenService.Object,
-            emailSender.Object);
+            emailSender.Object,
+            smsSender.Object);
 
         var result =
             await service.ForgotPasswordAsync(
                 new ForgotPasswordRequest
                 {
-                    Email =
-                        "missing@eventparking.local"
+                    PhoneNumber = "0770000000"
                 });
 
         Assert.True(result.Succeeded);
@@ -299,17 +300,16 @@ public sealed class AuthServiceTests
 
         Assert.Equal(
             "If an eligible account exists, " +
-            "a password reset link has been generated.",
+            "a password reset OTP has been generated.",
             result.Value.Message);
 
-        emailSender.Verify(
+        smsSender.Verify(
             sender =>
-                sender.SendPasswordResetAsync(
+                sender.SendPasswordResetOtpAsync(
                     It.IsAny<ApplicationUser>(),
                     It.IsAny<string>()),
             Times.Never);
     }
-
     [Fact]
     public async Task ForgotPasswordAsync_SendsReset_ForEligibleAccount()
     {
@@ -320,47 +320,50 @@ public sealed class AuthServiceTests
         var userManager = CreateUserManagerMock();
         var tokenService = new Mock<ITokenService>();
         var emailSender = new Mock<IEmailSender>();
+        var smsSender = new Mock<ISmsSender>();
+
+        userManager
+            .Setup(manager => manager.Users)
+            .Returns(
+                new[] { user }
+                    .AsQueryable());
 
         userManager
             .Setup(manager =>
-                manager.FindByEmailAsync(user.Email!))
-            .ReturnsAsync(user);
-
-        userManager
-            .Setup(manager =>
-                manager.GeneratePasswordResetTokenAsync(
-                    user))
-            .ReturnsAsync("reset-token");
-
-        emailSender
-            .Setup(sender =>
-                sender.SendPasswordResetAsync(
+                manager.GenerateChangePhoneNumberTokenAsync(
                     user,
-                    "reset-token"))
+                    user.PhoneNumber!))
+            .ReturnsAsync("123456");
+
+        smsSender
+            .Setup(sender =>
+                sender.SendPasswordResetOtpAsync(
+                    user,
+                    "123456"))
             .Returns(Task.CompletedTask);
 
         var service = new AuthService(
             userManager.Object,
             tokenService.Object,
-            emailSender.Object);
+            emailSender.Object,
+            smsSender.Object);
 
         var result =
             await service.ForgotPasswordAsync(
                 new ForgotPasswordRequest
                 {
-                    Email = user.Email!
+                    PhoneNumber = user.PhoneNumber!
                 });
 
         Assert.True(result.Succeeded);
 
-        emailSender.Verify(
+        smsSender.Verify(
             sender =>
-                sender.SendPasswordResetAsync(
+                sender.SendPasswordResetOtpAsync(
                     user,
-                    "reset-token"),
+                    "123456"),
             Times.Once);
     }
-
     [Fact]
     public async Task ResendVerificationAsync_DoesNotRevealUnknownAccount()
     {
@@ -378,7 +381,8 @@ public sealed class AuthServiceTests
         var service = new AuthService(
             userManager.Object,
             tokenService.Object,
-            emailSender.Object);
+            emailSender.Object,
+            new Mock<ISmsSender>().Object);
 
         var result =
             await service.ResendVerificationAsync(
@@ -436,7 +440,8 @@ public sealed class AuthServiceTests
         var service = new AuthService(
             userManager.Object,
             tokenService.Object,
-            emailSender.Object);
+            emailSender.Object,
+            new Mock<ISmsSender>().Object);
 
         var result =
             await service.ResendVerificationAsync(
@@ -465,8 +470,8 @@ public sealed class AuthServiceTests
             await service.ResetPasswordAsync(
                 new ResetPasswordRequest
                 {
-                    UserId = "",
-                    Token = "",
+                    PhoneNumber = "",
+                    Otp = "123456",
                     NewPassword = "NewPassword9!"
                 });
 
@@ -591,7 +596,8 @@ public sealed class AuthServiceTests
         var service = new AuthService(
             userManager.Object,
             tokenService.Object,
-            new Mock<IEmailSender>().Object);
+            new Mock<IEmailSender>().Object,
+            new Mock<ISmsSender>().Object);
 
         var result =
             await service.LoginAsync(
@@ -634,7 +640,8 @@ public sealed class AuthServiceTests
         return new AuthService(
             userManager.Object,
             new Mock<ITokenService>().Object,
-            new Mock<IEmailSender>().Object);
+            new Mock<IEmailSender>().Object,
+            new Mock<ISmsSender>().Object);
     }
 
     private static Mock<UserManager<ApplicationUser>>
@@ -655,5 +662,7 @@ public sealed class AuthServiceTests
             null!);
     }
 }
+
+
 
 

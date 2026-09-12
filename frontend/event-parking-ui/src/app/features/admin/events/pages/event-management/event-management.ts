@@ -24,7 +24,8 @@ import { EventApiService } from '../../services/event-api.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ConfirmationDialog
+    ConfirmationDialog,
+    ShortTextPipe
   ],
   templateUrl: './event-management.html',
   styleUrl: './event-management.css'
@@ -132,6 +133,7 @@ export class EventManagement {
     const request: CreateEventRequest = {
       name,
       description: formValue.description.trim() || null,
+      imageUrl: null,
       venueId: formValue.venueId,
       eventCategoryId: formValue.eventCategoryId,
       startDateTimeUtc: start.toISOString(),
@@ -225,6 +227,28 @@ export class EventManagement {
         this.errorMessage.set(detail);
       }
     });
+  }
+
+  getEventVisualClass(categoryName: string): string {
+    switch (categoryName.trim().toLowerCase()) {
+      case 'sports':
+        return 'visual-sports';
+
+      case 'concert':
+        return 'visual-concert';
+
+      case 'cinema':
+        return 'visual-cinema';
+
+      case 'conference':
+        return 'visual-conference';
+
+      case 'festival':
+        return 'visual-festival';
+
+      default:
+        return 'visual-generic';
+    }
   }
 
   private resetForm(): void {

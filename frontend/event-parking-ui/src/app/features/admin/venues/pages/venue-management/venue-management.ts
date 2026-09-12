@@ -1,4 +1,4 @@
-﻿import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -6,6 +6,7 @@ import {
   Validators
 } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { EventItem, EventService } from '../../../../../core/services/event.service';
 import { ConfirmationDialog } from '../../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import {
   CreateVenueRequest,
@@ -26,9 +27,11 @@ import { VenueApiService } from '../../services/venue-api.service';
 })
 export class VenueManagement {
   private readonly venueApi = inject(VenueApiService);
+  private readonly eventService = inject(EventService);
   private readonly formBuilder = inject(FormBuilder);
 
   readonly venues = signal<Venue[]>([]);
+  readonly events = signal<EventItem[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly errorMessage = signal('');
@@ -43,6 +46,7 @@ export class VenueManagement {
 
   constructor() {
     this.loadVenues();
+    this.loadEvents();
   }
 
   loadVenues(): void {
@@ -143,6 +147,110 @@ export class VenueManagement {
         );
       }
     });
+  }
+
+
+  getVenueCategoryName(
+    venueId: number
+  ): string | null {
+
+    const venueEvents =
+      this.events().filter(
+        event =>
+          event.venueId === venueId
+      );
+
+    if (venueEvents.length === 0) {
+      return null;
+    }
+
+    const now =
+      Date.now();
+
+    const upcomingEvents =
+      venueEvents
+        .filter(
+          event =>
+            new Date(
+              event.startDateTimeUtc
+            ).getTime() >= now
+        )
+        .sort(
+          (left, right) =>
+            new Date(
+              left.startDateTimeUtc
+            ).getTime() -
+            new Date(
+              right.startDateTimeUtc
+            ).getTime()
+        );
+
+    const selectedEvent =
+      upcomingEvents[0] ??
+      [...venueEvents].sort(
+        (left, right) =>
+          new Date(
+            right.startDateTimeUtc
+          ).getTime() -
+          new Date(
+            left.startDateTimeUtc
+          ).getTime()
+      )[0];
+
+    return (
+      selectedEvent?.categoryName ??
+      null
+    );
+  }
+
+
+  getVenueVisualClass(
+    venueId: number
+  ): string {
+
+    const category =
+      this.getVenueCategoryName(
+        venueId
+      )
+        ?.trim()
+        .toLowerCase();
+
+    switch (category) {
+      case 'sports':
+        return 'visual-sports';
+
+      case 'concert':
+        return 'visual-concert';
+
+      case 'cinema':
+        return 'visual-cinema';
+
+      case 'conference':
+        return 'visual-conference';
+
+      case 'festival':
+        return 'visual-festival';
+
+      default:
+        return 'visual-generic';
+    }
+  }
+
+
+  private loadEvents(): void {
+
+    this.eventService
+      .getEvents()
+      .subscribe({
+
+        next: events =>
+          this.events.set(
+            events ?? []
+          ),
+
+        error: () =>
+          this.events.set([])
+      });
   }
 
   private resetForm(): void {

@@ -1,5 +1,7 @@
 ﻿import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+
+import { EventService } from '../../../../../core/services/event.service';
 import { Venue } from '../../models/venue.model';
 import { VenueApiService } from '../../services/venue-api.service';
 import { VenueManagement } from './venue-management';
@@ -18,6 +20,10 @@ describe('VenueManagement', () => {
 
   let createdRequest: unknown;
   let deletedVenueId: number | null;
+
+  const eventServiceMock = {
+    getEvents: () => of([])
+  };
 
   const venueApiMock = {
     getAll: () => of(venues),
@@ -56,6 +62,10 @@ describe('VenueManagement', () => {
         {
           provide: VenueApiService,
           useValue: venueApiMock
+        },
+        {
+          provide: EventService,
+          useValue: eventServiceMock
         }
       ]
     }).compileComponents();

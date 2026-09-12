@@ -12,6 +12,8 @@ import {
 import { AppRole } from '../../../core/models/auth.models';
 import { AuthService } from '../../../core/services/auth.service';
 
+type DemoRole = 'Administrator' | 'Customer';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -48,6 +50,26 @@ export class Login {
     ]
   });
 
+  useDemoAccount(role: DemoRole): void {
+    const credentials =
+      role === 'Administrator'
+        ? {
+            email: 'admin@eventparking.local',
+            password: 'Admin@123'
+          }
+        : {
+            email: 'customer@gmail.com',
+            password: 'Customer@123'
+          };
+
+    this.loginForm.setValue(credentials);
+
+    this.errorMessage.set('');
+    this.successMessage.set(
+      `${role} demo credentials loaded. Select Sign in to continue.`
+    );
+  }
+
   submit(): void {
     this.errorMessage.set('');
     this.successMessage.set('');
@@ -70,8 +92,10 @@ export class Login {
 
         void this.router.navigateByUrl(destination);
       },
+
       error: (error: HttpErrorResponse) => {
         this.isSubmitting.set(false);
+
         this.errorMessage.set(
           this.resolveErrorMessage(error)
         );
@@ -80,22 +104,31 @@ export class Login {
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword.update(value => !value);
+    this.showPassword.update(
+      value => !value
+    );
   }
 
   hasError(
     controlName: 'email' | 'password',
     errorName: string
   ): boolean {
-    const control = this.loginForm.controls[controlName];
+    const control =
+      this.loginForm.controls[controlName];
 
-    return control.touched &&
-      control.hasError(errorName);
+    return (
+      control.touched &&
+      control.hasError(errorName)
+    );
   }
 
-  private resolveDestination(role: AppRole): string {
+  private resolveDestination(
+    role: AppRole
+  ): string {
     const returnUrl =
-      this.route.snapshot.queryParamMap.get('returnUrl');
+      this.route.snapshot.queryParamMap.get(
+        'returnUrl'
+      );
 
     if (
       role === 'Customer' &&
@@ -112,25 +145,33 @@ export class Login {
     }
 
     return role === 'Administrator'
-      ? '/admin/customers'
-      : '/customer/profile';
+      ? '/admin/dashboard'
+      : '/customer/dashboard';
   }
 
   private resolveErrorMessage(
     error: HttpErrorResponse
   ): string {
     const errorCode =
-      error.error?.errorCode as string | undefined;
+      error.error?.errorCode as
+        | string
+        | undefined;
 
-    if (errorCode === 'EMAIL_NOT_VERIFIED') {
+    if (
+      errorCode === 'EMAIL_NOT_VERIFIED'
+    ) {
       return 'Verify your email address before signing in.';
     }
 
-    if (errorCode === 'INVALID_CREDENTIALS') {
+    if (
+      errorCode === 'INVALID_CREDENTIALS'
+    ) {
       return 'Invalid email or password.';
     }
 
-    if (typeof error.error?.detail === 'string') {
+    if (
+      typeof error.error?.detail === 'string'
+    ) {
       return error.error.detail;
     }
 

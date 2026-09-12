@@ -1,166 +1,646 @@
 <section class="booking-page">
 
-  <div class="page-header">
+  <header class="page-header">
+
     <div>
-      <h1>Reserve Your Place</h1>
-      <p>
-        Event {{ eventId }} · Select one or more available seats and optional parking.
-      </p>
+
+      <a
+        routerLink="/customer/events"
+        class="back-link">
+
+        ← Back to events
+
+      </a>
+
+      <span class="eyebrow">
+        RESERVATION DETAILS
+      </span>
+
+      <h1>
+        Select Your Seats & Parking
+      </h1>
+
     </div>
 
     <button
       type="button"
       class="refresh-button"
       (click)="loadAvailability()"
-      [disabled]="loadingResources || loading">
+      [disabled]="
+        loadingResources ||
+        loading
+      ">
+
       Refresh Availability
+
     </button>
-  </div>
+
+  </header>
+
+
+  <article
+    class="event-overview">
+
+    <div
+      class="event-poster"
+      [ngClass]="eventVisualClass">
+
+      <span class="poster-category">
+        {{
+          event?.categoryName ??
+          'Event'
+        }}
+      </span>
+
+      <div class="booking-event-animation">
+
+        <div class="overview-sports">
+          <div class="overview-pitch">
+            <span class="overview-ball"></span>
+          </div>
+        </div>
+
+        <div class="overview-concert">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="overview-cinema">
+          <div class="overview-film"></div>
+        </div>
+
+        <div class="overview-conference">
+          <div class="conference-screen">
+            <span></span>
+          </div>
+        </div>
+
+        <div class="overview-festival">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="event-information">
+
+      <span class="event-label">
+        YOUR EVENT
+      </span>
+
+      <h2>
+
+        {{
+          eventLoading
+            ? 'Loading event...'
+            : (
+              event?.name ??
+              'Event Reservation'
+            )
+        }}
+
+      </h2>
+
+
+      <div
+        *ngIf="event"
+        class="event-meta">
+
+        <div>
+
+          <svg
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2">
+
+            <path
+              d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z">
+            </path>
+
+            <circle
+              cx="12"
+              cy="10"
+              r="2">
+            </circle>
+
+          </svg>
+
+          <span>
+
+            <strong>
+              {{ event.venueName }}
+            </strong>
+
+            <small>
+              {{
+                event.venueAddress ||
+                'Address unavailable'
+              }}
+            </small>
+
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <svg
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2">
+
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="16"
+              rx="2">
+            </rect>
+
+            <path
+              d="M16 3v4M8 3v4M3 11h18">
+            </path>
+
+          </svg>
+
+          <span>
+
+            <strong>
+              {{
+                event.startDateTimeUtc
+                  | date:'EEE, d MMM y'
+              }}
+            </strong>
+
+            <small>
+              {{
+                event.startDateTimeUtc
+                  | date:'h:mm a'
+              }}
+            </small>
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      *ngIf="event"
+      class="event-price">
+
+      <span>
+        Ticket from
+      </span>
+
+      <strong>
+        LKR
+        {{
+          event.ticketPrice
+            | number:'1.2-2'
+        }}
+      </strong>
+
+      <small>
+        per seat
+      </small>
+
+    </div>
+
+  </article>
+
 
   <div
     *ngIf="loadingResources"
     class="state-card">
-    Loading live availability...
+
+    <div class="loader"></div>
+
+    <strong>
+      Loading live availability
+    </strong>
+
+    <span>
+      Checking seats and parking...
+    </span>
+
   </div>
+
 
   <div
     *ngIf="resourceError"
     class="state-card error">
-    {{ resourceError }}
+
+    <strong>
+      Availability error
+    </strong>
+
+    <span>
+      {{ resourceError }}
+    </span>
+
   </div>
 
-  <ng-container
-    *ngIf="!loadingResources && !resourceError">
 
-    <div class="booking-section">
+  <div
+    *ngIf="
+      !loadingResources &&
+      !resourceError
+    "
+    class="booking-layout">
 
-      <div class="section-header">
-        <div>
-          <h2>Select Seats</h2>
-          <p>
-            {{ availableSeatCount }} seats available ·
-            {{ selectedSeatIds.length }} selected
-          </p>
+
+    <main class="selection-column">
+
+
+      <section class="booking-section">
+
+        <div class="section-header">
+
+          <div>
+
+            <span class="step-number">
+              01
+            </span>
+
+            <div>
+
+              <h2>
+                Select Your Seats
+              </h2>
+
+              <p>
+                {{
+                  availableSeatCount
+                }}
+                available
+
+                <span>
+                  ·
+                </span>
+
+                {{
+                  selectedSeatIds.length
+                }}
+                selected
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="legend">
+
+            <span>
+              <i class="legend-dot available"></i>
+              Available
+            </span>
+
+            <span>
+              <i class="legend-dot selected"></i>
+              Selected
+            </span>
+
+            <span>
+              <i class="legend-dot held"></i>
+              Held
+            </span>
+
+            <span>
+              <i class="legend-dot booked"></i>
+              Booked
+            </span>
+
+          </div>
+
         </div>
 
-        <div class="legend">
-          <span>
-            <i class="legend-box available"></i>
-            Available
-          </span>
+
+        <div class="stage">
 
           <span>
-            <i class="legend-box selected"></i>
-            Selected
+            EVENT STAGE
           </span>
 
-          <span>
-            <i class="legend-box unavailable"></i>
-            Unavailable
-          </span>
-        </div>
-      </div>
-
-      <app-seat-selector
-        [seats]="seats"
-        [selectedSeatIds]="selectedSeatIds"
-        [disabled]="loading"
-        (seatToggled)="toggleSeat($event)">
-      </app-seat-selector>
-
-    </div>
-
-    <div class="booking-section">
-
-      <div class="section-header">
-        <div>
-          <h2>Parking</h2>
-          <p>
-            Optional ·
-            {{ availableParkingCount }}
-            slots available
-          </p>
         </div>
 
-        <button
-          *ngIf="selectedParkingSlotId"
-          type="button"
-          class="clear-button"
-          (click)="clearParking()"
-          [disabled]="loading">
-          No Parking
-        </button>
-      </div>
 
-      <app-parking-selector
-        [parkingSlots]="parkingSlots"
-        [selectedParkingSlotId]="selectedParkingSlotId"
-        [disabled]="loading"
-        (parkingSelected)="selectParking($event)">
-      </app-parking-selector>
+        <app-seat-selector
+          [seats]="seats"
+          [categoryName]="event?.categoryName ?? ''"
+          [selectedSeatIds]="
+            selectedSeatIds
+          "
+          [disabled]="loading"
+          (seatToggled)="
+            toggleSeat($event)
+          ">
+        </app-seat-selector>
 
-    </div>
+      </section>
 
-    <div class="selection-summary">
 
-      <div>
-        <span>Selected Seats</span>
+      <section class="booking-section">
 
-        <strong>
-          {{
-            selectedSeatIds.length > 0
-              ? selectedSeatIds.join(', ')
-              : 'Not selected'
-          }}
-        </strong>
-      </div>
+        <div class="section-header">
 
-      <div>
-        <span>Seat Count</span>
-        <strong>
-          {{ selectedSeatIds.length }}
-        </strong>
-      </div>
+          <div>
 
-      <div>
-        <span>Parking</span>
+            <span class="step-number">
+              02
+            </span>
 
-        <strong>
-          {{
+            <div>
+
+              <h2>
+                Choose Parking
+              </h2>
+
+              <p>
+                Optional parking
+
+                <span>
+                  ·
+                </span>
+
+                {{
+                  availableParkingCount
+                }}
+                spaces available
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <button
+            *ngIf="
+              selectedParkingSlotId
+            "
+            type="button"
+            class="clear-parking"
+            (click)="clearParking()"
+            [disabled]="loading">
+
+            No Parking
+
+          </button>
+
+        </div>
+
+
+        <app-parking-selector
+          [parkingSlots]="
+            parkingSlots
+          "
+          [selectedParkingSlotId]="
             selectedParkingSlotId
-              ? 'Slot ID ' +
-                selectedParkingSlotId
-              : 'No parking'
-          }}
-        </strong>
+          "
+          [disabled]="loading"
+          (parkingSelected)="
+            selectParking($event)
+          ">
+        </app-parking-selector>
+
+      </section>
+
+    </main>
+
+
+    <aside class="summary-card">
+
+      <span class="summary-eyebrow">
+        BOOKING SUMMARY
+      </span>
+
+      <h2>
+
+        {{
+          event?.name ??
+          'Your Reservation'
+        }}
+
+      </h2>
+
+
+      <div class="summary-section">
+
+        <span class="summary-label">
+          Selected Seats
+        </span>
+
+
+        <div
+          *ngIf="
+            selectedSeats.length > 0
+          "
+          class="selected-chips">
+
+          <span
+            *ngFor="
+              let seat of selectedSeats
+            "
+            class="seat-chip">
+
+            {{ seat | seatLabel }}
+
+          </span>
+
+        </div>
+
+
+        <span
+          *ngIf="
+            selectedSeats.length === 0
+          "
+          class="empty-selection">
+
+          No seats selected
+
+        </span>
+
       </div>
 
-    </div>
 
-    <p
-      *ngIf="message"
-      class="booking-message">
-      {{ message }}
-    </p>
+      <div class="summary-row">
 
-    <button
-      type="button"
-      class="confirm-button"
-      (click)="createBooking()"
-      [disabled]="
-        loading ||
-        loadingResources ||
-        selectedSeatIds.length === 0
-      ">
+        <span>
+          Seat count
+        </span>
 
-      {{
-        loading
-          ? 'Processing...'
-          : 'Confirm Booking'
-      }}
+        <strong>
+          {{
+            selectedSeatIds.length
+          }}
+        </strong>
 
-    </button>
+      </div>
 
-  </ng-container>
+
+      <div class="summary-row">
+
+        <span>
+          Parking
+        </span>
+
+        <strong
+          *ngIf="
+            selectedParkingSlot
+              as parking
+          ">
+
+          {{
+            parking |
+              slotCode
+          }}
+
+        </strong>
+
+        <strong
+          *ngIf="
+            !selectedParkingSlot
+          ">
+
+          Not selected
+
+        </strong>
+
+      </div>
+
+
+      <div class="price-divider"></div>
+
+
+      <div class="summary-row">
+
+        <span>
+          Tickets
+        </span>
+
+        <strong>
+          LKR
+          {{
+            ticketSubtotal
+              | number:'1.2-2'
+          }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-row">
+
+        <span>
+          Parking fee
+        </span>
+
+        <strong>
+          LKR
+          {{
+            parkingSubtotal
+              | number:'1.2-2'
+          }}
+        </strong>
+
+      </div>
+
+
+      <div class="total-row">
+
+        <span>
+          Total
+        </span>
+
+        <strong>
+          LKR
+          {{
+            estimatedTotal
+              | number:'1.2-2'
+          }}
+        </strong>
+
+      </div>
+
+
+      <p
+        *ngIf="message"
+        class="booking-message">
+
+        {{ message }}
+
+      </p>
+
+
+      <button
+        type="button"
+        class="confirm-button"
+        (click)="createBooking()"
+        [disabled]="
+          loading ||
+          loadingResources ||
+          selectedSeatIds.length === 0
+        ">
+
+        <span>
+
+          {{
+            loading
+              ? 'Creating Reservation...'
+              : 'Continue with Reservation'
+          }}
+
+        </span>
+
+        <svg
+          *ngIf="!loading"
+          viewBox="0 0 24 24"
+          width="17"
+          height="17"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2">
+
+          <path
+            d="M5 12h14">
+          </path>
+
+          <path
+            d="m13 6 6 6-6 6">
+          </path>
+
+        </svg>
+
+      </button>
+
+
+      <p class="summary-note">
+        Seats and parking are temporarily held
+        after your reservation is created.
+      </p>
+
+    </aside>
+
+  </div>
 
 </section>

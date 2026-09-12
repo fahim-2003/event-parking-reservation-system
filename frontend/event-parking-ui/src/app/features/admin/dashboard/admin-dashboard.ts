@@ -1,25 +1,43 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit
+} from '@angular/core';
 
-import { DashboardService } from '../../../core/services/dashboard.service';
-import { AdminDashboard } from '../../../core/models/dashboard.models';
+import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
+import {
+  AdminDashboard
+} from '../../../core/models/dashboard.models';
+
+import {
+  DashboardService
+} from '../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
+  imports: [
+    RouterLink,
+    DecimalPipe
+  ],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })
 export class AdminDashboardComponent implements OnInit {
 
-  private readonly dashboardService = inject(DashboardService);
+  private readonly dashboardService =
+    inject(DashboardService);
 
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly cdr =
+    inject(ChangeDetectorRef);
 
-  dashboard: AdminDashboard | null = null;
+  dashboard:
+    AdminDashboard | null = null;
 
   loading = true;
-
 
   ngOnInit(): void {
 
@@ -27,21 +45,15 @@ export class AdminDashboardComponent implements OnInit {
       .getAdminDashboard()
       .subscribe({
 
-        next: (response) => {
-
-          console.log(
-            'DASHBOARD RESPONSE:',
-            response
-          );
+        next: response => {
 
           this.dashboard = response;
-          console.log('DASHBOARD STATE:', this.dashboard);
-          this.cdr.detectChanges();
           this.loading = false;
 
+          this.cdr.detectChanges();
         },
 
-        error: (error) => {
+        error: error => {
 
           console.error(
             'Dashboard loading failed',
@@ -50,11 +62,8 @@ export class AdminDashboardComponent implements OnInit {
 
           this.loading = false;
 
+          this.cdr.detectChanges();
         }
-
       });
-
   }
-
 }
-

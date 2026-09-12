@@ -1,35 +1,392 @@
 <div
   *ngIf="parkingSlots.length === 0"
   class="state-card">
+
   No parking layout is available for this event.
+
 </div>
 
-<div
+
+<section
   *ngIf="parkingSlots.length > 0"
-  class="parking-map">
+  class="parking-experience">
 
-  <button
-    *ngFor="let slot of parkingSlots"
-    type="button"
-    class="resource-item parking"
-    [class.selected]="isSelected(slot.id)"
-    [class.unavailable]="
-      slot.status !== 'Available'
-    "
-    [disabled]="
-      slot.status !== 'Available' ||
-      disabled
-    "
-    (click)="selectParking(slot)">
 
-    <strong>
-      {{ slot | slotCode }}
-    </strong>
+  <!-- =====================================================
+       MAP HEADER
+       ===================================================== -->
 
-    <small>
-      {{ slot.status }}
-    </small>
+  <header class="parking-map-header">
 
-  </button>
+    <div class="parking-map-title">
 
-</div>
+      <span class="parking-eyebrow">
+        PARKING MAP
+      </span>
+
+      <strong>
+        Choose your parking bay
+      </strong>
+
+      <small>
+        Select any available space from the live parking layout.
+      </small>
+
+    </div>
+
+
+    <div class="parking-legend">
+
+      <span class="legend-item available">
+        <i></i>
+        Available
+      </span>
+
+      <span class="legend-item selected">
+        <i></i>
+        Selected
+      </span>
+
+      <span class="legend-item held">
+        <i></i>
+        Held
+      </span>
+
+      <span class="legend-item occupied">
+        <i></i>
+        Occupied
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       REALISTIC PARKING GROUND
+       ===================================================== -->
+
+  <div class="parking-site">
+
+
+    <!-- EVENT VENUE -->
+
+    <div class="venue-front">
+
+      <span class="venue-sign">
+        EVENT VENUE
+      </span>
+
+      <div class="venue-entrance">
+
+        <span class="entrance-door"></span>
+
+        <strong>
+          MAIN ENTRANCE
+        </strong>
+
+        <span class="entrance-door"></span>
+
+      </div>
+
+    </div>
+
+
+    <!-- PEDESTRIAN WALKWAY -->
+
+    <div class="pedestrian-zone">
+
+      <span class="walkway-label">
+        PEDESTRIAN WALKWAY
+      </span>
+
+      <div class="crossing-lines">
+
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAIN ROAD -->
+
+    <div class="parking-road">
+
+      <div class="road-entry">
+        <span>ENTRY</span>
+        <strong>&rarr;</strong>
+      </div>
+
+      <div class="road-center">
+
+        <span class="road-line"></span>
+
+        <strong>
+          DRIVE LANE
+        </strong>
+
+        <span class="road-line"></span>
+
+      </div>
+
+      <div class="road-exit">
+        <strong>&rarr;</strong>
+        <span>EXIT</span>
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         PARKING ZONES
+         =================================================== -->
+
+    <div class="parking-zones">
+
+      <section
+        *ngFor="let zone of parkingZones"
+        class="parking-zone">
+
+        <header class="parking-zone-header">
+
+          <div>
+            <span>
+              PARKING ZONE
+            </span>
+
+            <strong>
+              {{ zone.zone }}
+            </strong>
+          </div>
+
+          <small>
+            {{ zone.upperSlots.length + zone.lowerSlots.length }}
+            spaces
+          </small>
+
+        </header>
+
+
+        <!-- UPPER SIDE -->
+
+        <div class="parking-row upper-row">
+
+          <button
+            *ngFor="let slot of zone.upperSlots"
+            type="button"
+            class="parking-bay"
+            [class.available]="isAvailable(slot)"
+            [class.selected]="isSelected(slot.id)"
+            [class.held]="isHeld(slot)"
+            [class.occupied]="isOccupied(slot)"
+            [disabled]="
+              !isAvailable(slot) ||
+              disabled
+            "
+            [attr.aria-label]="
+              (slot | slotCode) +
+              ' ' +
+              slot.status
+            "
+            (click)="selectParking(slot)">
+
+            <span class="bay-number">
+              {{ slot | slotCode }}
+            </span>
+
+
+            <span
+              *ngIf="isOccupied(slot)"
+              class="parked-car"
+              aria-hidden="true">
+
+              <span class="car-cabin"></span>
+
+              <span class="car-wheel left"></span>
+              <span class="car-wheel right"></span>
+
+            </span>
+
+
+            <span
+              *ngIf="isHeld(slot)"
+              class="held-marker">
+              HELD
+            </span>
+
+
+            <span
+              *ngIf="
+                isAvailable(slot) &&
+                !isSelected(slot.id)
+              "
+              class="available-marker">
+              OPEN
+            </span>
+
+
+            <span
+              *ngIf="isSelected(slot.id)"
+              class="selected-marker">
+              SELECTED
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- INTERNAL DRIVE LANE -->
+
+        <div class="zone-drive-lane">
+
+          <span class="lane-arrow">
+            &darr;
+          </span>
+
+          <span class="lane-dashes"></span>
+
+          <strong>
+            ONE WAY
+          </strong>
+
+          <span class="lane-dashes"></span>
+
+          <span class="lane-arrow">
+            &darr;
+          </span>
+
+        </div>
+
+
+        <!-- LOWER SIDE -->
+
+        <div class="parking-row lower-row">
+
+          <button
+            *ngFor="let slot of zone.lowerSlots"
+            type="button"
+            class="parking-bay"
+            [class.available]="isAvailable(slot)"
+            [class.selected]="isSelected(slot.id)"
+            [class.held]="isHeld(slot)"
+            [class.occupied]="isOccupied(slot)"
+            [disabled]="
+              !isAvailable(slot) ||
+              disabled
+            "
+            [attr.aria-label]="
+              (slot | slotCode) +
+              ' ' +
+              slot.status
+            "
+            (click)="selectParking(slot)">
+
+            <span class="bay-number">
+              {{ slot | slotCode }}
+            </span>
+
+
+            <span
+              *ngIf="isOccupied(slot)"
+              class="parked-car"
+              aria-hidden="true">
+
+              <span class="car-cabin"></span>
+
+              <span class="car-wheel left"></span>
+              <span class="car-wheel right"></span>
+
+            </span>
+
+
+            <span
+              *ngIf="isHeld(slot)"
+              class="held-marker">
+              HELD
+            </span>
+
+
+            <span
+              *ngIf="
+                isAvailable(slot) &&
+                !isSelected(slot.id)
+              "
+              class="available-marker">
+              OPEN
+            </span>
+
+
+            <span
+              *ngIf="isSelected(slot.id)"
+              class="selected-marker">
+              SELECTED
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- EXIT ROAD -->
+
+    <div class="parking-bottom-road">
+
+      <span>
+        &larr; RETURN LANE
+      </span>
+
+      <div class="bottom-road-dashes"></div>
+
+      <span>
+        EXIT &rarr;
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CURRENT SELECTION
+       ===================================================== -->
+
+  <div
+    *ngIf="selectedParkingSlot as selected"
+    class="selected-parking-summary">
+
+    <div class="selected-summary-icon">
+      P
+    </div>
+
+    <div>
+
+      <span>
+        SELECTED PARKING
+      </span>
+
+      <strong>
+        {{ selected | slotCode }}
+      </strong>
+
+      <small>
+        Zone {{ selected.zone }}
+        &middot;
+        Ready to reserve
+      </small>
+
+    </div>
+
+  </div>
+
+</section>

@@ -3,6 +3,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  BookingService
+} from '../../../bookings/services/booking.service';
+import {
   PaymentApiService,
   PaymentResponse
 } from '../../services/payment-api.service';
@@ -18,9 +21,18 @@ export class PaymentHistory implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly paymentApi = inject(PaymentApiService);
+  private readonly bookingService = inject(BookingService);
 
   bookingId = 0;
+  bookingNumber = '';
   paymentMethod = 'Card';
+
+  cardholderName = '';
+  cardNumber = '';
+  expiryDate = '';
+  cvv = '';
+
+  mobileNumber = '';
 
   loading = false;
   errorMessage = '';
@@ -34,7 +46,16 @@ export class PaymentHistory implements OnInit {
         this.route.snapshot.queryParamMap.get('bookingId')
       ) || 0;
 
+    if (this.bookingId > 0) {
+      this.loadBookingReference();
+    }
+
     this.loadPayments();
+  }
+
+  selectMethod(method: string): void {
+    this.paymentMethod = method;
+    this.errorMessage = '';
   }
 
   pay(): void {
@@ -42,6 +63,28 @@ export class PaymentHistory implements OnInit {
     if (!this.bookingId) {
       this.errorMessage =
         'No booking selected for payment.';
+      return;
+    }
+
+    if (this.paymentMethod === 'Card') {
+      if (
+        !this.cardholderName.trim() ||
+        !this.cardNumber.trim() ||
+        !this.expiryDate.trim() ||
+        !this.cvv.trim()
+      ) {
+        this.errorMessage =
+          'Please complete the card details.';
+        return;
+      }
+    }
+
+    if (
+      this.paymentMethod === 'Mobile' &&
+      !this.mobileNumber.trim()
+    ) {
+      this.errorMessage =
+        'Please enter the mobile payment number.';
       return;
     }
 
@@ -57,12 +100,22 @@ export class PaymentHistory implements OnInit {
       .subscribe({
         next: payment => {
           this.successMessage =
-            `Payment completed. Amount: ${payment.amount.toFixed(2)}`;
+            `Payment completed successfully. Amount: Rs. ${payment.amount.toFixed(2)}`;
 
           this.loading = false;
           this.bookingId = 0;
 
-          this.loadPayments();
+          this.cardholderName = '';
+          this.cardNumber = '';
+          this.expiryDate = '';
+          this.cvv = '';
+          this.mobileNumber = '';
+
+          if (this.bookingId > 0) {
+      this.loadBookingReference();
+    }
+
+    this.loadPayments();
         },
 
         error: error => {
@@ -77,6 +130,37 @@ export class PaymentHistory implements OnInit {
       });
   }
 
+  private loadBookingReference(): void {
+
+    this.bookingService
+      .getMine()
+      .subscribe({
+
+        next: bookings => {
+
+          const booking =
+            (bookings ?? []).find(
+              item =>
+                item.id === this.bookingId
+            );
+
+          this.bookingNumber =
+            booking?.bookingNumber ?? '';
+
+        },
+
+        error: error => {
+          console.error(
+            'Booking reference failed',
+            error
+          );
+
+          this.bookingNumber = '';
+        }
+
+      });
+
+  }
   loadPayments(): void {
     this.paymentApi
       .getMine()

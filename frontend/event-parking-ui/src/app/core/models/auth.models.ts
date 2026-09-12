@@ -1,4 +1,4 @@
-export type AppRole = 'Customer' | 'Administrator';
+﻿export type AppRole = 'Customer' | 'Administrator';
 
 export type AccountStatus = 'Active' | 'Deactivated';
 
@@ -49,15 +49,17 @@ export interface ResendVerificationRequest {
 }
 
 export interface ForgotPasswordRequest {
-  email: string;
+  phoneNumber: string;
 }
 
 export interface ResetPasswordRequest {
-  userId: string;
-  token: string;
+  phoneNumber: string;
+  otp: string;
   newPassword: string;
 }
 
 export interface MessageResponse {
   message: string;
 }
+
+

@@ -1,4 +1,4 @@
-using EventParking.API.DTOs.Auth;
+﻿using EventParking.API.DTOs.Auth;
 using EventParking.API.Enums;
 using EventParking.API.Identity;
 using EventParking.API.Interfaces.Services;
@@ -11,15 +11,18 @@ public sealed class AuthService : IAuthService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITokenService _tokenService;
     private readonly IEmailSender _emailSender;
+    private readonly ISmsSender _smsSender;
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
         ITokenService tokenService,
-        IEmailSender emailSender)
+        IEmailSender emailSender,
+        ISmsSender smsSender)
     {
         _userManager = userManager;
         _tokenService = tokenService;
         _emailSender = emailSender;
+        _smsSender = smsSender;
     }
 
     public async Task<AuthOperationResult<RegisterResponse>>
@@ -262,26 +265,39 @@ public sealed class AuthService : IAuthService
                 {
                     Message =
                         "If an eligible account exists, " +
-                        "a password reset link has been generated."
+                        "a password reset OTP has been generated."
                 });
 
-        var email = request.Email.Trim();
+        var phoneNumber = request.PhoneNumber.Trim();
 
-        var user = await _userManager.FindByEmailAsync(email);
+        var matchingUsers =
+            _userManager.Users
+                .Where(user =>
+                    user.PhoneNumber == phoneNumber)
+                .Take(2)
+                .ToList();
 
-        if (user is null ||
-            !user.EmailConfirmed ||
-            user.AccountStatus != AccountStatus.Active)
+        if (matchingUsers.Count != 1)
         {
             return genericResponse;
         }
 
-        var token =
-            await _userManager.GeneratePasswordResetTokenAsync(user);
+        var user = matchingUsers[0];
 
-        await _emailSender.SendPasswordResetAsync(
+        if (user.AccountStatus != AccountStatus.Active)
+        {
+            return genericResponse;
+        }
+
+        var otp =
+            await _userManager
+                .GenerateChangePhoneNumberTokenAsync(
+                    user,
+                    phoneNumber);
+
+        await _smsSender.SendPasswordResetOtpAsync(
             user,
-            token);
+            otp);
 
         return genericResponse;
     }
@@ -290,29 +306,65 @@ public sealed class AuthService : IAuthService
         ResetPasswordAsync(
             ResetPasswordRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.UserId) ||
-            string.IsNullOrWhiteSpace(request.Token))
+        var phoneNumber =
+            request.PhoneNumber.Trim();
+
+        var otp =
+            request.Otp.Trim();
+
+        if (string.IsNullOrWhiteSpace(phoneNumber) ||
+            string.IsNullOrWhiteSpace(otp))
         {
             return AuthOperationResult<MessageResponse>.Failure(
                 "INVALID_PASSWORD_RESET",
-                "The password reset request is invalid or expired.");
+                "The phone number or OTP is invalid.");
         }
 
-        var user =
-            await _userManager.FindByIdAsync(request.UserId);
+        var matchingUsers =
+            _userManager.Users
+                .Where(user =>
+                    user.PhoneNumber == phoneNumber)
+                .Take(2)
+                .ToList();
 
-        if (user is null ||
-            user.AccountStatus != AccountStatus.Active)
+        if (matchingUsers.Count != 1)
         {
             return AuthOperationResult<MessageResponse>.Failure(
                 "INVALID_PASSWORD_RESET",
-                "The password reset request is invalid or expired.");
+                "The phone number or OTP is invalid or expired.");
         }
+
+        var user = matchingUsers[0];
+
+        if (user.AccountStatus != AccountStatus.Active)
+        {
+            return AuthOperationResult<MessageResponse>.Failure(
+                "INVALID_PASSWORD_RESET",
+                "The phone number or OTP is invalid or expired.");
+        }
+
+        var otpIsValid =
+            await _userManager
+                .VerifyChangePhoneNumberTokenAsync(
+                    user,
+                    otp,
+                    phoneNumber);
+
+        if (!otpIsValid)
+        {
+            return AuthOperationResult<MessageResponse>.Failure(
+                "INVALID_OTP",
+                "The OTP is invalid or expired.");
+        }
+
+        var passwordResetToken =
+            await _userManager
+                .GeneratePasswordResetTokenAsync(user);
 
         var resetResult =
             await _userManager.ResetPasswordAsync(
                 user,
-                request.Token,
+                passwordResetToken,
                 request.NewPassword);
 
         if (!resetResult.Succeeded)
@@ -323,6 +375,7 @@ public sealed class AuthService : IAuthService
                 BuildIdentityErrors(resetResult));
         }
 
+        user.PhoneNumberConfirmed = true;
         user.UpdatedAtUtc = DateTime.UtcNow;
 
         var updateResult =
@@ -342,7 +395,6 @@ public sealed class AuthService : IAuthService
                 Message = "Password reset successfully."
             });
     }
-
     private static AuthOperationResult<AuthResponse>
         InvalidCredentials()
     {
@@ -386,4 +438,8 @@ public sealed class AuthService : IAuthService
         return "identity";
     }
 }
+
+
+
+
 

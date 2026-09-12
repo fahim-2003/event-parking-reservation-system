@@ -1,130 +1,316 @@
-﻿<section class="space-y-6">
-  <div>
-    <h1 class="text-2xl font-semibold">Category Management</h1>
-    <p class="text-sm text-slate-500">
-      Create, update and manage event categories.
-    </p>
-  </div>
+<section class="category-page">
+
+  <header class="page-header">
+
+    <div>
+      <span class="eyebrow">
+        CATEGORY OPERATIONS
+      </span>
+
+      <h1>
+        Category Management
+      </h1>
+
+      <p>
+        Organize events into clear categories for easier discovery.
+      </p>
+    </div>
+
+    <div class="category-count">
+      <span>Total Categories</span>
+      <strong>{{ categories().length }}</strong>
+    </div>
+
+  </header>
+
 
   @if (errorMessage()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div class="alert error">
       {{ errorMessage() }}
     </div>
   }
 
-  <form
-    [formGroup]="categoryForm"
-    (ngSubmit)="submit()"
-    class="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-  >
-    <div>
-      <label class="mb-1 block text-sm font-medium">
-        Category name
-      </label>
 
-      <input
-        type="text"
-        formControlName="name"
-        class="w-full rounded-lg border border-slate-300 px-3 py-2"
-      />
+  <section class="management-grid">
 
-      @if (
-        categoryForm.controls.name.touched &&
-        categoryForm.controls.name.invalid
-      ) {
-        <p class="mt-1 text-xs text-red-600">
-          Category name is required.
-        </p>
-      }
+    <article class="form-card">
+
+      <div class="card-heading">
+
+        <div>
+
+          <span class="eyebrow">
+            {{
+              editingCategoryId() === null
+                ? 'CREATE CATEGORY'
+                : 'EDIT CATEGORY'
+            }}
+          </span>
+
+          <h2>
+            {{
+              editingCategoryId() === null
+                ? 'Add Event Category'
+                : 'Update Category'
+            }}
+          </h2>
+
+        </div>
+
+
+        <div
+          class="heading-icon"
+          [class.editing]="editingCategoryId() !== null">
+
+          {{
+            editingCategoryId() === null
+              ? '+'
+              : 'E'
+          }}
+
+        </div>
+
+      </div>
+
+
+      <form
+        [formGroup]="categoryForm"
+        (ngSubmit)="submit()">
+
+        <div class="field-group">
+
+          <label for="categoryName">
+            Category name
+          </label>
+
+          <input
+            id="categoryName"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Sports, Music, Technology">
+
+          @if (
+            categoryForm.controls.name.touched &&
+            categoryForm.controls.name.invalid
+          ) {
+            <small>
+              Category name is required.
+            </small>
+          }
+
+        </div>
+
+
+        <div class="form-actions">
+
+          <button
+            type="submit"
+            class="primary-button"
+            [disabled]="saving()">
+
+            {{
+              saving()
+                ? 'Saving...'
+                : editingCategoryId() === null
+                  ? 'Create Category'
+                  : 'Save Changes'
+            }}
+
+          </button>
+
+
+          @if (editingCategoryId() !== null) {
+
+            <button
+              type="button"
+              class="secondary-button"
+              (click)="cancelEdit()">
+
+              Cancel Edit
+
+            </button>
+
+          }
+
+        </div>
+
+      </form>
+
+    </article>
+
+
+    <aside class="guide-card">
+
+      <span class="eyebrow">
+        CATEGORY SETUP
+      </span>
+
+      <h2>
+        Naming Guidelines
+      </h2>
+
+
+      <div class="guide-list">
+
+        <div>
+          <span class="guide-icon">1</span>
+
+          <div>
+            <strong>Keep names short</strong>
+            <small>
+              Simple names are easier for customers to scan.
+            </small>
+          </div>
+        </div>
+
+
+        <div>
+          <span class="guide-icon">2</span>
+
+          <div>
+            <strong>Avoid duplicates</strong>
+            <small>
+              Each category should have a unique name.
+            </small>
+          </div>
+        </div>
+
+
+        <div>
+          <span class="guide-icon">3</span>
+
+          <div>
+            <strong>Use meaningful groups</strong>
+            <small>
+              Categories help users filter and discover events.
+            </small>
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </section>
+
+
+  <section class="category-section">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="eyebrow">
+          EVENT CLASSIFICATION
+        </span>
+
+        <h2>
+          Available Categories
+        </h2>
+      </div>
+
+      <span class="record-count">
+        {{ categories().length }}
+        categor{{ categories().length === 1 ? 'y' : 'ies' }}
+      </span>
+
     </div>
 
-    <div class="flex flex-wrap gap-3">
-      <button
-        type="submit"
-        [disabled]="saving()"
-        class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-      >
-        {{
-          saving()
-            ? 'Saving...'
-            : editingCategoryId() === null
-              ? 'Create Category'
-              : 'Update Category'
-        }}
-      </button>
-
-      @if (editingCategoryId() !== null) {
-        <button
-          type="button"
-          (click)="cancelEdit()"
-          class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium"
-        >
-          Cancel
-        </button>
-      }
-    </div>
-  </form>
-
-  <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-    <div class="border-b border-slate-200 px-5 py-4">
-      <h2 class="font-semibold">Categories</h2>
-    </div>
 
     @if (loading()) {
-      <div class="p-5 text-sm text-slate-500">
-        Loading categories...
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <strong>
+          Loading categories
+        </strong>
+
+        <span>
+          Retrieving category information...
+        </span>
+
       </div>
+
     } @else if (categories().length === 0) {
-      <div class="p-5 text-sm text-slate-500">
-        No categories available.
+
+      <div class="state-card">
+
+        <div class="empty-icon">
+          C
+        </div>
+
+        <strong>
+          No categories available
+        </strong>
+
+        <span>
+          Create your first event category above.
+        </span>
+
       </div>
+
     } @else {
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200">
-          <thead class="bg-slate-50">
-            <tr>
-              <th class="px-5 py-3 text-left text-xs font-semibold uppercase text-slate-500">
-                Name
-              </th>
-              <th class="px-5 py-3 text-right text-xs font-semibold uppercase text-slate-500">
-                Actions
-              </th>
-            </tr>
-          </thead>
 
-          <tbody class="divide-y divide-slate-100">
-            @for (category of categories(); track category.id) {
-              <tr>
-                <td class="px-5 py-4 text-sm font-medium">
-                  {{ category.name }}
-                </td>
+      <div class="category-grid">
 
-                <td class="px-5 py-4">
-                  <div class="flex justify-end gap-2">
-                    <button
-                      type="button"
-                      (click)="editCategory(category)"
-                      class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
-                    >
-                      Edit
-                    </button>
+        @for (
+          category of categories();
+          track category.id
+        ) {
 
-                    <button
-                      type="button"
-                      (click)="deleteCategory(category)"
-                      class="rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+          <article class="category-card">
+
+            <div class="category-symbol">
+              {{ getCategoryIcon(category.name) }}
+            </div>
+
+
+            <div class="category-info">
+
+              <h3>
+                {{ category.name }}
+              </h3>
+
+              <span class="category-status">
+                Active category
+              </span>
+
+            </div>
+
+
+            <div class="category-actions">
+
+              <button
+                type="button"
+                class="edit-button"
+                (click)="editCategory(category)">
+
+                Edit
+
+              </button>
+
+              <button
+                type="button"
+                class="delete-button"
+                (click)="deleteCategory(category)">
+
+                Delete
+
+              </button>
+
+            </div>
+
+          </article>
+
+        }
+
       </div>
+
     }
-  </div>
+
+  </section>
+
 
   <app-confirmation-dialog
     [open]="pendingDeleteCategory() !== null"
@@ -132,7 +318,9 @@
     [message]="
       pendingDeleteCategory() === null
         ? ''
-        : 'Are you sure you want to delete ' + pendingDeleteCategory()!.name + '?'
+        : 'Are you sure you want to delete ' +
+          pendingDeleteCategory()!.name +
+          '?'
     "
     confirmLabel="Delete"
     cancelLabel="Cancel"
@@ -140,4 +328,5 @@
     (confirmed)="confirmDeleteCategory()"
     (cancelled)="cancelDeleteCategory()"
   />
+
 </section>

@@ -11,8 +11,10 @@ export interface EventItem {
   id: number;
   name: string;
   description?: string;
+  imageUrl?: string | null;
   venueId: number;
   venueName: string;
+  venueAddress?: string;
   eventCategoryId: number;
   categoryName: string;
   startDateTimeUtc: string;

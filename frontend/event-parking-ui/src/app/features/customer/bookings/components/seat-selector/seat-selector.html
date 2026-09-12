@@ -1,36 +1,543 @@
-﻿<div
+<div
   *ngIf="seats.length === 0"
   class="state-card">
+
   No seat layout is available for this event.
+
 </div>
+
 
 <div
   *ngIf="seats.length > 0"
-  class="seat-map">
+  class="customer-seat-visual"
+  [ngClass]="seatLayoutVisualClass"
+  [ngSwitch]="seatLayoutVisualClass">
 
-  <button
-    *ngFor="let seat of seats"
-    type="button"
-    class="resource-item seat"
-    [appSeatStatus]="seat.status"
-    [class.selected]="isSelected(seat.id)"
-    [class.unavailable]="
-      seat.status !== 'Available'
-    "
-    [disabled]="
-      seat.status !== 'Available' ||
-      disabled
-    "
-    (click)="selectSeat(seat)">
 
-    <strong>
-      {{ seat | seatLabel }}
-    </strong>
+  <!-- =====================================
+       SPORTS
+       ===================================== -->
 
-    <small>
-      {{ seat.status }}
-    </small>
+  <div
+    *ngSwitchCase="'layout-sports'"
+    class="customer-stadium">
 
-  </button>
+    <div class="stadium-shell"></div>
+
+    <div class="football-pitch">
+
+      <div class="pitch-circle"></div>
+
+      <div class="goal-box left"></div>
+      <div class="goal-box right"></div>
+
+      <span>
+        STADIUM FIELD
+      </span>
+
+    </div>
+
+
+    <div class="customer-sports-rings">
+
+      <button
+        *ngFor="
+          let seat of seats;
+          let seatIndex = index
+        "
+        type="button"
+        class="stadium-seat"
+        [ngClass]="
+          getSportsSeatRingClass(
+            seatIndex
+          )
+        "
+        [style.--seat-progress]="
+          getSportsSeatProgress(
+            seatIndex
+          )
+        "
+        [class.selected]="
+          isSelected(seat.id)
+        "
+        [class.seat-available]="
+          seat.status === 'Available'
+        "
+        [class.seat-held]="
+          seat.status === 'Held'
+        "
+        [class.seat-booked]="
+          seat.status === 'Booked'
+        "
+        [disabled]="
+          seat.status !== 'Available' ||
+          disabled
+        "
+        [attr.title]="
+          seat.displayLabel +
+          ' - ' +
+          (
+            isSelected(seat.id)
+              ? 'Selected'
+              : seat.status
+          )
+        "
+        (click)="
+          selectSeat(seat)
+        ">
+
+        <span class="stadium-seat-back"></span>
+
+        <strong>
+          {{ seat.displayLabel }}
+        </strong>
+
+      </button>
+
+    </div>
+
+    <span class="stadium-gate gate-a">
+      GATE A
+    </span>
+
+    <span class="stadium-gate gate-d">
+      GATE D
+    </span>
+
+  </div>
+
+
+  <!-- =====================================
+       CONCERT
+       ===================================== -->
+
+  <div
+    *ngSwitchCase="'layout-concert'"
+    class="customer-concert-hall">
+
+    <div class="customer-concert-stage">
+
+      <i></i>
+      <i></i>
+      <i></i>
+
+      <strong>
+        EVENT STAGE
+      </strong>
+
+      <span>
+        LIVE PERFORMANCE
+      </span>
+
+    </div>
+
+
+    <div class="concert-seat-floor">
+
+      <div
+        *ngFor="let row of concertRows"
+        class="concert-seat-row">
+
+        <span class="layout-row-label">
+          {{ row.rowLabel }}
+        </span>
+
+
+        <div class="concert-row-sections">
+
+          <div
+            *ngFor="let section of row.sections"
+            class="concert-section">
+
+            <button
+              *ngFor="let seat of section"
+              type="button"
+              class="customer-layout-seat"
+              [class.selected]="
+                isSelected(seat.id)
+              "
+              [class.seat-available]="
+                seat.status === 'Available'
+              "
+              [class.seat-held]="
+                seat.status === 'Held'
+              "
+              [class.seat-booked]="
+                seat.status === 'Booked'
+              "
+              [disabled]="
+                seat.status !== 'Available' ||
+                disabled
+              "
+              [attr.title]="
+                seat.displayLabel +
+                ' - ' +
+                (
+                  isSelected(seat.id)
+                    ? 'Selected'
+                    : seat.status
+                )
+              "
+              (click)="selectSeat(seat)">
+
+              <span class="customer-seat-back"></span>
+
+              <strong>
+                {{ seat.displayLabel }}
+              </strong>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+     CINEMA
+     Exact Admin seating structure
+     ===================================== -->
+
+  <div
+    *ngSwitchCase="'layout-cinema'"
+    class="venue-layout-scene customer-cinema-hall">
+
+    <div class="cinema-screen">
+
+      <div class="screen-glow"></div>
+
+      <strong>
+        CINEMA SCREEN
+      </strong>
+
+    </div>
+
+
+    <div class="seat-layout-surface">
+
+      <div
+        *ngFor="
+          let row of groupedSeatRows;
+          let rowIndex = index
+        "
+        class="seat-row">
+
+        <span class="row-label">
+          {{ row.rowLabel }}
+        </span>
+
+
+        <div class="seat-row-items">
+
+          <button
+            *ngFor="let seat of row.seats"
+            type="button"
+            class="seat"
+            [class.selected]="
+              isSelected(seat.id)
+            "
+            [class.seat-available]="
+              seat.status === 'Available'
+            "
+            [class.seat-held]="
+              seat.status === 'Held'
+            "
+            [class.seat-booked]="
+              seat.status === 'Booked'
+            "
+            [disabled]="
+              seat.status !== 'Available' ||
+              disabled
+            "
+            [attr.title]="
+              seat.displayLabel +
+              ' - ' +
+              (
+                isSelected(seat.id)
+                  ? 'Selected'
+                  : seat.status
+              )
+            "
+            (click)="selectSeat(seat)">
+
+            <span class="seat-back"></span>
+
+            <strong>
+              {{ seat.displayLabel }}
+            </strong>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<!-- =====================================
+       CONFERENCE
+       ===================================== -->
+
+  <div
+    *ngSwitchCase="'layout-conference'"
+    class="customer-conference-hall">
+
+    <div class="customer-conference-screen">
+
+      <strong>
+        PRESENTATION
+      </strong>
+
+      <span>
+        CONFERENCE STAGE
+      </span>
+
+    </div>
+
+
+    <div class="customer-podium"></div>
+
+
+    <div class="conference-classroom">
+
+      <div
+        *ngFor="let row of conferenceDeskRows"
+        class="conference-classroom-row">
+
+        <span class="layout-row-label">
+          {{ row.rowLabel }}
+        </span>
+
+
+        <div class="conference-desk-row">
+
+          <div
+            *ngFor="
+              let desk of row.desks;
+              let deskIndex = index
+            "
+            class="conference-desk">
+
+            <div class="conference-desk-surface">
+
+              <span>
+                DESK {{ deskIndex + 1 }}
+              </span>
+
+            </div>
+
+
+            <div class="conference-desk-seats">
+
+              <button
+                *ngFor="let seat of desk"
+                type="button"
+                class="customer-layout-seat conference-seat"
+                [class.selected]="
+                  isSelected(seat.id)
+                "
+                [class.seat-available]="
+                  seat.status === 'Available'
+                "
+                [class.seat-held]="
+                  seat.status === 'Held'
+                "
+                [class.seat-booked]="
+                  seat.status === 'Booked'
+                "
+                [disabled]="
+                  seat.status !== 'Available' ||
+                  disabled
+                "
+                [attr.title]="
+                  seat.displayLabel +
+                  ' - ' +
+                  (
+                    isSelected(seat.id)
+                      ? 'Selected'
+                      : seat.status
+                  )
+                "
+                (click)="selectSeat(seat)">
+
+                <span class="customer-seat-back"></span>
+
+                <strong>
+                  {{ seat.displayLabel }}
+                </strong>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+     FESTIVAL
+     Exact Admin fan arena structure
+     ===================================== -->
+
+  <div
+    *ngSwitchCase="'layout-festival'"
+    class="venue-layout-scene customer-festival-arena">
+
+
+    <div class="festival-stage">
+
+      <div class="festival-light left"></div>
+
+      <div class="festival-light right"></div>
+
+      <strong>
+        FESTIVAL STAGE
+      </strong>
+
+      <span>
+        OPEN ARENA
+      </span>
+
+    </div>
+
+
+    <div class="festival-fan-layout">
+
+      <div class="festival-runway-label">
+        MAIN RUNWAY
+      </div>
+
+
+      <section
+        *ngFor="
+          let zone of festivalFanZones
+        "
+        class="festival-fan-zone"
+        [attr.data-zone]="zone.name">
+
+        <span class="festival-fan-title">
+          {{ zone.name }}
+        </span>
+
+
+        <div class="festival-fan-rows">
+
+          <div
+            *ngFor="
+              let row of zone.rows;
+              let rowIndex = index
+            "
+            class="festival-fan-row"
+            [style.gap.px]="
+              4 + (rowIndex * 0.65)
+            ">
+
+            <button
+              *ngFor="let seat of row"
+              type="button"
+              class="seat festival-fan-seat"
+
+              [class.selected]="
+                isSelected(seat.id)
+              "
+
+              [class.seat-available]="
+                seat.status === 'Available'
+              "
+
+              [class.seat-held]="
+                seat.status === 'Held'
+              "
+
+              [class.seat-booked]="
+                seat.status === 'Booked'
+              "
+
+              [disabled]="
+                seat.status !== 'Available' ||
+                disabled
+              "
+
+              [attr.title]="
+                seat.displayLabel +
+                ' - ' +
+                (
+                  isSelected(seat.id)
+                    ? 'Selected'
+                    : seat.status
+                )
+              "
+
+              (click)="selectSeat(seat)">
+
+              <span class="seat-back"></span>
+
+              <strong>
+                {{ seat.displayLabel }}
+              </strong>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </div>
+
+<!-- =====================================
+       GENERIC FALLBACK
+       ===================================== -->
+
+  <div
+    *ngSwitchDefault
+    class="seat-map">
+
+    <button
+      *ngFor="let seat of seats"
+      type="button"
+      class="resource-item seat"
+      [appSeatStatus]="seat.status"
+      [class.selected]="
+        isSelected(seat.id)
+      "
+      [class.unavailable]="
+        seat.status !== 'Available'
+      "
+      [disabled]="
+        seat.status !== 'Available' ||
+        disabled
+      "
+      (click)="selectSeat(seat)">
+
+      <strong>
+        {{ seat | seatLabel }}
+      </strong>
+
+      <small>
+        {{ seat.status }}
+      </small>
+
+    </button>
+
+  </div>
 
 </div>
